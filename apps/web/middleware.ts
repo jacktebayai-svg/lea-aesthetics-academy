@@ -1,14 +1,14 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const { pathname } = request.nextUrl;
 
   // For now, we'll use a default domain. This can be replaced with dynamic tenant resolution.
-  const defaultDomain = 'leas-aesthetics.com';
+  const defaultDomain = "leas-aesthetics.com";
 
-  if (pathname === '/') {
+  if (pathname === "/") {
     url.pathname = `/${defaultDomain}`;
     return NextResponse.rewrite(url);
   }
@@ -25,6 +25,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
   ],
 };

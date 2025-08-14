@@ -1,38 +1,43 @@
 "use client";
 
-import React from 'react';
+import React from "react";
 
 export default function LoginPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const email = formData.get('email');
-    const password = formData.get('password');
+    const email = formData.get("email");
+    const password = formData.get("password");
 
     // Hardcoded demo user for now
-    const response = await fetch('/api/login', {
-      method: 'POST',
+    const response = await fetch("/api/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
     });
 
     if (response.ok) {
-      window.location.href = '/dashboard';
+      window.location.href = "/dashboard";
     } else {
       const errorData = await response.json();
-      alert(errorData.message || 'Login failed');
+      alert(errorData.message || "Login failed");
     }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-        <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">Admin Login</h1>
+        <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">
+          Admin Login
+        </h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
               Email
             </label>
             <input
@@ -45,7 +50,10 @@ export default function LoginPage() {
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <input

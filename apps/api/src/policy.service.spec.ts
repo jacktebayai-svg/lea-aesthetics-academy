@@ -10,7 +10,10 @@ describe('PolicyService', () => {
     };
     const now = new Date('2025-08-14T12:00:00Z');
     const apptStart = new Date('2025-08-14T20:00:00Z'); // 8h away
-    const res = s.evaluate({ now, apptStart, servicePriceCents: 20000, action: 'cancel' }, cfg);
+    const res = s.evaluate(
+      { now, apptStart, servicePriceCents: 20000, action: 'cancel' },
+      cfg,
+    );
     expect(res.feeCents).toBe(10000);
   });
 });

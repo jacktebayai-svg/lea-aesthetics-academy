@@ -34,7 +34,7 @@ export default function DemoBookingPage() {
       setLoading(true);
       try {
         const url = `${API_BASE}/v1/availability?tenant_id=${tenantId}&location_id=${locationId}&service_id=${serviceId}&from=${encodeURIComponent(
-          fromIso
+          fromIso,
         )}&to=${encodeURIComponent(toIso)}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`availability ${res.status}`);
@@ -56,7 +56,9 @@ export default function DemoBookingPage() {
     setStatus("Booking...");
     try {
       const startTs = selected;
-      const endTs = new Date(new Date(selected).getTime() + 60 * 60 * 1000).toISOString();
+      const endTs = new Date(
+        new Date(selected).getTime() + 60 * 60 * 1000,
+      ).toISOString();
       const body = {
         tenantId,
         clientId: `client_${Math.random().toString(36).slice(2, 8)}`,
@@ -74,7 +76,9 @@ export default function DemoBookingPage() {
       });
       if (!res.ok) throw new Error(`create appt ${res.status}`);
       const appt = await res.json();
-      setStatus(`Booked with status ${appt.status}. Appointment ID: ${appt.id}`);
+      setStatus(
+        `Booked with status ${appt.status}. Appointment ID: ${appt.id}`,
+      );
     } catch (e: any) {
       setStatus(e.message || "Booking failed");
     }
@@ -108,7 +112,8 @@ export default function DemoBookingPage() {
                   }`}
                   onClick={() => setSelected(s.start)}
                 >
-                  {new Date(s.start).toLocaleString()} → {new Date(s.end).toLocaleTimeString()}
+                  {new Date(s.start).toLocaleString()} →{" "}
+                  {new Date(s.end).toLocaleTimeString()}
                 </button>
               </li>
             ))}
@@ -128,4 +133,3 @@ export default function DemoBookingPage() {
     </main>
   );
 }
-

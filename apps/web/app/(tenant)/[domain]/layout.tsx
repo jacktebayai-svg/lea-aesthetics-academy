@@ -1,30 +1,31 @@
-import type { Metadata } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
-import '../../globals.css'
-import Header from '../../../components/layout/Header'
-import Footer from '../../../components/layout/Footer'
+import type { Metadata } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
+import "../../globals.css";
+import Header from "../../../components/layout/Header";
+import Footer from "../../../components/layout/Footer";
 
 const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-})
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 const playfairDisplay = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair-display',
-  display: 'swap',
-})
+  subsets: ["latin"],
+  variable: "--font-playfair-display",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Lea's Aesthetics Master Suite",
-  description: "An all-in-one system for Lea's Aesthetics Clinical Academy, unifying client bookings and student education into a single, seamless, and luxurious experience.",
-}
+  description:
+    "An all-in-one system for Lea's Aesthetics Clinical Academy, unifying client bookings and student education into a single, seamless, and luxurious experience.",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfairDisplay.variable}`}>
@@ -38,5 +39,5 @@ export default function RootLayout({
         </div>
       </body>
     </html>
-  )
+  );
 }

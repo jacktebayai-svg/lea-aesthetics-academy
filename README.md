@@ -13,13 +13,33 @@ This repository is a monorepo managed by [Turborepo](https://turbo.build/repo).
 
 ## Getting Started
 
+Local development quickstart
+
+- Start stack: `pnpm stack:up`
+- DB migrate: `pnpm db:migrate`
+- DB seed: `pnpm db:seed`
+- API: `pnpm --filter api start:dev` (http://localhost:3333)
+- Web: `pnpm --filter web dev` (http://localhost:3000)
+- Admin: `pnpm --filter admin dev` (http://localhost:3001) [set PORT]
+
+Demo flow
+
+- Visit web `/demo-booking`, pick a slot, enter email, book. Redirects to `/demo-booking/confirmed`.
+- Worker logs BookingCreated notifications.
+
+Env
+
+- Copy apps/api/.env.example and apps/web/.env.example to `.env.local` respectively.
+
 1.  **Install dependencies:**
+
     ```bash
     pnpm install
     ```
 
 2.  **Set up environment variables:**
     Create a `.env.local` file in `apps/web` and add your Gemini API key:
+
     ```
     API_KEY="your_gemini_api_key"
     ```

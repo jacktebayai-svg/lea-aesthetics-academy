@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
 
 @Controller('v1/services')
@@ -7,13 +15,34 @@ export class ServicesController {
 
   @Get()
   async list() {
-    return this.prisma.service.findMany({ take: 100, orderBy: { name: 'asc' } });
+    return this.prisma.service.findMany({
+      take: 100,
+      orderBy: { name: 'asc' },
+    });
   }
 
   @Post()
   async create(@Body() body: any) {
-    const { tenantId, name, slug, basePrice, durationMin, category, description } = body;
-    return this.prisma.service.create({ data: { tenantId, name, slug, basePrice, durationMin, category, description } });
+    const {
+      tenantId,
+      name,
+      slug,
+      basePrice,
+      durationMin,
+      category,
+      description,
+    } = body;
+    return this.prisma.service.create({
+      data: {
+        tenantId,
+        name,
+        slug,
+        basePrice,
+        durationMin,
+        category,
+        description,
+      },
+    });
   }
 
   @Patch(':id')

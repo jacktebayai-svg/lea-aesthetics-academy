@@ -16,6 +16,6 @@ export interface Course {
 
 export interface ChatMessage {
   id: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   text: string;
 }
