@@ -1,0 +1,200 @@
+// packages/db/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  plan      String
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  password     String?  // Keep for demo, but spec implies external auth
+  authProviderId String? // Optional for now, as per spec
+  createdAt    DateTime @default(now())
+}
+
+enum Role {
+  OWNER
+  MANAGER
+  PRACTITIONER
+  FRONTDESK
+  FINANCE
+  SUPPORT
+}
+
+model UserRole {
+  id         String   @id @default(cuid())
+  userId     String
+  tenantId   String
+  role       Role
+  locationId String?
+}
+
+model Brand {
+  id        String   @id @default(cuid())
+  tenantId  String
+  domain    String?
+  subdomain String?
+  theme     Json
+  seo       Json?
+}
+
+model Location {
+  id        String   @id @default(cuid())
+  tenantId  String
+  timezone  String
+  address   Json
+  settings  Json
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  slug        String   @unique
+  description String?
+  basePrice   Int
+  durationMin Int
+  category    String
+  buffers     Json? // prep/cleanup mins
+  isActive    Boolean  @default(true)
+}
+
+model Practitioner {
+  id           String   @id @default(cuid())
+  tenantId     String
+  userId       String
+  specialties  String[]
+  availability Json // rules: weekly, exceptions
+  profile      Json
+}
+
+model Client {
+  id          String   @id @default(cuid())
+  tenantId    String
+  personal    Json
+  preferences Json?
+  tags        String[]
+  createdAt   DateTime @default(now())
+}
+
+model MedicalHistory {
+  id        String   @id @default(cuid())
+  clientId  String
+  data      Json
+  version   Int
+  createdAt DateTime @default(now())
+}
+
+enum AppointmentStatus {
+  PENDING_DEPOSIT
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model Appointment {
+  id             String          @id @default(cuid())
+  tenantId       String
+  clientId       String
+  practitionerId String
+  serviceId      String
+  locationId     String
+  startTs        DateTime
+  endTs          DateTime
+  status         AppointmentStatus
+  notes          String?
+  policyVersion  Int
+}
+
+enum PaymentStatus {
+  REQUIRES_ACTION
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIAL_REFUND
+}
+
+model Payment {
+  id            String      @id @default(cuid())
+  tenantId      String
+  appointmentId String
+  stripePiId    String?
+  amountCents   Int
+  currency      String
+  status        PaymentStatus
+  depositCents  Int         @default(0)
+}
+
+model Template {
+  id               String   @id @default(cuid())
+  tenantId         String?    // null → global
+  type             String         // consent, aftercare, policy
+  jurisdiction     String // e.g., UK
+  version          String
+  content          Json        // blocks with placeholders
+  mandatoryBlocks  String[]
+  effectiveFrom    DateTime
+  effectiveTo      DateTime?
+}
+
+model Document {
+  id        String    @id @default(cuid())
+  tenantId  String
+  clientId  String?
+  type      String
+  content   Json
+  version   String
+  locked    Boolean   @default(false)
+  signedAt  DateTime?
+  expiresAt DateTime?
+  stampHash String?
+}
+
+model EsignSession {
+  id         String   @id @default(cuid())
+  documentId String
+  clientId   String
+  status     String   // created, sent, signed, void
+  envelope   Json
+}
+
+model Event {
+  id         String   @id @default(cuid())
+  tenantId   String
+  actorId    String?
+  type       String
+  payload    Json
+  occurredAt DateTime @default(now())
+}
+
+model Campaign {
+  id         String    @id @default(cuid())
+  tenantId   String
+  type       String
+  content    Json
+  scheduleTs DateTime?
+  status     String
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  tenantId   String
+  channel    String
+  toRef      String
+  templateId String?
+  payload    Json
+  status     String
+  error      String?
+}

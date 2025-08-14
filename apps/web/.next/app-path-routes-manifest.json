@@ -1,0 +1,10 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/api/chat/route": "/api/chat",
+  "/academy/page": "/academy",
+  "/(tenant)/student/page": "/student",
+  "/clinic/page": "/clinic",
+  "/page": "/",
+  "/(tenant)/booking/page": "/booking",
+  "/(tenant)/[domain]/page": "/[domain]"
+}

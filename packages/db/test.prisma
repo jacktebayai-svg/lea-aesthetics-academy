@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AppointmentStatus {
+  PENDING_DEPOSIT
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model Appointment {
+  id             String          @id @default(cuid())
+  tenantId       String
+  clientId       String
+  practitionerId String
+  serviceId      String
+  locationId     String
+  startTs        DateTime
+  endTs          DateTime
+  status         AppointmentStatus
+  notes          String?
+  policyVersion  Int
+}
+
+enum PaymentStatus {
+  REQUIRES_ACTION
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIAL_REFUND
+}
+
+model Payment {
+  id            String      @id @default(cuid())
+  tenantId      String
+  appointmentId String
+  stripePiId    String?
+  amountCents   Int
+  currency      String
+  status        PaymentStatus
+  depositCents  Int         @default(0)
+}

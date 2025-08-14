@@ -1,0 +1,10 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/chat/route": "app/api/chat/route.js",
+  "/academy/page": "app/academy/page.js",
+  "/(tenant)/student/page": "app/(tenant)/student/page.js",
+  "/clinic/page": "app/clinic/page.js",
+  "/page": "app/page.js",
+  "/(tenant)/booking/page": "app/(tenant)/booking/page.js",
+  "/(tenant)/[domain]/page": "app/(tenant)/[domain]/page.js"
+}
