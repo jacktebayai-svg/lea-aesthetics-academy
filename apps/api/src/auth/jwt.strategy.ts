@@ -15,15 +15,38 @@ export interface JwtPayload {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private prisma: PrismaService) {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      throw new Error('JWT_SECRET is required');
+    const issuer = process.env.AUTH0_ISSUER;
+    const audience = process.env.AUTH0_AUDIENCE;
+
+    if (issuer && audience) {
+      // Auth0 JWKS mode
+      // Lazy require to avoid adding types
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const jwksRsa = require('jwks-rsa');
+      super({
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        ignoreExpiration: false,
+        secretOrKeyProvider: jwksRsa.passportJwtSecret({
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 5,
+          jwksUri: `${issuer}.well-known/jwks.json`,
+        }),
+        issuer,
+        audience,
+        algorithms: ['RS256'],
+      });
+    } else {
+      const secret = process.env.JWT_SECRET;
+      if (!secret) {
+        throw new Error('JWT_SECRET is required');
+      }
+      super({
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        ignoreExpiration: false,
+        secretOrKey: secret,
+      });
     }
-    super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey: secret,
-    });
   }
 
   async validate(payload: JwtPayload) {
