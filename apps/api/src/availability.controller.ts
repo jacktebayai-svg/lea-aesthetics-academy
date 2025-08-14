@@ -1,9 +1,9 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { PrismaService } from './prisma/prisma.service';
+import { AvailabilityService } from './availability.service';
 
 @Controller('v1/availability')
 export class AvailabilityController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private availability: AvailabilityService) {}
 
   @Get()
   async get(@Query('tenant_id') tenantId: string,
@@ -11,19 +11,14 @@ export class AvailabilityController {
             @Query('service_id') serviceId: string,
             @Query('from') from: string,
             @Query('to') to: string) {
-    // For now, return hourly slots between from and to as a stub
-    const start = new Date(from);
-    const end = new Date(to);
-    const slots: { start: string; end: string }[] = [];
-    const d = new Date(start);
-    while (d < end) {
-      const s = new Date(d);
-      const e = new Date(d);
-      e.setMinutes(e.getMinutes() + 60);
-      slots.push({ start: s.toISOString(), end: e.toISOString() });
-      d.setMinutes(d.getMinutes() + 60);
-    }
-    return { tenantId, locationId, serviceId, slots };
+    const slots = await this.availability.getSlots({
+      tenantId,
+      locationId,
+      serviceId,
+      from: new Date(from),
+      to: new Date(to)
+    });
+    return { tenantId, locationId, serviceId, slots: slots.map(s => ({ start: s.start.toISOString(), end: s.end.toISOString() })) };
   }
 }
 
