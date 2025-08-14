@@ -21,7 +21,7 @@ Updated: 2025-08-14
 | Documents/eSign | 🔄 | Templates + PDF deps; generation/stamping/esign integration missing |
 | Notifications | ❌ | No SendGrid/Twilio providers wired; queues not configured |
 | Search | ❌ | Meili running but unhealthy; no indexer |
-| Files/CDN | ❌ | S3 config placeholders; upload endpoints not present |
+| Files/CDN | 🔄 | Vercel Blob provider implemented with upload endpoint; further hardening and client flows pending |
 | Admin App | 🔄 | Scaffold only; dashboards and modules not implemented |
 | Web App | 🔄 | Demo booking routes; tenant routing present; booking wizard not complete |
 | AI Features | ❌ | Packages stubbed; no orchestration/guards wired to flows |
