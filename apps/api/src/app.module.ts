@@ -16,6 +16,8 @@ import { AvailabilityService } from './availability.service';
 import { PolicyService } from './policy.service';
 import { ServicesController } from './services.controller';
 import { DocumentsController } from './documents.controller';
+import { FilesController } from './files.controller';
+import { StorageModule } from './storage/storage.module';
 import { TenantInterceptor } from './common/tenant/tenant.interceptor';
 
 @Module({
@@ -33,6 +35,7 @@ import { TenantInterceptor } from './common/tenant/tenant.interceptor';
     PaymentsModule,
     TemplatesModule,
     TenantsModule,
+    StorageModule,
   ],
   controllers: [
     AppController,
@@ -41,6 +44,7 @@ import { TenantInterceptor } from './common/tenant/tenant.interceptor';
     AppointmentsController,
     ServicesController,
     DocumentsController,
+    FilesController,
   ],
   providers: [
     AppService,
