@@ -1,0 +1,5 @@
+node_modules
+npm-debug.log
+.pnpm-store
+apps/api/.env
+apps/api/.env.local

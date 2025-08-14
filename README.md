@@ -15,6 +15,19 @@ This repository is a monorepo managed by [Turborepo](https://turbo.build/repo).
 
 ### Vercel Dev via GitHub (Monorepo)
 
+#### API Deployment to Railway (CI/CD)
+
+- Create a Railway project and service for the API
+- Add GitHub repo in Railway, or use the provided GitHub Action
+- Configure GitHub secrets on your repo:
+  - RAILWAY_TOKEN: Railway account token
+  - RAILWAY_SERVICE_ID: Service ID for the API service
+- Configure Railway environment variables:
+  - DATABASE_URL, REDIS_URL, JWT_SECRET, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
+  - STORAGE_PROVIDER=vercel-blob, BLOB_READ_WRITE_TOKEN, BLOB_PUBLIC_BASE_URL
+  - WEB_ORIGIN: comma-separated Vercel preview domains
+- On Vercel (web/admin), set NEXT_PUBLIC_API_BASE to the Railway API URL
+
 - Push main to GitHub (already configured). In Vercel, import the repo.
 - Create two projects from the monorepo:
   - Project 1: apps/web (Framework: Next.js)
