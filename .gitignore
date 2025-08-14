@@ -17,6 +17,25 @@ dist-ssr
 .env.*
 !.env.example
 
+# Next.js build output
+.apps/web/.next
+apps/web/.next
+apps/**/.next
+
+# Turbo cache
+.turbo/
+**/.turbo/
+
+# Coverage
+coverage
+
+# Local databases
+**/*.db
+packages/db/prisma/dev.db
+
+# Uploaded/generated documents or large binaries
+packages/documents/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

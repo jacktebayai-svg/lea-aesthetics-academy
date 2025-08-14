@@ -9,11 +9,14 @@
         "^build"
       ],
       "outputs": [
+        "dist/**",
         ".next/**",
         "!.next/cache/**"
       ]
     },
-    "lint": {},
+    "lint": {
+      "outputs": []
+    },
     "dev": {
       "cache": false,
       "persistent": true
