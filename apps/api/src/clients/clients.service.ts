@@ -147,19 +147,19 @@ export class ClientsService {
 
     // Merge personal data
     const updatedPersonal = data.personal
-      ? { ...client.personal, ...data.personal }
+      ? ({ ...(client.personal as Record<string, any>), ...(data.personal as Record<string, any>) } as Prisma.JsonValue)
       : client.personal;
 
     // Merge preferences
     const updatedPreferences = data.preferences
-      ? { ...client.preferences, ...data.preferences }
+      ? ({ ...(client.preferences as Record<string, any>), ...(data.preferences as Record<string, any>) } as Prisma.JsonValue)
       : client.preferences;
 
     return this.prisma.client.update({
       where: { id },
       data: {
-        personal: updatedPersonal,
-        preferences: updatedPreferences,
+        personal: updatedPersonal as Prisma.InputJsonValue,
+        preferences: updatedPreferences as Prisma.InputJsonValue,
         tags: data.tags !== undefined ? data.tags : client.tags,
       },
     });

@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import Stripe from 'stripe';
+import { Prisma } from '@prisma/client';
 
 export interface CreatePaymentIntentData {
   tenantId: string;
@@ -30,7 +31,7 @@ export class StripeService {
     }
 
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-12-18.acacia',
+      apiVersion: '2025-02-24.acacia',
     });
   }
 
@@ -50,7 +51,7 @@ export class StripeService {
       const paymentIntent = await this.stripe.paymentIntents.create({
         amount: depositCents > 0 ? depositCents : amountCents,
         currency,
-        customer_email: customerEmail,
+        receipt_email: customerEmail,
         metadata: {
           tenantId,
           appointmentId,
@@ -170,6 +171,12 @@ export class StripeService {
       });
 
       // Save subscription to database
+      const plan: Prisma.InputJsonValue = {
+        priceId,
+        status: subscription.status,
+        items: subscription.items.data.map((i) => ({ id: i.id, price: i.price?.id })),
+      };
+
       const dbSubscription = await this.prisma.subscription.create({
         data: {
           tenantId,
@@ -178,11 +185,7 @@ export class StripeService {
           status: subscription.status,
           currentPeriodStart: new Date(subscription.current_period_start * 1000),
           currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-          plan: {
-            priceId,
-            status: subscription.status,
-            items: subscription.items.data,
-          },
+          plan,
         },
       });
 

@@ -52,7 +52,7 @@ export class UsersService {
       throw new ConflictException('User already exists with this email');
     }
 
-    let hashedPassword = null;
+    let hashedPassword: string | null = null;
     if (data.password) {
       hashedPassword = await this.authService.hashPassword(data.password);
     }

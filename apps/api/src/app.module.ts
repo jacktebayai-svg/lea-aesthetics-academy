@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -16,13 +16,14 @@ import { AvailabilityService } from './availability.service';
 import { PolicyService } from './policy.service';
 import { ServicesController } from './services.controller';
 import { DocumentsController } from './documents.controller';
+import { TenantInterceptor } from './common/tenant/tenant.interceptor';
 
 @Module({
   imports: [
     // Rate limiting
     ThrottlerModule.forRoot([{
-      ttl: parseInt(process.env.RATE_LIMIT_TTL) || 60000, // 1 minute
-      limit: parseInt(process.env.RATE_LIMIT_LIMIT) || 100, // 100 requests
+      ttl: Number(process.env.RATE_LIMIT_TTL ?? 60000), // ms
+      limit: Number(process.env.RATE_LIMIT_LIMIT ?? 100),
     }]),
     
     // Core modules
@@ -48,6 +49,10 @@ import { DocumentsController } from './documents.controller';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TenantInterceptor,
     },
   ],
 })

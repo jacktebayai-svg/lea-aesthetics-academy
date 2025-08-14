@@ -1,0 +1,688 @@
+Awesome—here’s a **complete, build-ready, engineering-grade plan** with folder layouts, feature inventory, API/DB specs, infra, CI/CD, coding standards, and operational details. A senior team can pick this up and ship.
+
+---
+
+# Master Aesthetics Suite — Full Technical Blueprint
+
+## 0) Monorepo Strategy
+
+**Why monorepo:** shared types, faster dev velocity, consistent tooling.
+
+**Tech:** PNPM workspaces + Turborepo + TypeScript project refs + ESLint/Prettier.
+
+```
+/master-aesthetics-suite
+├─ .github/
+│  ├─ ISSUE_TEMPLATE/
+│  ├─ workflows/
+│  │  ├─ ci.yml
+│  │  ├─ cd-prod.yml
+│  │  └─ security-scan.yml
+├─ apps/
+│  ├─ web/                # Next.js 14 (App Router) public/marketing + tenant sites + booking
+│  ├─ admin/              # Next.js 14 backoffice admin (internal ops + support)
+│  ├─ api/                # NestJS (REST+GraphQL+tRPC gateway)
+│  └─ worker/             # BullMQ workers / schedulers
+├─ packages/
+│  ├─ ui/                 # Design system (Radix + Tailwind + Framer Motion)
+│  ├─ config/             # ESLint, TS config, Jest config, tailwind config
+│  ├─ shared/             # Zod schemas, DTOs, types, util libs
+│  ├─ auth/               # Auth client/server utils (Clerk/Auth0 wrappers)
+│  ├─ db/                 # Prisma schema and client (pg + pgvector)
+│  ├─ ai/                 # Prompt kits, orchestration, guards
+│  ├─ email-templates/    # Handlebars templates + test harness
+│  └─ sdk/                # Public SDK for partners (JS/TS)
+├─ infra/
+│  ├─ terraform/          # AWS: VPC, RDS, ElastiCache, ECS/EKS, S3, CloudFront, ACM, WAF
+│  ├─ docker/             # Dockerfiles, compose for local dev
+│  └─ k6/                 # Load test scripts
+├─ tests/
+│  ├─ e2e/                # Playwright tests (booking/checkout/consent)
+│  └─ contract/           # Pact contracts for FE↔API
+├─ docs/
+│  ├─ architecture/
+│  ├─ runbooks/
+│  ├─ DPIA/
+│  └─ API.md
+├─ package.json
+├─ pnpm-workspace.yaml
+└─ turbo.json
+```
+
+---
+
+## 1) Frontend Applications
+
+### 1.1 `apps/web` (Tenant websites + booking)
+
+**Stack:** Next.js 14 (App Router, RSC), TypeScript, Tailwind, Radix, Framer Motion, React Hook Form + Zod, react-day-picker, Stripe Elements, React Query, Zustand.
+
+```
+apps/web/
+├─ app/
+│  ├─ (public)/
+│  │  ├─ page.tsx                    # Marketing homepage
+│  │  ├─ pricing/
+│  │  ├─ features/
+│  │  └─ legal/(privacy|terms).tsx
+│  ├─ (tenant)/
+│  │  ├─ [domain]/
+│  │  │  ├─ layout.tsx               # Theme tokens, fonts
+│  │  │  ├─ page.tsx                 # Tenant landing (AI content)
+│  │  │  ├─ services/
+│  │  │  │  ├─ page.tsx              # Service grid
+│  │  │  │  └─ [slug]/page.tsx       # Service detail
+│  │  │  ├─ booking/
+│  │  │  │  ├─ page.tsx              # Booking wizard (RSC shell + client steps)
+│  │  │  │  ├─ steps/
+│  │  │  │  │  ├─ ServiceStep.tsx
+│  │  │  │  │  ├─ CalendarStep.tsx
+│  │  │  │  │  ├─ ClientStep.tsx
+│  │  │  │  │  └─ PaymentStep.tsx
+│  │  │  └─ portal/
+│  │  │     ├─ page.tsx              # Client portal (appointments, docs)
+│  ├─ api/                           # Next server actions (edge-safe handlers)
+│  ├─ middleware.ts                  # Domain routing (custom domains → tenant)
+│  └─ libs/
+│     ├─ theme.ts
+│     ├─ stripe.ts
+│     ├─ queries.ts                  # React Query keys/fns
+│     └─ analytics.ts
+├─ components/
+│  ├─ booking/
+│  ├─ forms/
+│  ├─ marketing/
+│  └─ layout/
+├─ public/
+├─ tailwind.config.ts
+└─ next.config.mjs
+```
+
+**Key UX features**
+
+* Luxury theme tokens & motion presets.
+* Booking wizard: 4 steps, <90s target completion, deposit/final payment.
+* Client portal: view/reschedule/cancel within policy, download documents, update preferences.
+* Accessibility: WCAG 2.2 AA (focus rings, reduced motion, landmarks).
+
+### 1.2 `apps/admin` (Backoffice for tenants + internal ops)
+
+```
+apps/admin/
+├─ app/
+│  ├─ dashboard/
+│  ├─ clients/
+│  │  ├─ [id]/(profile|medical|timeline)/
+│  ├─ appointments/
+│  ├─ services/
+│  ├─ documents/
+│  │  ├─ templates/                   # Versioned legal templates
+│  │  └─ generated/
+│  ├─ marketing/
+│  │  ├─ campaigns/
+│  │  └─ automations/
+│  ├─ analytics/
+│  ├─ settings/
+│  │  ├─ team/
+│  │  ├─ branding/
+│  │  ├─ locations/
+│  │  ├─ deposits-policies/
+│  │  └─ developer/
+│  └─ support/
+├─ components/
+└─ libs/
+```
+
+* Role-aware routes (Owner, Manager, Practitioner, Front-Desk, Finance).
+* Visual automation builder (trigger → condition → action).
+* Consent template catalog editor with effective-date control.
+* Audit views, export tools (CSV/PDF).
+
+---
+
+## 2) Backend (`apps/api`)
+
+**Stack:** NestJS + Fastify, TypeScript, Prisma (Postgres + pgvector), BullMQ (Redis), GraphQL (code-first), REST (OpenAPI), tRPC gateway for internal FE, Zod validators.
+
+```
+apps/api/
+├─ src/
+│  ├─ main.ts
+│  ├─ app.module.ts
+│  ├─ config/
+│  ├─ common/                   # interceptors, guards, filters
+│  ├─ auth/
+│  ├─ tenants/
+│  ├─ users/
+│  ├─ brands/
+│  ├─ services/
+│  ├─ locations/
+│  ├─ practitioners/
+│  ├─ clients/
+│  ├─ medical/
+│  ├─ appointments/
+│  ├─ payments/
+│  ├─ documents/
+│  ├─ esign/
+│  ├─ notifications/
+│  ├─ marketing/
+│  ├─ analytics/
+│  ├─ search/
+│  ├─ ai/
+│  ├─ files/
+│  ├─ webhooks/
+│  │  ├─ stripe.controller.ts
+│  │  └─ twilio.controller.ts
+│  └─ queues/
+│     ├─ email.queue.ts
+│     ├─ sms.queue.ts
+│     ├─ doc-render.queue.ts
+│     └─ ai.queue.ts
+├─ prisma/
+│  ├─ schema.prisma
+│  └─ migrations/
+└─ tsconfig.json
+```
+
+**Modules & responsibilities**
+
+* **Auth:** OIDC (Clerk/Auth0), JWT for service-to-service, RBAC/ABAC.
+* **Tenants:** Provisioning, plan, usage limits, custom domains.
+* **Booking engine:** availability, slotting, rescheduling with policy engine.
+* **Payments:** Stripe Connect (optional), deposits, refunds, disputes.
+* **Clients/Medical:** profiles, versioned medical history, risk flags.
+* **Documents/eSign:** template catalog, generation, stamping, signing, storage.
+* **AI:** orchestration, prompt versioning, schema guards, cost/latency budgets.
+* **Notifications:** email/SMS/WhatsApp, quiet hours, preference center.
+* **Marketing:** segments, campaigns, automations.
+* **Analytics:** event ingestion, KPIs, exports.
+* **Search:** Meilisearch/OpenSearch indexing hooks.
+* **Files:** S3 signed URLs, image pipelines.
+* **Webhooks:** Stripe/Twilio inbound; retries & DLQs.
+
+---
+
+## 3) Shared Packages
+
+### 3.1 `packages/db` (Prisma + migrations)
+
+Key models (abridged):
+
+```prisma
+model Tenant        { id String @id @default(cuid()) name String plan String createdAt DateTime @default(now()) }
+model User          { id String @id @default(cuid()) email String @unique createdAt DateTime @default(now()) }
+model UserRole      { id String @id @default(cuid()) userId String tenantId String role Role locationId String? }
+
+model Brand { id String @id @default(cuid()) tenantId String domain String? subdomain String? theme Json seo Json? }
+
+model Location { id String @id @default(cuid()) tenantId String timezone String address Json settings Json }
+model Service  { id String @id @default(cuid()) tenantId String name String slug String @unique description String? basePrice Int durationMin Int category String isActive Boolean @default(true) }
+
+model Practitioner { id String @id @default(cuid()) tenantId String userId String specialties String[] availability Json profile Json }
+
+model Client { id String @id @default(cuid()) tenantId String personal Json preferences Json? tags String[] createdAt DateTime @default(now()) }
+model MedicalHistory { id String @id @default(cuid()) clientId String data Json version Int createdAt DateTime @default(now()) }
+
+model Appointment { id String @id @default(cuid()) tenantId String clientId String practitionerId String serviceId String locationId String startTs DateTime endTs DateTime status AppointmentStatus notes String? policyVersion Int }
+
+model Payment { id String @id @default(cuid()) tenantId String appointmentId String stripePiId String? amountCents Int currency String status PaymentStatus depositCents Int @default(0) }
+
+model Document { id String @id @default(cuid()) tenantId String clientId String? type String content Json version String locked Boolean @default(false) signedAt DateTime? expiresAt DateTime? stampHash String? }
+
+model Template { id String @id @default(cuid()) tenantId String? type String jurisdiction String version String content Json effectiveFrom DateTime effectiveTo DateTime? mandatoryBlocks String[] }
+
+model Event { id String @id @default(cuid()) tenantId String actorId String? type String payload Json occurredAt DateTime @default(now()) }
+```
+
+Enable **Row-Level Security** with `tenant_id` in Postgres (if using RLS deployment).
+
+### 3.2 `packages/shared`
+
+* Zod schemas (DTOs), domain types, helpers, i18n keys, policy engine evaluator.
+
+### 3.3 `packages/ui`
+
+* Tailwind presets, Radix-wrapped components, motion primitives, token system (`luxuryNoir`, `ivoryMinimal`, `champagneClassic`).
+
+### 3.4 `packages/ai`
+
+* `orchestrator.ts` (OpenAI client wrapper), prompt registry, schema guards (Zod), safety rails, test fixtures.
+
+### 3.5 `packages/email-templates`
+
+* Handlebars + MJML, seed templates, preview server for designers.
+
+---
+
+## 4) Feature Inventory (MVP → Premium)
+
+### MVP (Phases 1–2)
+
+* Tenant onboarding wizard
+* Service catalog, team, locations
+* Availability + booking wizard
+* Stripe deposits & final payment
+* Client profiles, versioned medical forms
+* Consent template catalog, generation, eSign, PDF stamping + hash
+* Notifications: confirmations, reminders, prep/aftercare
+* Basic analytics dashboard
+* White-label themes + custom domains
+* AI: website copy, service descriptions, pricing assist
+* Search across clients/appointments/documents
+
+### Premium (Phase 3+)
+
+* Marketing automation builder (visual)
+* Segments, campaigns (email/SMS/WhatsApp)
+* Multi-location inventory/resources (rooms/devices)
+* Packages, memberships, gift cards
+* Client portal (docs download, invoices, rebook)
+* Advanced analytics (cohorts, rebooking %, LTV)
+* Mobile PWA + push
+* Partner SDK + public webhooks
+* Tutor/training module (courses, cohorts, assessments)
+* Marketplace add-ons (reviews, lead gen)
+
+---
+
+## 5) API Surface (selected)
+
+### REST (OpenAPI first)
+
+```
+POST /v1/tenants
+GET  /v1/me
+GET  /v1/availability?location_id=&service_id=&from=&to=
+POST /v1/appointments
+PATCH /v1/appointments/:id  { action: "reschedule" | "cancel" }
+POST /v1/payments/deposit-intent
+POST /v1/documents/generate  { type, client_id, context }
+POST /v1/documents/:id/esign
+GET  /v1/documents/:id/pdf
+POST /v1/clients
+PUT  /v1/clients/:id/medical
+GET  /v1/clients/:id/timeline
+POST /v1/campaigns
+POST /v1/automations
+GET  /v1/analytics/kpis?range=30d
+```
+
+### GraphQL (admin/internal)
+
+* `Query { me, tenant, services, clients, appointments(range), templates(type) }`
+* `Mutation { createAppointment, updateAppointment, createCampaign, generateDocument, signDocument }`
+
+### Webhooks
+
+* `POST /webhooks/stripe`
+* `POST /webhooks/twilio`
+* Outbound: `booking.created`, `booking.updated`, `document.signed`, `payment.succeeded`
+
+---
+
+## 6) Booking & Policy Engine (core logic)
+
+**Availability algorithm**
+
+* Inputs: service duration + buffers, practitioner schedule, location open hours, resource locks.
+* Data structures: interval tree + minute grid (15m), Redis locks to prevent races.
+* Caching: Redis 60s TTL by `(tenant, location, service, date)`.
+
+**Policies**
+
+* JSON rules:
+
+```json
+{
+  "deposit": { "type":"percent","value":25,"min":2000,"max":5000 },
+  "cancellation": { "windowHours":24, "feePercent":50 },
+  "noShow": { "feePercent":100 }
+}
+```
+
+**Reschedule flow**
+
+* If within `windowHours`, show fee preview → collect fee → update appointment.
+
+---
+
+## 7) AI Systems (deterministic guardrails)
+
+**Patterns**
+
+* Pydantic/Zod schema enforcement.
+* Prompt versioning (`vYYYY.MM.DD`).
+* Whitelisted legal blocks; mandatory clauses cannot be removed.
+* Cost caps, latency budgets (<500ms p95 for short-form); background jobs for heavy tasks.
+
+**Use cases**
+
+* **Copy/SEO**: Hero, service blurbs, meta tags.
+* **Pricing assist**: Suggestions with percentile bands.
+* **Risk flags**: From medical history (contraindication lookup).
+* **Doc generation**: Merge context + template; hash stamp.
+
+**Interfaces**
+
+```ts
+type GenerateDocInput = { type: "consent"|"aftercare"; clientId: string; context: Record<string,any>; };
+type GenerateDocOutput = { docId: string; version: string; stampHash: string; };
+```
+
+---
+
+## 8) Notifications & Marketing
+
+**Channels**: SendGrid (email), Twilio (SMS/WhatsApp).
+**Features**:
+
+* Transactional templates (booking confirm, reminder, prep, aftercare).
+* Campaigns with segments: “lapsed 90d”, “treatment X upsell”.
+* Automations: visual builder (trigger → conditions → actions).
+* Quiet hours, timezone aware, per-client preferences.
+
+**Automations schema**
+
+```json
+{
+  "trigger":"appointment.scheduled",
+  "conditions":[{"field":"service.category","op":"eq","value":"injectables"}],
+  "actions":[{"type":"email","template":"prep_guide"}]
+}
+```
+
+---
+
+## 9) Theming & White-Label
+
+* Theme tokens (colors, radius, spacing, shadows, motion).
+* Variant presets (Luxury Noir / Ivory Minimal / Champagne Classic).
+* Custom domains: ACM auto-cert, DNS validation via API, CloudFront distribution per domain.
+* Per-tenant image kit: hero, staff, before/after; optimized to AVIF/WebP.
+
+---
+
+## 10) Analytics & Events
+
+**Event model** (`packages/shared/events.ts`)
+
+* `BookingCreated`, `BookingUpdated`, `ConsentGenerated`, `ConsentSigned`, `PaymentSucceeded`, `CampaignSent`, `PageViewed`.
+
+**KPIs dashboard**
+
+* Conversion %, show rate, AOV, rebooking %, time-to-first-booking, campaign ROI.
+
+**Storage**
+
+* Append-only `events` table + Redshift/Athena optional export.
+* RUM + performance (Datadog RUM), FE vitals.
+
+---
+
+## 11) Search
+
+* Meilisearch/OpenSearch indices:
+
+  * `clients` (name, phone, tags)
+  * `appointments` (status, date, service)
+  * `documents` (type, client, version)
+* Indexer service subscribes to domain events → updates index.
+
+---
+
+## 12) Security, Privacy, Compliance
+
+* Postgres at rest (KMS), S3 SSE-KMS, TLS 1.2+.
+* Secrets: SSM Parameter Store, rotation policies.
+* RBAC roles + location-scoped ABAC.
+* Audit log table (immutable) + S3 archival.
+* GDPR tooling: export/delete client, retention rules (consent 7y).
+* DPIA & DPA docs in `/docs/DPIA/`.
+* PCI scope minimized (Stripe Elements, never touch card data).
+
+---
+
+## 13) Infrastructure (AWS)
+
+* **Networking**: VPC, 3 AZs, private subnets, NAT.
+* **Compute**: ECS Fargate (api, worker), autoscaling by CPU/RPS/queue depth.
+* **DB**: RDS Postgres (Multi-AZ) + pgvector; Read Replica for analytics.
+* **Cache/Queue**: ElastiCache Redis.
+* **Storage/CDN**: S3 + CloudFront per domain; signed URLs.
+* **Security**: WAF + Shield, ALB, Security Groups, IAM least privilege.
+* **Observability**: Datadog APM/logs/RUM, Sentry FE/BE, OpenTelemetry traces.
+* **IaC**: Terraform modules per stack; workspaces (dev/stage/prod).
+
+`infra/terraform/` modules:
+
+```
+modules/
+  vpc/
+  rds/
+  elasticache/
+  ecs-service/
+  s3-cloudfront/
+  acm/
+  waf/
+envs/
+  dev/
+  staging/
+  prod/
+```
+
+---
+
+## 14) CI/CD
+
+**GitHub Actions**
+
+* **CI:** lint → typecheck → unit → build → test → artifact → prisma migrate check → k6 smoke.
+* **Security:** CodeQL + Trivy image scan + Dependabot.
+* **CD:** on tag `v*.*.*` → build images → push ECR → Terraform apply (staging/prod) → ECS rolling deploy (blue/green).
+* Preview env per PR (temporary ECS service + temp DB).
+
+---
+
+## 15) Testing
+
+* Unit (Jest): domain logic, policy engine, AI schema validation.
+* Contract (Pact): FE↔API, API↔Stripe/Twilio mocks.
+* E2E (Playwright): booking, deposit, consent, reminder flow, reschedule/cancel.
+* Load (k6): 200 RPS steady, spikes to 1k; p95 < 400ms.
+* Accessibility: axe-core CI; manual AT checks.
+* Security: OWASP ZAP DAST in staging.
+
+---
+
+## 16) Performance Budget
+
+* **FE landing:** <180 KB JS gzip, LCP <2.0s, CLS <0.1, FID <100ms.
+* Hydration streaming; route-level code split; lazy load heavy components.
+* **API:** p95 <300ms reads; background jobs for heavy ops.
+* Image pipeline: AVIF/WebP, responsive sizes, `<Image>` with priority hints.
+
+---
+
+## 17) Environment Variables (examples)
+
+`apps/api/.env`
+
+```
+NODE_ENV=production
+DATABASE_URL=postgres://...
+REDIS_URL=redis://...
+JWT_SECRET=...
+STRIPE_SECRET_KEY=...
+STRIPE_WEBHOOK_SECRET=...
+SENDGRID_API_KEY=...
+TWILIO_ACCOUNT_SID=...
+TWILIO_AUTH_TOKEN=...
+S3_BUCKET=...
+AWS_REGION=...
+OPENAI_API_KEY=...
+```
+
+`apps/web/.env`
+
+```
+NEXT_PUBLIC_STRIPE_PUBLIC_KEY=...
+NEXT_PUBLIC_SENTRY_DSN=...
+NEXT_PUBLIC_DATADOG_RUM=...
+```
+
+---
+
+## 18) Coding Standards & Conventions
+
+* TypeScript strict mode.
+* ESLint (airbnb+custom), Prettier enforced.
+* Absolute imports `@shared`, `@ui`, etc.
+* Commit convention: Conventional Commits.
+* PR template with risk, test plan, screenshots.
+* Feature flags via `packages/shared/flags.ts`.
+
+---
+
+## 19) Seed & Local Dev
+
+**Docker Compose**
+
+* Postgres, Redis, LocalStack (S3 mock), Mailhog, Meilisearch.
+
+`infra/docker/docker-compose.yml` starts stack; `pnpm dev` runs:
+
+* API at `http://localhost:4000`
+* Web at `http://localhost:3000`
+* Admin at `http://localhost:3100`
+
+`pnpm seed`:
+
+* Create sample tenant, services, practitioner, availability, templates, demo data.
+
+---
+
+## 20) Example Flows (detailed)
+
+### 20.1 Appointment with deposit & consent
+
+1. Client selects service → availability fetched (RSC).
+2. Picks slot → `POST /appointments` (status `pending_deposit`).
+3. Stripe PI for deposit → on success webhook → set `scheduled`.
+4. `POST /documents/generate {type:"consent"}` → pin template version → eSign session.
+5. Reminder (24h) with prep guide; after visit, `finalize` payment if required.
+
+### 20.2 Document generation (guarded)
+
+* Fetch `Template` effective for jurisdiction/date.
+* Merge context; verify mandatory blocks present.
+* Render PDF (server-side headless) + stamp hash.
+* Store JSON + PDF in S3, metadata in `Document`.
+* Log `ConsentGenerated`; on sign, log `ConsentSigned`.
+
+---
+
+## 21) Permissions Matrix (excerpt)
+
+| Resource        | Owner | Manager | Practitioner | Front-Desk | Finance |
+| --------------- | ----- | ------- | ------------ | ---------- | ------- |
+| Services CRUD   | ✅     | ✅       | ❌            | ❌          | ❌       |
+| Book/Resched    | ✅     | ✅       | ✅ (self)     | ✅          | ❌       |
+| Client Medical  | ✅     | ✅       | ✅            | ❌          | ❌       |
+| Payments/Refund | ✅     | ✅       | ❌            | ❌          | ✅       |
+| Templates       | ✅     | ✅       | ❌            | ❌          | ❌       |
+| Analytics       | ✅     | ✅       | limited      | limited    | ✅       |
+
+---
+
+## 22) Example Code Stubs
+
+**API – Availability Controller (NestJS)**
+
+```ts
+@Get('availability')
+@UseGuards(AuthGuard)
+async getAvailability(
+  @TenantId() tenantId: string,
+  @Query() q: GetAvailabilityDto
+) {
+  return this.availabilityService.getSlots({
+    tenantId,
+    locationId: q.location_id,
+    serviceId: q.service_id,
+    from: new Date(q.from),
+    to: new Date(q.to),
+  });
+}
+```
+
+**Availability Service (slotting)**
+
+```ts
+async getSlots(input: GetSlotsInput): Promise<Slot[]> {
+  const key = `avail:${input.tenantId}:${input.locationId}:${input.serviceId}:${input.from.toDateString()}`;
+  return this.cache.getOrSet(key, async () => {
+    const rules = await this.rulesRepo.fetch(input);
+    const busy = await this.calendarRepo.busyIntervals(input);
+    return buildSlots(rules, busy, 15);
+  }, 60);
+}
+```
+
+**Doc Generation Guardrail**
+
+```ts
+const mandatory = await repo.mandatoryBlocks(type, jurisdiction, date);
+const merged = render(template.content, ctx);
+assert(includesAll(merged, mandatory), "Missing mandatory legal clauses");
+const pdf = await pdfRenderer.render(merged, { stamp });
+```
+
+**Web – Booking Wizard store (Zustand)**
+
+```ts
+type BookingState = {
+  service?: Service;
+  slot?: Slot;
+  client?: ClientInput;
+  depositIntentId?: string;
+  set: (p: Partial<BookingState>) => void;
+};
+export const useBooking = create<BookingState>((set) => ({ set }));
+```
+
+---
+
+## 23) Runbooks (ops)
+
+* **Stripe webhook retries**: Idempotent by `event.id`; missing? replay from Stripe dashboard; check DLQ.
+* **Consent render failure**: Retry 3x; fallback to static template; notify practitioner.
+* **AI outage**: Circuit break to static content; log events; alert SRE.
+* **Domain provisioning**: ACM validation stuck → re-issue cert; check Route53 CNAMEs.
+
+---
+
+## 24) Roadmap (condensed)
+
+* **Weeks 1–4**: Tenancy/auth/brands; services/locations; availability v1; Stripe deposits; seed + preview env.
+* **Weeks 5–8**: Consent templates + PDFs; clients/medical; booking end-to-end; email/SMS transactional.
+* **Weeks 9–12**: Admin dashboards; analytics v1; search; accessibility pass; alpha.
+* **Weeks 13–20**: AI copy/pricing; risk flags; eSign; audit + DPIA; staging pen-test.
+* **Weeks 21–28**: Marketing automations; segments/campaigns; multi-location; white-label domains.
+* **Weeks 29–36**: PWA + push; advanced analytics; SDK; GA.
+
+---
+
+## 25) Deliverables Checklist
+
+* ✅ Monorepo with folders + tooling configs
+* ✅ Prisma schema + migrations + seed
+* ✅ OpenAPI/GraphQL starter specs
+* ✅ Terraform base stack
+* ✅ CI/CD workflows (lint/test/build/deploy)
+* ✅ Component library + theme tokens
+* ✅ E2E tests (booking/checkout/consent)
+* ✅ Security policies + DPIA templates
+
+---
+
+If you want, I can generate **starter files** (repo skeleton with configs, Prisma schema, example controllers, and Terraform modules) right here so your devs can clone and run locally on day one.

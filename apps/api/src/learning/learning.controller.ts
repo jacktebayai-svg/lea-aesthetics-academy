@@ -11,8 +11,8 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard, Roles } from '../auth/roles.guard';
-import {
-  LearningService,
+import { LearningService } from './learning.service';
+import type {
   CreateCourseDto,
   CreateModuleDto,
   CreateLessonDto,

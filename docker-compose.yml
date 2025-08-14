@@ -1,18 +1,17 @@
-version: '3.9'
 services:
   db:
     image: postgres:16
-    container_name: mas-db
+    container_name: irwell-db
     environment:
-      POSTGRES_USER: mas
-      POSTGRES_PASSWORD: mas
-      POSTGRES_DB: mas
+      POSTGRES_USER: irwell_user
+      POSTGRES_PASSWORD: irwell_secure_password_2024
+      POSTGRES_DB: irwell_hospitality
     ports:
-      - "55432:5432"
+      - "55433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U mas"]
+      test: ["CMD-SHELL", "pg_isready -U irwell_user"]
       interval: 5s
       timeout: 5s
       retries: 20
