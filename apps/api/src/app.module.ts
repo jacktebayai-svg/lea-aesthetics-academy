@@ -8,10 +8,12 @@ import { HealthController } from './health.controller';
 import { AvailabilityController } from './availability.controller';
 import { AppointmentsController } from './appointments.controller';
 import { AvailabilityService } from './availability.service';
+import { PolicyService } from './policy.service';
+import { ServicesController } from './services.controller';
 
 @Module({
   imports: [PrismaModule, TemplatesModule, TenantsModule],
-  controllers: [AppController, HealthController, AvailabilityController, AppointmentsController],
-  providers: [AppService, AvailabilityService],
+  controllers: [AppController, HealthController, AvailabilityController, AppointmentsController, ServicesController],
+  providers: [AppService, AvailabilityService, PolicyService],
 })
 export class AppModule {}
