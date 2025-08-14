@@ -16,11 +16,30 @@ model Tenant {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  password     String?  // Keep for demo, but spec implies external auth
-  authProviderId String? // Optional for now, as per spec
-  createdAt    DateTime @default(now())
+  id             String     @id @default(cuid())
+  email          String     @unique
+  password       String?    // Keep for demo, but spec implies external auth
+  authProviderId String?    // Optional for now, as per spec
+  firstName      String?
+  lastName       String?
+  phone          String?
+  isActive       Boolean    @default(true)
+  emailVerified  Boolean    @default(false)
+  lastLoginAt    DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  
+  // Relations
+  roles          UserRole[]
+  practitioner   Practitioner?
+  refreshTokens  RefreshToken[]
+  
+  // Learning Management System Relations
+  enrollments    Enrollment[]
+  assessmentAttempts AssessmentAttempt[]
+  certificates   Certificate[]
+  
+  @@map("users")
 }
 
 enum Role {
@@ -38,6 +57,10 @@ model UserRole {
   tenantId   String
   role       Role
   locationId String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("user_roles")
 }
 
 model Brand {
@@ -73,10 +96,14 @@ model Service {
 model Practitioner {
   id           String   @id @default(cuid())
   tenantId     String
-  userId       String
+  userId       String   @unique
   specialties  String[]
   availability Json // rules: weekly, exceptions
   profile      Json
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("practitioners")
 }
 
 model Client {
@@ -197,4 +224,233 @@ model Message {
   payload    Json
   status     String
   error      String?
+}
+
+// Additional models for authentication and subscriptions
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("refresh_tokens")
+}
+
+model Subscription {
+  id              String   @id @default(cuid())
+  tenantId        String
+  stripeSubId     String?  @unique
+  stripeCustId    String?
+  status          String   // active, canceled, past_due, etc.
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean @default(false)
+  plan            Json     // plan details
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("subscriptions")
+}
+
+model Invoice {
+  id             String   @id @default(cuid())
+  tenantId       String
+  stripeInvId    String?  @unique
+  subscriptionId String?
+  amountCents    Int
+  currency       String   @default("gbp")
+  status         String   // draft, open, paid, void, uncollectible
+  dueDate        DateTime?
+  paidAt         DateTime?
+  createdAt      DateTime @default(now())
+  
+  @@map("invoices")
+}
+
+// File storage for documents and images
+model File {
+  id          String   @id @default(cuid())
+  tenantId    String?
+  filename    String
+  originalName String
+  mimetype    String
+  size        Int
+  s3Key       String   @unique
+  s3Bucket    String
+  uploadedBy  String?  // user ID
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  @@map("files")
+}
+
+// Learning Management System Models
+model Course {
+  id            String   @id @default(cuid())
+  tenantId      String?
+  title         String
+  slug          String   @unique
+  description   String?
+  level         String   // Level 2, Level 3, Level 4
+  category      String   // A&P, Safety, Treatments
+  prerequisites String[] // Course IDs that must be completed first
+  duration      Int      // estimated hours
+  content       Json     // Course content structure
+  isActive      Boolean  @default(true)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations
+  modules       Module[]
+  enrollments   Enrollment[]
+  certificates  Certificate[]
+  
+  @@map("courses")
+}
+
+model Module {
+  id          String   @id @default(cuid())
+  courseId    String
+  title       String
+  slug        String
+  description String?
+  content     Json     // Module content (text, videos, images)
+  order       Int      @default(0)
+  duration    Int      // estimated minutes
+  isRequired  Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  course      Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons     Lesson[]
+  assessments Assessment[]
+  
+  @@map("modules")
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  moduleId    String
+  title       String
+  slug        String
+  content     Json     // Lesson content (markdown, media)
+  type        String   // text, video, interactive, quiz
+  order       Int      @default(0)
+  duration    Int      // estimated minutes
+  isRequired  Boolean  @default(true)
+  resources   Json?    // Additional resources, downloads
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  module      Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress    LessonProgress[]
+  
+  @@map("lessons")
+}
+
+model Assessment {
+  id              String   @id @default(cuid())
+  moduleId        String
+  courseId        String?
+  title           String
+  description     String?
+  type            String   // quiz, exam, practical, assignment
+  questions       Json     // Assessment questions
+  passingScore    Int      @default(70)
+  timeLimit       Int?     // minutes
+  maxAttempts     Int      @default(3)
+  isRequired      Boolean  @default(true)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  module          Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  attempts        AssessmentAttempt[]
+  
+  @@map("assessments")
+}
+
+model Enrollment {
+  id              String   @id @default(cuid())
+  userId          String
+  courseId        String
+  status          String   // enrolled, in_progress, completed, dropped
+  progress        Int      @default(0) // percentage
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+  certificateUrl  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course          Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonProgress  LessonProgress[]
+  
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model LessonProgress {
+  id           String   @id @default(cuid())
+  enrollmentId String
+  lessonId     String
+  status       String   // not_started, in_progress, completed
+  progress     Int      @default(0) // percentage
+  timeSpent    Int      @default(0) // minutes
+  startedAt    DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lesson       Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  @@unique([enrollmentId, lessonId])
+  @@map("lesson_progress")
+}
+
+model AssessmentAttempt {
+  id           String   @id @default(cuid())
+  assessmentId String
+  userId       String
+  answers      Json     // User's answers
+  score        Int      // achieved score
+  totalScore   Int      // maximum possible score
+  passed       Boolean  @default(false)
+  timeSpent    Int      // minutes
+  startedAt    DateTime @default(now())
+  completedAt  DateTime?
+  feedback     Json?    // Detailed feedback per question
+  
+  // Relations
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("assessment_attempts")
+}
+
+model Certificate {
+  id           String   @id @default(cuid())
+  userId       String
+  courseId     String
+  certificateNumber String @unique
+  issuedAt     DateTime @default(now())
+  expiresAt    DateTime?
+  pdfUrl       String?
+  metadata     Json?    // Additional certificate data
+  
+  // Relations
+  user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course       Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  @@map("certificates")
 }

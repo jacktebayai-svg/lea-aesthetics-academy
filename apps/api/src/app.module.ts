@@ -1,7 +1,12 @@
 import { Module } from '@nestjs/common';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { PaymentsModule } from './payments/payments.module';
 import { TemplatesModule } from './templates/templates.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { HealthController } from './health.controller';
@@ -13,7 +18,21 @@ import { ServicesController } from './services.controller';
 import { DocumentsController } from './documents.controller';
 
 @Module({
-  imports: [PrismaModule, TemplatesModule, TenantsModule],
+  imports: [
+    // Rate limiting
+    ThrottlerModule.forRoot([{
+      ttl: parseInt(process.env.RATE_LIMIT_TTL) || 60000, // 1 minute
+      limit: parseInt(process.env.RATE_LIMIT_LIMIT) || 100, // 100 requests
+    }]),
+    
+    // Core modules
+    PrismaModule,
+    AuthModule,
+    UsersModule,
+    PaymentsModule,
+    TemplatesModule,
+    TenantsModule,
+  ],
   controllers: [
     AppController,
     HealthController,
@@ -22,6 +41,14 @@ import { DocumentsController } from './documents.controller';
     ServicesController,
     DocumentsController,
   ],
-  providers: [AppService, AvailabilityService, PolicyService],
+  providers: [
+    AppService,
+    AvailabilityService,
+    PolicyService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
