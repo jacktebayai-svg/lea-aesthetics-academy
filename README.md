@@ -13,6 +13,30 @@ This repository is a monorepo managed by [Turborepo](https://turbo.build/repo).
 
 ## Getting Started
 
+### Vercel Dev via GitHub (Monorepo)
+
+- Push main to GitHub (already configured). In Vercel, import the repo.
+- Create two projects from the monorepo:
+  - Project 1: apps/web (Framework: Next.js)
+    - Root Directory: apps/web
+    - Build command: pnpm --filter web build
+    - Install command: pnpm install --frozen-lockfile
+    - Output directory: .next
+    - Env: NEXT_PUBLIC_API_BASE=https://api.dev.yourdomain.com (or Railway/Fly API)
+  - Project 2: apps/admin (Framework: Next.js)
+    - Root Directory: apps/admin
+    - Build command: pnpm --filter admin build
+    - Install command: pnpm install --frozen-lockfile
+    - Output directory: .next
+    - Env: NEXT_PUBLIC_API_BASE=https://api.dev.yourdomain.com
+
+- For local Vercel dev:
+  - Install Vercel CLI: npm i -g vercel
+  - vercel link (in repo root)
+  - vercel dev (with pnpm installed)
+
+- API: host on Railway/Fly/Render. Set NEXT_PUBLIC_API_BASE in both web/admin to your API URL.
+
 Local development quickstart
 
 - Start stack: `pnpm stack:up`
