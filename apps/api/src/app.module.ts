@@ -60,6 +60,11 @@ import { TenantScopingMiddleware } from './common/middleware/tenant-scoping.midd
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    // Authenticate first so TenantGuard can read user claims
+    {
+      provide: APP_GUARD,
+      useClass: (require('./auth/jwt-auth.guard').JwtAuthGuard),
+    },
     {
       provide: APP_GUARD,
       useClass: TenantGuard,
