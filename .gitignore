@@ -48,3 +48,4 @@ packages/documents/
 *.sw?
 
 /generated/prisma
+.vercel
