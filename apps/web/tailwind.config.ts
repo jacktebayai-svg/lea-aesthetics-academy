@@ -9,14 +9,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Maerose Brand Colors (Elegant Noir Edition)
-        'primary-noir': '#1A1A1A',
-        'deep-charcoal': '#2B2B2B', 
-        'champagne-gold': '#C5A880',
-        'champagne-highlight': '#D4B97A',
+        // Maerose Brand Colors (British Heritage Edition)
+        'deep-forest-green': '#1E3A24',
+        'rich-burgundy': '#7C283C',
+        'warm-cream': '#F9F4E5',
+        'metallic-gold': '#A18A49',
+        'pure-white': '#FFFFFF',
+        'charcoal-text': '#2C2C2C',
+        'sage-green': '#8A9A5B',
+        // Legacy colors (maintain compatibility)
+        'primary-noir': '#1E3A24',
+        'deep-charcoal': '#7C283C', 
+        'champagne-gold': '#A18A49',
+        'champagne-highlight': '#8A9A5B',
         'ivory-white': '#FFFFFF',
-        'soft-mist-grey': '#E0E0E0',
-        'estate-border-grey': '#333333',
+        'soft-mist-grey': '#2C2C2C',
+        'estate-border-grey': '#8A9A5B',
         // Legacy colors (for gradual migration)
         charcoal: "#1C1C1C",
         slate: "#333333",

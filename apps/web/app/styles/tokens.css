@@ -5,14 +5,23 @@
  */
 
 :root {
-  /* Brand Colors - Exact Hex Values (no deviations allowed) */
-  --maerose-primary-noir: #1A1A1A;
-  --maerose-deep-charcoal: #2B2B2B;
-  --maerose-champagne-gold: #C5A880;
-  --maerose-champagne-highlight: #D4B97A;
+  /* Brand Colors - British Heritage Edition (no deviations allowed) */
+  --maerose-deep-forest-green: #1E3A24;
+  --maerose-rich-burgundy: #7C283C;
+  --maerose-warm-cream: #F9F4E5;
+  --maerose-metallic-gold: #A18A49;
+  --maerose-pure-white: #FFFFFF;
+  --maerose-charcoal-text: #2C2C2C;
+  --maerose-sage-green: #8A9A5B;
+  
+  /* Legacy color mappings for compatibility */
+  --maerose-primary-noir: #1E3A24;
+  --maerose-deep-charcoal: #7C283C;
+  --maerose-champagne-gold: #A18A49;
+  --maerose-champagne-highlight: #8A9A5B;
   --maerose-ivory-white: #FFFFFF;
-  --maerose-soft-mist-grey: #E0E0E0;
-  --maerose-estate-border-grey: #333333;
+  --maerose-soft-mist-grey: #2C2C2C;
+  --maerose-estate-border-grey: #8A9A5B;
 
   /* Typography Scale - Inter Variable Font Only */
   --maerose-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

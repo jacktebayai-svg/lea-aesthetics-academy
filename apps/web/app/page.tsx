@@ -2,15 +2,15 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-primary-noir">
+    <div className="min-h-screen" style={{ backgroundColor: '#1E3A24' }}>
       {/* Hero Section */}
       <main className="max-w-maerose-container mx-auto px-maerose-gutter-desktop md:px-maerose-gutter-mobile py-maerose-section-desktop md:py-maerose-section-mobile">
         <div className="max-w-6xl mx-auto text-center">
           {/* Main Heading - Maerose Typography */}
-          <h1 className="text-heading-1 md:text-[72px] font-bold text-ivory-white mb-8 tracking-tight">
+          <h1 className="text-heading-1 md:text-[72px] font-bold mb-8 tracking-tight" style={{ color: '#F9F4E5' }}>
             MAEROSE
             <br />
-            <span className="text-champagne-gold">AESTHETICS</span>
+            <span style={{ color: '#7C283C' }}>AESTHETICS</span>
           </h1>
           
           {/* Tagline - Maerose Body Large */}

@@ -4,7 +4,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="bg-primary-noir border-t border-estate-border-grey mt-maerose-section-desktop md:mt-maerose-section-mobile">
+    <footer style={{ backgroundColor: '#1E3A24', borderTopColor: '#8A9A5B' }} className="border-t mt-maerose-section-desktop md:mt-maerose-section-mobile">
       <div className="max-w-maerose-container mx-auto py-8 px-maerose-gutter-desktop md:px-maerose-gutter-mobile">
         {/* Main Footer Content */}
         <div className="grid md:grid-cols-3 gap-8 mb-8">

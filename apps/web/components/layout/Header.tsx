@@ -18,8 +18,10 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const activeClass = "text-champagne-gold font-semibold relative after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-champagne-gold";
-  const inactiveClass = "text-soft-mist-grey hover:text-champagne-gold";
+  const activeStyle = { color: '#A18A49' };
+  const inactiveStyle = { color: '#F9F4E5' };
+  const activeClass = "font-semibold relative after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-current";
+  const inactiveClass = "hover:text-opacity-80 transition-colors duration-300";
 
   return (
     <header className={`sticky top-0 z-50 transition-all duration-modal maerose-ease ${
