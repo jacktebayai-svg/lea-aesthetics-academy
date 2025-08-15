@@ -1,7 +1,8 @@
 "use client";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function Confirmed() {
+function ConfirmedContent() {
   const p = useSearchParams();
   const id = p.get("id");
   return (
@@ -10,5 +11,13 @@ export default function Confirmed() {
       <p>Your appointment has been created with status PENDING_DEPOSIT.</p>
       {id && <p className="mt-2 text-sm">Appointment ID: {id}</p>}
     </main>
+  );
+}
+
+export default function Confirmed() {
+  return (
+    <Suspense fallback={<div className="p-8">Loading...</div>}>
+      <ConfirmedContent />
+    </Suspense>
   );
 }

@@ -17,9 +17,12 @@ import { PolicyService } from './policy.service';
 import { ServicesController } from './services.controller';
 import { DocumentsController } from './documents.controller';
 import { FilesController } from './files.controller';
+import { AdminController } from './admin/admin.controller';
 import { StorageModule } from './storage/storage.module';
 import { TenantInterceptor } from './common/tenant/tenant.interceptor';
+import { TenantGuard } from './common/tenant/tenant.guard';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { TenantScopingMiddleware } from './common/middleware/tenant-scoping.middleware';
 
 @Module({
   imports: [
@@ -46,14 +49,20 @@ import { GlobalExceptionFilter } from './common/filters/global-exception.filter'
     ServicesController,
     DocumentsController,
     FilesController,
+    AdminController,
   ],
   providers: [
     AppService,
     AvailabilityService,
     PolicyService,
+    TenantScopingMiddleware,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: TenantGuard,
     },
     {
       provide: APP_INTERCEPTOR,

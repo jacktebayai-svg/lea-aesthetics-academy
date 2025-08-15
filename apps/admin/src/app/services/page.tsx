@@ -49,8 +49,8 @@ export default function ServicesPage() {
       setForm({ ...form, name: "", slug: "", description: "" });
       await load();
       setStatus("Created");
-    } catch (e: any) {
-      setStatus(e.message);
+    } catch (e) {
+      setStatus(e instanceof Error ? e.message : 'An error occurred');
     }
   }
 
@@ -63,8 +63,8 @@ export default function ServicesPage() {
       if (!r.ok) throw new Error(`delete ${r.status}`);
       await load();
       setStatus("");
-    } catch (e: any) {
-      setStatus(e.message);
+    } catch (e) {
+      setStatus(e instanceof Error ? e.message : 'An error occurred');
     }
   }
 

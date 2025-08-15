@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IStorageService, StoredFile } from './storage.types';
 import { put, del } from '@vercel/blob';
+import { Readable } from 'stream';
 
 @Injectable()
 export class VercelBlobService implements IStorageService {
@@ -17,7 +18,11 @@ export class VercelBlobService implements IStorageService {
     }
     const access = params.isPublic ? 'public' : 'private';
     const objectName = `uploads/${params.tenantId}/${Date.now()}-${params.filename}`;
-    const res = await put(objectName, params.buffer, {
+    
+    // Convert Buffer to Readable stream for Vercel Blob compatibility
+    const stream = Readable.from(params.buffer);
+    
+    const res = await put(objectName, stream, {
       access: access as any,
       contentType: params.contentType,
       token,
@@ -26,7 +31,7 @@ export class VercelBlobService implements IStorageService {
     return {
       url: res.url,
       key: res.pathname || objectName,
-      size: res.size,
+      size: params.buffer.length, // Use buffer length since res.size doesn't exist
       contentType: params.contentType,
       provider: 'vercel-blob',
     };
