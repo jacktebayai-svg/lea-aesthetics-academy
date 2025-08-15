@@ -50,7 +50,7 @@ const config: Config = {
         slate: "#888888",
         mist: "#B8B8B8",
         smoke: "#D6D6D6",
-        platinum: "#EAEAEA",
+        'platinum-legacy': "#EAEAEA",
         ivory: "#FFFFFF",
       },
       fontFamily: {

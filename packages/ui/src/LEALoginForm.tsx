@@ -1,9 +1,11 @@
+'use client';
+
 import React, { useState } from 'react';
 import { cn } from './utils/cn';
 import LEALogo from './LEALogo';
-import { Button } from './Button';
-import { Input } from './Input';
-import { Card } from './Card';
+import { Button } from './components/Button';
+import { Input } from './components/Input';
+import { Card } from './components/Card';
 
 interface LEALoginFormProps {
   className?: string;
