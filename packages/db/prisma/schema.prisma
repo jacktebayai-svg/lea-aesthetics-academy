@@ -1,6 +1,6 @@
 // packages/db/schema.prisma
-// Master Aesthetics Suite - Complete Data Layer
-// Multi-tenant SaaS for aesthetics clinics with LMS capabilities
+// Lea's Aesthetics Clinical Academy - Single Practitioner Data Layer
+// Combined aesthetics clinic and training academy for one practitioner
 
 generator client {
   provider = "prisma-client-js"
@@ -113,6 +113,7 @@ enum Role {
   FINANCE
   SUPPORT
   CLIENT
+  STUDENT
 }
 
 model UserRole {
@@ -475,7 +476,8 @@ model Payment {
   tenantId          String
   appointmentId     String?
   clientId          String?
-  type              String        // deposit, full, refund, adjustment
+  enrollmentId      String?       // Link to course enrollment
+  type              String        // deposit, full, refund, adjustment, course_payment
   stripePiId        String?       @unique // Payment Intent ID
   stripeChargeId    String?       @unique
   stripeRefundId    String?       @unique
@@ -504,6 +506,7 @@ model Payment {
   // Relations
   tenant            Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   appointment       Appointment?  @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  enrollment        Enrollment?   @relation(fields: [enrollmentId], references: [id], onDelete: SetNull)
   
   @@index([tenantId])
   @@index([tenantId, status])
@@ -1157,6 +1160,7 @@ model Enrollment {
   user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
   course          Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   lessonProgress  LessonProgress[]
+  payments        Payment[]
   
   @@unique([userId, courseId])
   @@map("enrollments")

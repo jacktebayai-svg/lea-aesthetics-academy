@@ -1,7 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 // import { generateCourseSeedData } from "../../../apps/api/src/utils/course-parser";
 // import type { SeedData } from "../../../apps/api/src/types/course-seeding.types";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const prisma = new PrismaClient();
 
@@ -14,7 +21,8 @@ async function main() {
     update: {},
     create: { 
       id: "tn_demo", 
-      name: "Lea's Aesthetics Clinical Academy", 
+      name: "Lea's Aesthetics Clinical Academy",
+      slug: "leas-aesthetics-academy",
       plan: "professional" 
     },
   });
@@ -27,7 +35,8 @@ async function main() {
     update: {},
     create: {
       id: locationId,
-      tenantId: tenant.id,
+      name: "Main Clinic",
+      slug: "main-clinic",
       timezone: "Europe/London",
       address: {
         line1: "123 Harley Street",
@@ -36,17 +45,19 @@ async function main() {
         postalCode: "W1G 6BA",
         country: "United Kingdom"
       },
-      settings: {
-        openingHours: {
-          monday: { open: "09:00", close: "18:00" },
-          tuesday: { open: "09:00", close: "18:00" },
-          wednesday: { open: "09:00", close: "18:00" },
-          thursday: { open: "09:00", close: "18:00" },
-          friday: { open: "09:00", close: "17:00" },
-          saturday: { open: "10:00", close: "16:00" },
-          sunday: { closed: true }
-        }
+      businessHours: {
+        monday: { open: "09:00", close: "18:00" },
+        tuesday: { open: "09:00", close: "18:00" },
+        wednesday: { open: "09:00", close: "18:00" },
+        thursday: { open: "09:00", close: "18:00" },
+        friday: { open: "09:00", close: "17:00" },
+        saturday: { open: "10:00", close: "16:00" },
+        sunday: { closed: true }
       },
+      settings: {},
+      tenant: {
+        connect: { id: tenant.id }
+      }
     },
   });
   console.log("✅ Location created");
@@ -240,8 +251,18 @@ async function main() {
       where: { id: client.id },
       update: {},
       create: {
-        ...client,
-        tenantId: tenant.id,
+        id: client.id,
+        firstName: client.personal.firstName,
+        lastName: client.personal.lastName,
+        email: client.personal.email,
+        phone: client.personal.phone,
+        dateOfBirth: client.personal.dateOfBirth ? new Date(client.personal.dateOfBirth) : undefined,
+        address: client.personal.address || null,
+        preferences: client.preferences || null,
+        tags: client.tags || [],
+        tenant: {
+          connect: { id: tenant.id }
+        }
       },
     });
   }
@@ -253,7 +274,7 @@ async function main() {
     update: {},
     create: {
       id: "tmpl_consent_botox",
-      tenantId: tenant.id,
+      name: "Botox Treatment Consent Form",
       type: "consent",
       jurisdiction: "UK",
       version: "2024.01",
@@ -279,14 +300,137 @@ async function main() {
         ]
       },
       mandatoryBlocks: ["patient-info", "consent"],
+      placeholders: ["CLIENT_NAME", "DATE_OF_BIRTH", "TREATMENT_DATE"],
       effectiveFrom: new Date(),
+      tenant: {
+        connect: { id: tenant.id }
+      }
     },
   });
   console.log("✅ Document templates created");
 
-  // Generate and seed course data from FondationAesthetics folder
-  console.log("📚 Learning management system seeding (will be implemented later)...");
-  console.log("✅ LMS setup deferred to separate implementation");
+  // Import and seed course data from generated courses.json
+  console.log("📚 Learning management system seeding...");
+  try {
+    const coursesFilePath = path.join(__dirname, 'seed-data/courses.json');
+    const courseData = JSON.parse(fs.readFileSync(coursesFilePath, 'utf-8'));
+    
+    console.log(`Found ${courseData.length} courses to seed.`);
+    
+    for (const course of courseData) {
+      // Create the course
+      const createdCourse = await prisma.course.upsert({
+        where: { slug: course.slug },
+        update: {
+          title: course.title,
+          description: course.description,
+          level: course.level,
+          category: course.category,
+          subcategory: course.subcategory,
+          duration: course.duration,
+          credits: course.credits,
+          price: course.price,
+          content: course.content,
+          tags: course.tags || [],
+          prerequisites: course.prerequisites || [],
+          isPublished: course.isPublished,
+          isActive: course.isActive,
+          passingScore: course.passingScore,
+          accreditation: course.accreditation
+        },
+        create: {
+          title: course.title,
+          slug: course.slug,
+          description: course.description,
+          level: course.level,
+          category: course.category,
+          subcategory: course.subcategory,
+          duration: course.duration,
+          credits: course.credits,
+          price: course.price,
+          content: course.content,
+          tags: course.tags || [],
+          prerequisites: course.prerequisites || [],
+          isPublished: course.isPublished,
+          isActive: course.isActive,
+          passingScore: course.passingScore,
+          accreditation: course.accreditation,
+          tenant: tenant ? { connect: { id: tenant.id } } : undefined
+        }
+      });
+      
+      // Course tags and prerequisites are now handled directly in the course creation
+      
+      // Create modules for the course
+      if (course.modules && course.modules.length > 0) {
+        for (const moduleData of course.modules) {
+          const createdModule = await prisma.module.create({
+            data: {
+              title: moduleData.title,
+              slug: moduleData.slug,
+              description: moduleData.description,
+              content: moduleData.content,
+              order: moduleData.order,
+              duration: moduleData.duration,
+              isRequired: moduleData.isRequired,
+              course: {
+                connect: { id: createdCourse.id }
+              }
+            }
+          });
+          
+          // Create lessons for this module
+          if (moduleData.lessons && moduleData.lessons.length > 0) {
+            for (const lessonData of moduleData.lessons) {
+              await prisma.lesson.create({
+                data: {
+                  title: lessonData.title,
+                  slug: lessonData.slug,
+                  content: lessonData.content,
+                  type: lessonData.type,
+                  order: lessonData.order,
+                  duration: lessonData.duration,
+                  isRequired: lessonData.isRequired,
+                  module: {
+                    connect: { id: createdModule.id }
+                  }
+                }
+              });
+            }
+          }
+          
+          // Create assessments for this module
+          if (moduleData.assessments && moduleData.assessments.length > 0) {
+            for (const assessmentData of moduleData.assessments) {
+              await prisma.assessment.create({
+                data: {
+                  title: assessmentData.title,
+                  description: assessmentData.description,
+                  type: assessmentData.type,
+                  questions: assessmentData.questions,
+                  passingScore: assessmentData.passingScore,
+                  timeLimit: assessmentData.timeLimit,
+                  maxAttempts: assessmentData.maxAttempts,
+                  isRequired: assessmentData.isRequired,
+                  order: assessmentData.order,
+                  module: {
+                    connect: { id: createdModule.id }
+                  }
+                }
+              });
+            }
+          }
+        }
+      }
+      
+      console.log(`✅ Seeded course: ${course.title}`);
+    }
+    
+    console.log("✅ All courses successfully seeded");
+  } catch (error) {
+    console.error("❌ Error seeding courses:", error);
+    console.log("✅ Continuing with remaining seed operations...");
+  }
 
   console.log("🎉 Seed process completed successfully!");
   console.log("");

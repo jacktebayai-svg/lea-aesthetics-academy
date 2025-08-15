@@ -1,0 +1,235 @@
+/* Lea Aesthetics Clinical Academy Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Custom Properties for the Silver Theme */
+:root {
+  /* Lea Aesthetics Brand Colors */
+  --color-deep-charcoal: #111111;
+  --color-elegant-silver: #D6D6D6;
+  --color-light-platinum: #EAEAEA;
+  --color-muted-gray: #888888;
+  --color-silver-accent: #B8B8B8;
+  --color-pure-white: #FFFFFF;
+  
+  /* Semantic mappings */
+  --color-primary: var(--color-deep-charcoal);
+  --color-surface: var(--color-elegant-silver);
+  --color-background: var(--color-light-platinum);
+  --color-text-primary: var(--color-deep-charcoal);
+  --color-text-secondary: var(--color-muted-gray);
+  --color-border: var(--color-silver-accent);
+  
+  /* Professional shadows */
+  --shadow-card: 0px 4px 16px rgba(17, 17, 17, 0.08);
+  --shadow-elevated: 0px 8px 24px rgba(17, 17, 17, 0.12);
+  --shadow-focus: 0px 0px 0px 3px rgba(184, 184, 184, 0.3);
+
+  /* Animation */
+  --transition-lea: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Base Layer - Professional typography and elegant styling */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background font-sans text-text-primary antialiased;
+    /* Smooth scrolling and elegant transitions */
+    scroll-behavior: smooth;
+  }
+
+  /* Elegant headings using serif font */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-text-primary;
+    letter-spacing: -0.01em;
+  }
+
+  h1 {
+    @apply text-heading-1 font-semibold;
+  }
+
+  h2 {
+    @apply text-heading-2 font-medium;
+  }
+
+  h3 {
+    @apply text-heading-3 font-medium;
+  }
+
+  h4 {
+    @apply text-heading-4 font-medium;
+  }
+
+  /* Professional body text */
+  p {
+    @apply text-body-md text-text-primary leading-relaxed;
+  }
+
+  /* Subtle, elegant selection styling */
+  ::selection {
+    background-color: var(--color-silver-accent);
+    color: var(--color-deep-charcoal);
+  }
+
+  /* Focus ring for accessibility */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+  }
+}
+
+/* Component Layer - Professional silver-themed components */
+@layer components {
+  /* Professional loading indicator */
+  .loading-spinner {
+    @apply animate-pulse-silver;
+  }
+
+  /* Silver glow effect for interactive elements */
+  .silver-glow {
+    @apply transition-shadow duration-300 ease-lea hover:shadow-[0_0_20px_rgba(184,184,184,0.3)];
+  }
+
+  /* Professional card styling */
+  .card-professional {
+    @apply bg-elegant-silver shadow-card rounded-card p-6 transition-all duration-300 ease-lea hover:shadow-elevated;
+  }
+
+  /* Elegant form styling */
+  .form-elegant {
+    @apply space-y-6;
+  }
+
+  .form-elegant .form-field {
+    @apply space-y-2;
+  }
+
+  .form-elegant label {
+    @apply text-ui-md font-medium text-text-primary;
+  }
+
+  .form-elegant input,
+  .form-elegant textarea,
+  .form-elegant select {
+    @apply w-full rounded-input border border-silver-accent bg-background-paper px-3 py-2 text-body-md transition-all duration-300 ease-lea focus:border-deep-charcoal focus:ring-2 focus:ring-silver-accent/30 focus:outline-none;
+  }
+
+  /* Silver button variants */
+  .btn-silver {
+    @apply bg-elegant-silver text-deep-charcoal hover:bg-silver-accent hover:shadow-card active:bg-primary-200 transition-all duration-300 ease-lea;
+  }
+
+  .btn-charcoal {
+    @apply bg-deep-charcoal text-pure-white hover:bg-primary-600 hover:shadow-elevated active:bg-primary-700 transition-all duration-300 ease-lea;
+  }
+
+  /* Professional navigation */
+  .nav-professional {
+    @apply bg-background-paper border-b border-border shadow-subtle;
+  }
+
+  .nav-link {
+    @apply px-3 py-2 rounded-button text-ui-md font-medium transition-all duration-300 ease-lea text-text-secondary hover:text-deep-charcoal hover:bg-elegant-silver;
+  }
+
+  .nav-link.active {
+    @apply text-deep-charcoal bg-elegant-silver shadow-subtle;
+  }
+}
+
+/* Utility Layer - Custom utilities for the silver theme */
+@layer utilities {
+  /* Text shadow utilities */
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(17, 17, 17, 0.1);
+  }
+
+  .text-shadow {
+    text-shadow: 0 1px 3px rgba(17, 17, 17, 0.12);
+  }
+
+  /* Silver gradient backgrounds */
+  .bg-gradient-silver {
+    background: linear-gradient(135deg, var(--color-light-platinum) 0%, var(--color-elegant-silver) 100%);
+  }
+
+  .bg-gradient-charcoal {
+    background: linear-gradient(135deg, var(--color-deep-charcoal) 0%, var(--color-muted-gray) 100%);
+  }
+
+  /* Professional backdrop blur */
+  .backdrop-blur-professional {
+    backdrop-filter: blur(12px) saturate(200%);
+    background-color: rgba(234, 234, 234, 0.8);
+  }
+
+  /* Smooth animations */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s var(--transition-lea) forwards;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.5s var(--transition-lea) forwards;
+  }
+}
+
+/* Professional animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-light-platinum);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-silver-accent);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-gray);
+}
+
+/* Print styles */
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  body {
+    font-family: Georgia, serif;
+  }
+}

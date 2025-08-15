@@ -1,0 +1,1921 @@
+[
+  {
+    "title": "A&P Level 2",
+    "slug": "ap-level-2",
+    "description": "A&P Level 2 Essay Questions Please provide answers on a separate answer sheet. Name the 5 types of bone. Name the regions that make up the 26 vertebrae. What is the largest bone in the body? The Reproductive System The reproductive system or genital system is a system of sex organs within an organis...",
+    "level": "Level 2",
+    "category": "Anatomy & Physiology",
+    "subcategory": null,
+    "prerequisites": [],
+    "duration": 3,
+    "credits": 5,
+    "price": 49900,
+    "content": {
+      "overview": "A&P Level 2\n\n\n\nEssay Questions\n\nPlease provide answers on a separate answer sheet.\n\nName the 5 types of bone. \n\nName the regions that make up the 26 vertebrae. \n\nWhat is the largest bone in the body? \n\n\n\nThe Reproductive System\n\nThe reproductive system or genital system is a system of sex organs within an organism which work together for the purpose of sexual reproduction.\n\nThe Male Reproductive System\n\nThe male reproductive system includes the scrotum, testes, spermatic ducts, sex glands, and penis. These organs work together to produce sperm, the male gamete, and the other components of semen. These organs also work together to deliver semen out of the body and into the vagina where it can fertilize egg cells to produce offspring.\n\nPhysiology of the Male Reproductive System\n\nSpermatogenesis\n\nSpermatogenesis is the process of producing sperm and takes place in the testes and epididymis of adult males. Prior to puberty, there is no spermatogenesis due to the lack of hormonal triggers. ",
+      "objectives": [
+        "Understand the fundamental concepts",
+        "Apply theoretical knowledge to practice",
+        "Demonstrate competency in key areas",
+        "Meet professional standards",
+        "Complete assessments successfully"
+      ],
+      "outline": [
+        "Module 1",
+        "Module 2",
+        "Module 3",
+        "Module 4",
+        "Module 5"
+      ]
+    },
+    "modules": [
+      {
+        "title": "Module 1",
+        "slug": "module-1",
+        "description": "Name the 5 types of bone. Name the regions that make up the 26 vertebrae. What is the largest bone in the body?",
+        "content": {
+          "text": "Name the 5 types of bone. \n\nName the regions that make up the 26 vertebrae. \n\nWhat is the largest bone in the body? ",
+          "format": "text"
+        },
+        "order": 0,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 1 - Introduction",
+            "slug": "module-1-introduction",
+            "content": {
+              "text": "Name the 5 types of bone. \n\nName the regions that make up the 26 vertebrae. \n\nWhat is the largest bone in the body? ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 1 Quiz",
+            "description": "Assessment for Module 1",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 1?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 2",
+        "slug": "module-2",
+        "description": "The Reproductive System The reproductive system or genital system is a system of sex organs within an organism which work together for the purpose of sexual reproduction. The Male Reproductive System",
+        "content": {
+          "text": "The Reproductive System\n\nThe reproductive system or genital system is a system of sex organs within an organism which work together for the purpose of sexual reproduction.\n\nThe Male Reproductive System",
+          "format": "text"
+        },
+        "order": 1,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 2 - Introduction",
+            "slug": "module-2-introduction",
+            "content": {
+              "text": "The Reproductive System\n\nThe reproductive system or genital system is a system of sex organs within an organism which work together for the purpose of sexual reproduction.\n\nThe Male Reproductive System",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 2 Quiz",
+            "description": "Assessment for Module 2",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 2?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 3",
+        "slug": "module-3",
+        "description": "The male reproductive system includes the scrotum, testes, spermatic ducts, sex glands, and penis. These organs work together to produce sperm, the male gamete, and the other components of semen. These organs also work together to deliver semen out of the body and into the vagina where it can fertil...",
+        "content": {
+          "text": "The male reproductive system includes the scrotum, testes, spermatic ducts, sex glands, and penis. These organs work together to produce sperm, the male gamete, and the other components of semen. These organs also work together to deliver semen out of the body and into the vagina where it can fertilize egg cells to produce offspring.\n\nPhysiology of the Male Reproductive System\n\nSpermatogenesis",
+          "format": "text"
+        },
+        "order": 2,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 3 - Introduction",
+            "slug": "module-3-introduction",
+            "content": {
+              "text": "The male reproductive system includes the scrotum, testes, spermatic ducts, sex glands, and penis. These organs work together to produce sperm, the male gamete, and the other components of semen. These organs also work together to deliver semen out of the body and into the vagina where it can fertilize egg cells to produce offspring.\n\nPhysiology of the Male Reproductive System\n\nSpermatogenesis",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 3 Quiz",
+            "description": "Assessment for Module 3",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 3?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 4",
+        "slug": "module-4",
+        "description": "Spermatogenesis is the process of producing sperm and takes place in the testes and epididymis of adult males. Prior to puberty, there is no spermatogenesis due to the lack of hormonal triggers. At puberty, spermatogenesis begins when luteinizing hormone (LH) and follicle stimulating hormone (FSH) a...",
+        "content": {
+          "text": "Spermatogenesis is the process of producing sperm and takes place in the testes and epididymis of adult males. Prior to puberty, there is no spermatogenesis due to the lack of hormonal triggers. At puberty, spermatogenesis begins when luteinizing hormone (LH) and follicle stimulating hormone (FSH) are produced. LH triggers the production of testosterone by the testes while FSH triggers the maturation of germ cells. Testosterone stimulates stem cells in the testes known as spermatogonium to undergo the process of developing into spermatocytes. Each diploid spermatocyte goes through the process of meiosis I and splits into 2 haploid secondary spermatocytes. The secondary spermatocytes go through meiosis II to form 4 haploid spermatid cells. The spermatid cells then go through a process known as spermatogenesis where they grow a flagellum and develop the structures of the sperm head. After spermatogenesis, the cell is finally a sperm cell, or spermatozoa. The spermatozoa are released into the epididymis where they complete their maturation and become able to move on their own.\n\nFertilization\n\nFertilization is the process by which a sperm combines with an oocyte, or egg cell, to produce a fertilized zygote. The sperm released during ejaculation must first swim through the vagina and uterus and into the fallopian tubes where they may find an oocyte. After encountering the oocyte, sperm next must penetrate the outer corona radiata and zona pellucida layers of the oocyte. Sperm contain enzymes in the acrosome region of the head that allow them to penetrate these layers. After penetrating the interior of the oocyte, the nuclei of these haploid cells fuse to form a diploid cell known as a zygote. The zygote cell begins cell division to form an embryo.",
+          "format": "text"
+        },
+        "order": 3,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 4 - Introduction",
+            "slug": "module-4-introduction",
+            "content": {
+              "text": "Spermatogenesis is the process of producing sperm and takes place in the testes and epididymis of adult males. Prior to puberty, there is no spermatogenesis due to the lack of hormonal triggers. At puberty, spermatogenesis begins when luteinizing hormone (LH) and follicle stimulating hormone (FSH) are produced. LH triggers the production of testosterone by the testes while FSH triggers the maturation of germ cells. Testosterone stimulates stem cells in the testes known as spermatogonium to undergo the process of developing into spermatocytes. Each diploid spermatocyte goes through the process of meiosis I and splits into 2 haploid secondary spermatocytes. The secondary spermatocytes go through meiosis II to form 4 haploid spermatid cells. The spermatid cells then go through a process known as spermatogenesis where they grow a flagellum and develop the structures of the sperm head. After spermatogenesis, the cell is finally a sperm cell, or spermatozoa. The spermatozoa are released into the epididymis where they complete their maturation and become able to move on their own.\n\nFertilization\n\nFertilization is the process by which a sperm combines with an oocyte, or egg cell, to produce a fertilized zygote. The sperm released during ejaculation must first swim through the vagina and uterus and into the fallopian tubes where they may find an oocyte. After encountering the oocyte, sperm next must penetrate the outer corona radiata and zona pellucida layers of the oocyte. Sperm contain enzymes in the acrosome region of the head that allow them to penetrate these layers. After penetrating the interior of the oocyte, the nuclei of these haploid cells fuse to form a diploid cell known as a zygote. The zygote cell begins cell division to form an embryo.",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 4 Quiz",
+            "description": "Assessment for Module 4",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 4?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 5",
+        "slug": "module-5",
+        "description": "Anatomy of the Male Reproductive System Scrotum The scrotum is a sac-like organ made of skin and muscles that houses the testes. It is located inferior to the penis in the pubic region. The scrotum is made up of 2 side-by-side pouches with a testis located in each pouch. The smooth muscles that make...",
+        "content": {
+          "text": "Anatomy of the Male Reproductive System\n\nScrotum\n\nThe scrotum is a sac-like organ made of skin and muscles that houses the testes. It is located inferior to the penis in the pubic region. The scrotum is made up of 2 side-by-side pouches with a testis located in each pouch. The smooth muscles that make up the scrotum allow it to regulate the distance between the testes and the rest of the body. When the testes become too warm to support spermatogenesis, the scrotum relaxes to move the testes away from the body’s heat. Conversely, the scrotum contracts to move the testes closer to the body’s core heat when temperatures drop below the ideal range for spermatogenesis.",
+          "format": "text"
+        },
+        "order": 4,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 5 - Introduction",
+            "slug": "module-5-introduction",
+            "content": {
+              "text": "Anatomy of the Male Reproductive System\n\nScrotum\n\nThe scrotum is a sac-like organ made of skin and muscles that houses the testes. It is located inferior to the penis in the pubic region. The scrotum is made up of 2 side-by-side pouches with a testis located in each pouch. The smooth muscles that make up the scrotum allow it to regulate the distance between the testes and the rest of the body. When the testes become too warm to support spermatogenesis, the scrotum relaxes to move the testes away from the body’s heat. Conversely, the scrotum contracts to move the testes closer to the body’s core heat when temperatures drop below the ideal range for spermatogenesis.",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 5 Quiz",
+            "description": "Assessment for Module 5",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 5?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "level-2",
+      "foundation"
+    ],
+    "accreditation": {
+      "body": "LACA",
+      "level": "Level 2",
+      "credits": 5
+    },
+    "passingScore": 70,
+    "isPublished": true,
+    "isActive": true
+  },
+  {
+    "title": "A&P Level 3",
+    "slug": "ap-level-3",
+    "description": "Anatomy & Physiology Level 3 Student Training Guidelines Evaluation – Support – Feedback Evaluate your client’s experience to build confidence Collect feedback from client to build knowledge Learning to support yourself through head office Certification Requirements Question and answer time must be ...",
+    "level": "Level 3",
+    "category": "Anatomy & Physiology",
+    "subcategory": null,
+    "prerequisites": [
+      "anatomy-physiology-level-2"
+    ],
+    "duration": 3,
+    "credits": 6,
+    "price": 79900,
+    "content": {
+      "overview": "Anatomy & Physiology Level 3\n\n\n\nStudent Training Guidelines\n\nEvaluation – Support – Feedback\n\nEvaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office \n\nCertification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria \n\nTheory work completed and marked prior to physical training \n\nTraining Brief\n\nRules and regulations \n\nDiscrimination and equality \n\nBlown Aesthetics Code of conduct \n\nTraining breakdown \n\nPractical assessments and evaluation\n\nEvaluation and question and answering \n\nCustomer satisfaction \n\nWhat will we cover in theory training?\n\nPaper training manuals \n\nPaper documentation \n\nSkills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?\n\nProduct knowledge \n\nScience and factual evidence \n\nIndustry knowledge \n\nConfidence \n\nListening skills \n\nProfessionalism \n\nHow to approach a cli",
+      "objectives": [
+        "Understand the fundamental concepts",
+        "Apply theoretical knowledge to practice",
+        "Demonstrate competency in key areas",
+        "Meet professional standards",
+        "Complete assessments successfully"
+      ],
+      "outline": [
+        "Module 1",
+        "Module 2",
+        "Module 3",
+        "Module 4",
+        "Module 5"
+      ]
+    },
+    "modules": [
+      {
+        "title": "Module 1",
+        "slug": "module-1",
+        "description": "Evaluate your client’s experience to build confidence Collect feedback from client to build knowledge Learning to support yourself through head office",
+        "content": {
+          "text": "Evaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office ",
+          "format": "text"
+        },
+        "order": 0,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 1 - Introduction",
+            "slug": "module-1-introduction",
+            "content": {
+              "text": "Evaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 1 Quiz",
+            "description": "Assessment for Module 1",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 1?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 2",
+        "slug": "module-2",
+        "description": "Certification Requirements Question and answer time must be completed Answers must meet the pass criteria",
+        "content": {
+          "text": "Certification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria ",
+          "format": "text"
+        },
+        "order": 1,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 2 - Introduction",
+            "slug": "module-2-introduction",
+            "content": {
+              "text": "Certification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 2 Quiz",
+            "description": "Assessment for Module 2",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 2?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 3",
+        "slug": "module-3",
+        "description": "Skills and assessment ability Product evaluations and case studies What will students gain from theory learning?",
+        "content": {
+          "text": "Skills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?",
+          "format": "text"
+        },
+        "order": 2,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 3 - Introduction",
+            "slug": "module-3-introduction",
+            "content": {
+              "text": "Skills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 3 Quiz",
+            "description": "Assessment for Module 3",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 3?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 4",
+        "slug": "module-4",
+        "description": "How to approach a client How to deal with uneasy clients and the correct protocol Refund regulations on products",
+        "content": {
+          "text": "How to approach a client \n\nHow to deal with uneasy clients and the correct protocol \n\nRefund regulations on products ",
+          "format": "text"
+        },
+        "order": 3,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 4 - Introduction",
+            "slug": "module-4-introduction",
+            "content": {
+              "text": "How to approach a client \n\nHow to deal with uneasy clients and the correct protocol \n\nRefund regulations on products ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 4 Quiz",
+            "description": "Assessment for Module 4",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 4?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 5",
+        "slug": "module-5",
+        "description": "Showing the student how to complete customer disclaimers Demonstrations What student benefits will they gain from practical learning?",
+        "content": {
+          "text": "Showing the student how to complete customer disclaimers \n\nDemonstrations \n\nWhat student benefits will they gain from practical learning?",
+          "format": "text"
+        },
+        "order": 4,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 5 - Introduction",
+            "slug": "module-5-introduction",
+            "content": {
+              "text": "Showing the student how to complete customer disclaimers \n\nDemonstrations \n\nWhat student benefits will they gain from practical learning?",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 5 Quiz",
+            "description": "Assessment for Module 5",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 5?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "level-3",
+      "intermediate"
+    ],
+    "accreditation": {
+      "body": "LACA",
+      "level": "Level 3",
+      "credits": 6
+    },
+    "passingScore": 70,
+    "isPublished": true,
+    "isActive": true
+  },
+  {
+    "title": "A&P Level 4",
+    "slug": "ap-level-4",
+    "description": "Anatomy & Physiology Level 4 Student Training Guidelines Evaluation – Support – Feedback Evaluate your client's experience to build confidence. Collect feedback from clients to build knowledge. Learning to support yourself through head office. Certification Requirements Question and answer time must...",
+    "level": "Level 4",
+    "category": "Anatomy & Physiology",
+    "subcategory": null,
+    "prerequisites": [
+      "anatomy-physiology-level-3"
+    ],
+    "duration": 3,
+    "credits": 8,
+    "price": 99900,
+    "content": {
+      "overview": "Anatomy & Physiology Level 4\n\n\n\nStudent Training Guidelines\n\nEvaluation – Support – Feedback\n\nEvaluate your client's experience to build confidence. \n\nCollect feedback from clients to build knowledge. \n\nLearning to support yourself through head office. \n\nCertification Requirements\n\nQuestion and answer time must be completed. \n\nAnswers must meet the pass criteria. \n\nTheory work completed and marked prior to physical training. \n\nTraining Brief\n\nRules and regulations \n\nDiscrimination and equality \n\nBlown Aesthetics Code of conduct \n\nTraining breakdown \n\nPractical assessments and evaluation\n\nEvaluation and question and answering \n\nCustomer satisfaction \n\nWhat will we cover in theory training?\n\nPaper training manuals \n\nPaper documentation \n\nSkills and assessment ability \n\nProduct evaluations and case studies \n\n\n\nStudent Training Guidelines\n\nWhat will students gain from theory learning?\n\nProduct knowledge - Science and factual evidence \n\nIndustry knowledge \n\nConfidence \n\nListening skills \n\nP",
+      "objectives": [
+        "Understand the fundamental concepts",
+        "Apply theoretical knowledge to practice",
+        "Demonstrate competency in key areas",
+        "Meet professional standards",
+        "Complete assessments successfully"
+      ],
+      "outline": [
+        "Module 1",
+        "Module 2",
+        "Module 3",
+        "Module 4",
+        "Module 5"
+      ]
+    },
+    "modules": [
+      {
+        "title": "Module 1",
+        "slug": "module-1",
+        "description": "Evaluate your client's experience to build confidence. Collect feedback from clients to build knowledge. Learning to support yourself through head office.",
+        "content": {
+          "text": "Evaluate your client's experience to build confidence. \n\nCollect feedback from clients to build knowledge. \n\nLearning to support yourself through head office. ",
+          "format": "text"
+        },
+        "order": 0,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 1 - Introduction",
+            "slug": "module-1-introduction",
+            "content": {
+              "text": "Evaluate your client's experience to build confidence. \n\nCollect feedback from clients to build knowledge. \n\nLearning to support yourself through head office. ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 1 Quiz",
+            "description": "Assessment for Module 1",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 1?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 2",
+        "slug": "module-2",
+        "description": "Certification Requirements Question and answer time must be completed. Answers must meet the pass criteria.",
+        "content": {
+          "text": "Certification Requirements\n\nQuestion and answer time must be completed. \n\nAnswers must meet the pass criteria. ",
+          "format": "text"
+        },
+        "order": 1,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 2 - Introduction",
+            "slug": "module-2-introduction",
+            "content": {
+              "text": "Certification Requirements\n\nQuestion and answer time must be completed. \n\nAnswers must meet the pass criteria. ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 2 Quiz",
+            "description": "Assessment for Module 2",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 2?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 3",
+        "slug": "module-3",
+        "description": "What will students gain from theory learning? Product knowledge - Science and factual evidence Industry knowledge",
+        "content": {
+          "text": "What will students gain from theory learning?\n\nProduct knowledge - Science and factual evidence \n\nIndustry knowledge ",
+          "format": "text"
+        },
+        "order": 2,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 3 - Introduction",
+            "slug": "module-3-introduction",
+            "content": {
+              "text": "What will students gain from theory learning?\n\nProduct knowledge - Science and factual evidence \n\nIndustry knowledge ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 3 Quiz",
+            "description": "Assessment for Module 3",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 3?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 4",
+        "slug": "module-4",
+        "description": "How to approach a client How to deal with uneasy clients and the correct protocol Refund regulations on products",
+        "content": {
+          "text": "How to approach a client \n\nHow to deal with uneasy clients and the correct protocol \n\nRefund regulations on products ",
+          "format": "text"
+        },
+        "order": 3,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 4 - Introduction",
+            "slug": "module-4-introduction",
+            "content": {
+              "text": "How to approach a client \n\nHow to deal with uneasy clients and the correct protocol \n\nRefund regulations on products ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 4 Quiz",
+            "description": "Assessment for Module 4",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 4?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 5",
+        "slug": "module-5",
+        "description": "Allowing outspoken opinions. Showing the student how to complete customer disclaimers Demonstrations",
+        "content": {
+          "text": "Allowing outspoken opinions. \n\nShowing the student how to complete customer disclaimers \n\nDemonstrations ",
+          "format": "text"
+        },
+        "order": 4,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 5 - Introduction",
+            "slug": "module-5-introduction",
+            "content": {
+              "text": "Allowing outspoken opinions. \n\nShowing the student how to complete customer disclaimers \n\nDemonstrations ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 5 Quiz",
+            "description": "Assessment for Module 5",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 5?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "level-4",
+      "advanced"
+    ],
+    "accreditation": {
+      "body": "LACA",
+      "level": "Level 4",
+      "credits": 8
+    },
+    "passingScore": 70,
+    "isPublished": true,
+    "isActive": true
+  },
+  {
+    "title": "CPR and Anaphylaxis",
+    "slug": "cpr-and-anaphylaxis",
+    "description": "CPR & Anaphylaxis Student Training Guidelines Evaluation – Support – Feedback Evaluate your client’s experience to build confidence Collect feedback from client to build knowledge Learning to support yourself through head office Certification Requirements Question and answer time must be completed A...",
+    "level": "Foundation",
+    "category": "Emergency Medicine",
+    "subcategory": null,
+    "prerequisites": [],
+    "duration": 3,
+    "credits": 5,
+    "price": 29900,
+    "content": {
+      "overview": "CPR & Anaphylaxis\n\n\n\nStudent Training Guidelines\n\nEvaluation – Support – Feedback\n\nEvaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office \n\nCertification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria \n\nTheory work completed and marked prior to physical training \n\nTraining Brief\n\nRules and regulations \n\nDiscrimination and equality \n\nBlown Aesthetics Code of conduct \n\nTraining breakdown \n\nPractical assessments and evaluation\n\nEvaluation and question and answering \n\nCustomer satisfaction \n\nWhat will we cover in theory training?\n\nPaper training manuals \n\nPaper documentation \n\nSkills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?\n\nProduct knowledge \n\nScience and factual evidence \n\nIndustry knowledge \n\nConfidence \n\nListening skills \n\nProfessionalism \n\nHow to approach a client \n\nHow t",
+      "objectives": [
+        "Understand the fundamental concepts",
+        "Apply theoretical knowledge to practice",
+        "Demonstrate competency in key areas",
+        "Meet professional standards",
+        "Complete assessments successfully"
+      ],
+      "outline": [
+        "Module 1",
+        "Module 2",
+        "Module 3",
+        "Module 4",
+        "Module 5"
+      ]
+    },
+    "modules": [
+      {
+        "title": "Module 1",
+        "slug": "module-1",
+        "description": "Evaluate your client’s experience to build confidence Collect feedback from client to build knowledge Learning to support yourself through head office",
+        "content": {
+          "text": "Evaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office ",
+          "format": "text"
+        },
+        "order": 0,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 1 - Introduction",
+            "slug": "module-1-introduction",
+            "content": {
+              "text": "Evaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 1 Quiz",
+            "description": "Assessment for Module 1",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 1?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 2",
+        "slug": "module-2",
+        "description": "Certification Requirements Question and answer time must be completed Answers must meet the pass criteria",
+        "content": {
+          "text": "Certification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria ",
+          "format": "text"
+        },
+        "order": 1,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 2 - Introduction",
+            "slug": "module-2-introduction",
+            "content": {
+              "text": "Certification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 2 Quiz",
+            "description": "Assessment for Module 2",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 2?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 3",
+        "slug": "module-3",
+        "description": "Skills and assessment ability Product evaluations and case studies What will students gain from theory learning?",
+        "content": {
+          "text": "Skills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?",
+          "format": "text"
+        },
+        "order": 2,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 3 - Introduction",
+            "slug": "module-3-introduction",
+            "content": {
+              "text": "Skills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 3 Quiz",
+            "description": "Assessment for Module 3",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 3?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 4",
+        "slug": "module-4",
+        "description": "How to approach a client How to deal with uneasy clients and the correct protocol Refund regulations on products",
+        "content": {
+          "text": "How to approach a client \n\nHow to deal with uneasy clients and the correct protocol \n\nRefund regulations on products ",
+          "format": "text"
+        },
+        "order": 3,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 4 - Introduction",
+            "slug": "module-4-introduction",
+            "content": {
+              "text": "How to approach a client \n\nHow to deal with uneasy clients and the correct protocol \n\nRefund regulations on products ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 4 Quiz",
+            "description": "Assessment for Module 4",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 4?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 5",
+        "slug": "module-5",
+        "description": "Showing the student how to complete customer disclaimers Demonstrations What student benefits will they gain from practical learning?",
+        "content": {
+          "text": "Showing the student how to complete customer disclaimers \n\nDemonstrations \n\nWhat student benefits will they gain from practical learning?",
+          "format": "text"
+        },
+        "order": 4,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 5 - Introduction",
+            "slug": "module-5-introduction",
+            "content": {
+              "text": "Showing the student how to complete customer disclaimers \n\nDemonstrations \n\nWhat student benefits will they gain from practical learning?",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 5 Quiz",
+            "description": "Assessment for Module 5",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 5?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "cpr",
+      "emergency",
+      "first-aid"
+    ],
+    "accreditation": {
+      "body": "LACA",
+      "level": "Foundation",
+      "credits": 5
+    },
+    "passingScore": 70,
+    "isPublished": true,
+    "isActive": true
+  },
+  {
+    "title": "Safety in Medicine",
+    "slug": "safety-in-medicine",
+    "description": "Safety In Medicine Student Training Guidelines Evaluation – Support – Feedback Evaluate your client’s experience to build confidence Collect feedback from client to build knowledge Learning to support yourself through head office Certification Requirements Question and answer time must be completed ...",
+    "level": "Foundation",
+    "category": "Safety & Compliance",
+    "subcategory": null,
+    "prerequisites": [],
+    "duration": 3,
+    "credits": 5,
+    "price": 29900,
+    "content": {
+      "overview": "Safety In Medicine\n\n\n\nStudent Training Guidelines\n\nEvaluation – Support – Feedback\n\nEvaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office \n\nCertification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria \n\nTheory work completed and marked prior to physical training \n\nTraining Brief\n\nRules and regulations \n\nDiscrimination and equality \n\nBlown Aesthetics Code of conduct \n\nTraining breakdown \n\nPractical assessments and evaluation\n\nEvaluation and question and answering \n\nCustomer satisfaction \n\nWhat will we cover in theory training?\n\nPaper training manuals \n\nPaper documentation \n\nSkills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?\n\nProduct knowledge \n\nScience and factual evidence \n\nIndustry knowledge \n\nConfidence \n\nListening skills \n\nProfessionalism \n\nHow to approach a client \n\nHow ",
+      "objectives": [
+        "Understand the fundamental concepts",
+        "Apply theoretical knowledge to practice",
+        "Demonstrate competency in key areas",
+        "Meet professional standards",
+        "Complete assessments successfully"
+      ],
+      "outline": [
+        "Module 1",
+        "Module 2",
+        "Module 3",
+        "Module 4",
+        "Module 5"
+      ]
+    },
+    "modules": [
+      {
+        "title": "Module 1",
+        "slug": "module-1",
+        "description": "Evaluate your client’s experience to build confidence Collect feedback from client to build knowledge Learning to support yourself through head office",
+        "content": {
+          "text": "Evaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office ",
+          "format": "text"
+        },
+        "order": 0,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 1 - Introduction",
+            "slug": "module-1-introduction",
+            "content": {
+              "text": "Evaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 1 Quiz",
+            "description": "Assessment for Module 1",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 1?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 2",
+        "slug": "module-2",
+        "description": "Certification Requirements Question and answer time must be completed Answers must meet the pass criteria",
+        "content": {
+          "text": "Certification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria ",
+          "format": "text"
+        },
+        "order": 1,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 2 - Introduction",
+            "slug": "module-2-introduction",
+            "content": {
+              "text": "Certification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 2 Quiz",
+            "description": "Assessment for Module 2",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 2?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 3",
+        "slug": "module-3",
+        "description": "Skills and assessment ability Product evaluations and case studies What will students gain from theory learning?",
+        "content": {
+          "text": "Skills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?",
+          "format": "text"
+        },
+        "order": 2,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 3 - Introduction",
+            "slug": "module-3-introduction",
+            "content": {
+              "text": "Skills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 3 Quiz",
+            "description": "Assessment for Module 3",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 3?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 4",
+        "slug": "module-4",
+        "description": "How to approach a client How to deal with uneasy clients and the correct protocol Refund regulations on products",
+        "content": {
+          "text": "How to approach a client \n\nHow to deal with uneasy clients and the correct protocol \n\nRefund regulations on products ",
+          "format": "text"
+        },
+        "order": 3,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 4 - Introduction",
+            "slug": "module-4-introduction",
+            "content": {
+              "text": "How to approach a client \n\nHow to deal with uneasy clients and the correct protocol \n\nRefund regulations on products ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 4 Quiz",
+            "description": "Assessment for Module 4",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 4?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 5",
+        "slug": "module-5",
+        "description": "Showing the student how to complete customer disclaimers Demonstrations What student benefits will they gain from practical learning?",
+        "content": {
+          "text": "Showing the student how to complete customer disclaimers \n\nDemonstrations \n\nWhat student benefits will they gain from practical learning?",
+          "format": "text"
+        },
+        "order": 4,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 5 - Introduction",
+            "slug": "module-5-introduction",
+            "content": {
+              "text": "Showing the student how to complete customer disclaimers \n\nDemonstrations \n\nWhat student benefits will they gain from practical learning?",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 5 Quiz",
+            "description": "Assessment for Module 5",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 5?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "safety",
+      "compliance",
+      "regulations"
+    ],
+    "accreditation": {
+      "body": "LACA",
+      "level": "Foundation",
+      "credits": 5
+    },
+    "passingScore": 70,
+    "isPublished": true,
+    "isActive": true
+  },
+  {
+    "title": "Dermal Fillers and Botulinum Toxin",
+    "slug": "dermal-fillers-and-botulinum-toxin",
+    "description": "Botox & Fillers Introduction Contents of this manual: Student Training Guidelines Introduction What is Botox and the history of it Anatomy and Physiology of the face Hand Hygiene and ANTT Client Consultation Anti-Wrinkle injections, techniques, and Botox measurements Dermal fillers, the injectable a...",
+    "level": "Foundation",
+    "category": "Advanced Treatments",
+    "subcategory": null,
+    "prerequisites": [
+      "safety-in-medicine",
+      "cpr-and-anaphylaxis"
+    ],
+    "duration": 3,
+    "credits": 5,
+    "price": 29900,
+    "content": {
+      "overview": "Botox & Fillers\n\n\n\nIntroduction\n\nContents of this manual:\n\nStudent Training Guidelines \n\nIntroduction \n\nWhat is Botox and the history of it \n\nAnatomy and Physiology of the face \n\nHand Hygiene and ANTT \n\nClient Consultation \n\nAnti-Wrinkle injections, techniques, and Botox measurements \n\nDermal fillers, the injectable areas of the face and technique \n\nSharps disposal and needle stick injuries \n\nComplaints \n\n\n\nStudent Training Guidelines\n\nEvaluation – Support – Feedback\n\nEvaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office \n\nCertification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria \n\nTheory work completed and marked prior to physical training \n\nTraining Brief\n\nRules and regulations \n\nDiscrimination and equality \n\nBlown Aesthetics Code of conduct \n\nTraining breakdown \n\nPractical assessments and evaluation\n\nEvaluation and question and answe",
+      "objectives": [
+        "Understand the fundamental concepts",
+        "Apply theoretical knowledge to practice",
+        "Demonstrate competency in key areas",
+        "Meet professional standards",
+        "Complete assessments successfully"
+      ],
+      "outline": [
+        "Module 1",
+        "Module 2",
+        "Module 3",
+        "Module 4",
+        "Module 5"
+      ]
+    },
+    "modules": [
+      {
+        "title": "Module 1",
+        "slug": "module-1",
+        "description": "Anti-Wrinkle injections, techniques, and Botox measurements Dermal fillers, the injectable areas of the face and technique Sharps disposal and needle stick injuries",
+        "content": {
+          "text": "Anti-Wrinkle injections, techniques, and Botox measurements \n\nDermal fillers, the injectable areas of the face and technique \n\nSharps disposal and needle stick injuries ",
+          "format": "text"
+        },
+        "order": 0,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 1 - Introduction",
+            "slug": "module-1-introduction",
+            "content": {
+              "text": "Anti-Wrinkle injections, techniques, and Botox measurements \n\nDermal fillers, the injectable areas of the face and technique \n\nSharps disposal and needle stick injuries ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 1 Quiz",
+            "description": "Assessment for Module 1",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 1?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 2",
+        "slug": "module-2",
+        "description": "Evaluate your client’s experience to build confidence Collect feedback from client to build knowledge Learning to support yourself through head office",
+        "content": {
+          "text": "Evaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office ",
+          "format": "text"
+        },
+        "order": 1,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 2 - Introduction",
+            "slug": "module-2-introduction",
+            "content": {
+              "text": "Evaluate your client’s experience to build confidence \n\nCollect feedback from client to build knowledge \n\nLearning to support yourself through head office ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 2 Quiz",
+            "description": "Assessment for Module 2",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 2?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 3",
+        "slug": "module-3",
+        "description": "Certification Requirements Question and answer time must be completed Answers must meet the pass criteria",
+        "content": {
+          "text": "Certification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria ",
+          "format": "text"
+        },
+        "order": 2,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 3 - Introduction",
+            "slug": "module-3-introduction",
+            "content": {
+              "text": "Certification Requirements\n\nQuestion and answer time must be completed \n\nAnswers must meet the pass criteria ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 3 Quiz",
+            "description": "Assessment for Module 3",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 3?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 4",
+        "slug": "module-4",
+        "description": "Skills and assessment ability Product evaluations and case studies What will students gain from theory learning?",
+        "content": {
+          "text": "Skills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?",
+          "format": "text"
+        },
+        "order": 3,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 4 - Introduction",
+            "slug": "module-4-introduction",
+            "content": {
+              "text": "Skills and assessment ability \n\nProduct evaluations and case studies \n\nWhat will students gain from theory learning?",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 4 Quiz",
+            "description": "Assessment for Module 4",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 4?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      },
+      {
+        "title": "Module 5",
+        "slug": "module-5",
+        "description": "How to approach a client How to deal with uneasy clients and the correct protocol Refund regulations on products",
+        "content": {
+          "text": "How to approach a client \n\nHow to deal with uneasy clients and the correct protocol \n\nRefund regulations on products ",
+          "format": "text"
+        },
+        "order": 4,
+        "duration": 30,
+        "isRequired": true,
+        "lessons": [
+          {
+            "title": "Module 5 - Introduction",
+            "slug": "module-5-introduction",
+            "content": {
+              "text": "How to approach a client \n\nHow to deal with uneasy clients and the correct protocol \n\nRefund regulations on products ",
+              "format": "text"
+            },
+            "type": "text",
+            "order": 0,
+            "duration": 15,
+            "isRequired": true
+          }
+        ],
+        "assessments": [
+          {
+            "title": "Module 5 Quiz",
+            "description": "Assessment for Module 5",
+            "type": "quiz",
+            "questions": {
+              "questions": [
+                {
+                  "id": "1",
+                  "type": "multiple-choice",
+                  "question": "What is a key concept from Module 5?",
+                  "options": [
+                    "Option A",
+                    "Option B",
+                    "Option C",
+                    "Option D"
+                  ],
+                  "correctAnswer": 0,
+                  "points": 10
+                }
+              ]
+            },
+            "passingScore": 70,
+            "timeLimit": 30,
+            "maxAttempts": 3,
+            "isRequired": true,
+            "order": 0
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "dermal-fillers",
+      "injectables",
+      "botox",
+      "botulinum-toxin"
+    ],
+    "accreditation": {
+      "body": "LACA",
+      "level": "Foundation",
+      "credits": 5
+    },
+    "passingScore": 70,
+    "isPublished": true,
+    "isActive": true
+  }
+]
