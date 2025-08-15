@@ -1,81 +1,84 @@
-"use client";
+'use client';
 
-import React from "react";
+import React, { useState } from 'react';
+import { LEALoginForm } from '@leas-academy/ui';
+import { useRouter } from 'next/navigation';
 
-export default function LoginPage() {
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get("email");
-    const password = formData.get("password");
+export default function AdminLoginPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-    // Hardcoded demo user for now
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+  const handleLogin = async (email: string, password: string) => {
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (response.ok) {
-      window.location.href = "/dashboard";
-    } else {
-      const errorData = await response.json();
-      alert(errorData.message || "Login failed");
+      if (response.ok) {
+        const data = await response.json();
+        // Store admin token
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('admin_token', data.token || 'demo_token');
+          localStorage.setItem('user_role', 'admin');
+        }
+        
+        // Redirect to dashboard
+        router.push('/dashboard');
+      } else {
+        const errorData = await response.json();
+        // More elegant error handling for luxury brand
+        console.error('Authentication failed:', errorData);
+        alert(errorData.message || "Authentication failed. Please verify your credentials.");
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('We apologize for the inconvenience. Please try again momentarily.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const handleForgotPassword = () => {
+    // Navigate to admin password reset
+    console.log('Admin password reset requested');
+    alert('Please contact Lea directly for admin password reset.');
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-        <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">
-          Admin Login
-        </h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
-              placeholder="admin@example.com"
-              required
-            />
+    <>
+      <LEALoginForm
+        variant="admin"
+        onSubmit={handleLogin}
+        onForgotPassword={handleForgotPassword}
+        showSignUp={false} // Admins are appointed by Lea only
+        isLoading={isLoading}
+      />
+      
+      {/* Elegant demo credentials notice with Maerose styling */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-6 right-6 bg-deep-charcoal border border-estate-border-grey p-6 rounded-[24px] shadow-[0_8px_40px_rgba(0,0,0,0.4)] max-w-sm">
+          <p className="text-body-small font-inter font-light text-champagne-gold uppercase tracking-wider mb-3">
+            Development Access
+          </p>
+          <div className="space-y-1 text-soft-mist-grey font-light text-body-small">
+            <p>
+              <span className="text-champagne-gold">Email:</span> lea@leas-academy.com
+            </p>
+            <p>
+              <span className="text-champagne-gold">Password:</span> ••••••••
+            </p>
           </div>
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
-              placeholder="********"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Login
-          </button>
-        </form>
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Demo User: <strong>admin@leas.com</strong> / <strong>password</strong>
-        </p>
-      </div>
-    </div>
+          <p className="text-xs text-soft-mist-grey/60 mt-3 font-light italic">
+            Single practitioner mode
+          </p>
+        </div>
+      )}
+    </>
   );
 }

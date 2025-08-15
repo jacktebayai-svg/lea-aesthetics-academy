@@ -1,78 +1,125 @@
 @import './styles/tokens.css';
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Allura&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  /* Maerose Foundation Styles */
+  /* LEA AESTHETICS PREMIUM FOUNDATION */
   * {
     box-sizing: border-box;
   }
 
   html {
     scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
   }
   
   body {
-    @apply font-body;
-    background-color: var(--lea-light-platinum);
-    color: var(--lea-deep-charcoal);
-    font-size: var(--maerose-body-regular-size);
-    line-height: var(--maerose-body-line-height);
-    font-weight: var(--maerose-body-weight);
+    @apply font-body bg-snow-white text-charcoal-black;
+    font-size: 16px;
+    line-height: 1.75;
+    font-weight: 400;
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'kern' 1, 'liga' 1;
   }
 
-  /* Lea Aesthetics Typography Base */
+  /* LEA AESTHETICS PREMIUM TYPOGRAPHY */
   h1, h2, h3, h4, h5, h6 {
-    margin: 0;
-    font-family: var(--font-playfair-display), Georgia, serif;
-    color: var(--lea-deep-charcoal);
+    margin: 0 0 0.75em 0;
+    font-weight: 400;
+    transition: color 0.3s ease;
   }
   
+  /* Elegant Cursive Headers */
   h1 {
-    font-family: var(--maerose-font-family);
-    font-size: var(--maerose-h1-size);
-    font-weight: var(--maerose-h1-weight);
-    line-height: var(--maerose-h1-line-height);
-    letter-spacing: var(--maerose-h1-letter-spacing);
-    color: var(--maerose-ivory-white);
+    @apply font-cursive-elegant text-heading-1 text-charcoal-black;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   }
   
+  /* Sophisticated Serif Subheadings */
   h2 {
-    font-family: var(--maerose-font-family);
-    font-size: var(--maerose-h2-size);
-    font-weight: var(--maerose-h2-weight);
-    line-height: var(--maerose-h2-line-height);
-    letter-spacing: var(--maerose-h2-letter-spacing);
-    color: var(--maerose-ivory-white);
+    @apply font-serif-display text-heading-2 text-charcoal-black;
+    font-weight: 500;
+    letter-spacing: -0.01em;
   }
   
   h3 {
-    font-family: var(--maerose-font-family);
-    font-size: var(--maerose-h3-size);
-    font-weight: var(--maerose-h3-weight);
-    line-height: var(--maerose-h3-line-height);
-    letter-spacing: var(--maerose-h3-letter-spacing);
-    color: var(--maerose-ivory-white);
+    @apply font-serif-elegant text-heading-3 text-graphite;
+    font-weight: 500;
+    letter-spacing: -0.005em;
   }
   
+  h4 {
+    @apply font-serif-elegant text-heading-4 text-steel-gray;
+    font-weight: 500;
+  }
+  
+  h5 {
+    @apply font-sans-clean text-heading-5 text-steel-gray;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  h6 {
+    @apply font-sans-clean text-body-large text-silver-mist;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  
+  /* Clean Black Body Text */
   p {
-    margin: 0;
-    font-family: var(--maerose-font-family);
-    font-size: var(--maerose-body-regular-size);
-    font-weight: var(--maerose-body-weight);
-    line-height: var(--maerose-body-line-height);
-    color: var(--maerose-soft-mist-grey);
+    @apply font-sans-clean text-body-regular text-charcoal-black;
+    margin: 0 0 1.5em 0;
+  }
+  
+  /* Text Variations */
+  .text-lead {
+    @apply font-sans-light text-body-xlarge text-steel-gray;
+    letter-spacing: 0.01em;
+  }
+  
+  .text-caption {
+    @apply font-sans-clean text-caption text-silver-mist uppercase;
+    letter-spacing: 0.1em;
+  }
+  
+  /* Link Styles */
+  a {
+    @apply text-pure-silver transition-colors duration-300;
+    text-decoration: none;
+    position: relative;
+  }
+  
+  a:hover {
+    @apply text-charcoal-black;
+  }
+  
+  a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    @apply bg-pure-silver;
+    transition: width 0.3s ease;
+  }
+  
+  a:hover::after {
+    width: 100%;
   }
 
   /* Focus styles for accessibility */
   :focus-visible {
-    outline: var(--maerose-focus-outline);
-    outline-offset: var(--maerose-focus-offset);
+    @apply outline-none ring-2 ring-pure-silver ring-offset-2 ring-offset-snow-white;
   }
   
   /* Remove default focus outline */
@@ -82,7 +129,203 @@
 
   /* Selection styles */
   ::selection {
-    background-color: var(--maerose-champagne-gold);
-    color: var(--maerose-primary-noir);
+    @apply bg-silver-shimmer text-charcoal-black;
+  }
+}
+
+/* PREMIUM COMPONENT STYLES */
+@layer components {
+  /* Luxury Button Styles */
+  .btn-primary {
+    @apply bg-charcoal-black text-pure-white px-8 py-3 rounded-soft font-sans-clean font-medium
+           transition-all duration-300 shadow-soft hover:shadow-elevated
+           hover:bg-graphite hover:scale-[1.02] active:scale-[0.98];
+    letter-spacing: 0.02em;
+  }
+  
+  .btn-secondary {
+    @apply bg-pearl-silver text-charcoal-black px-8 py-3 rounded-soft font-sans-clean font-medium
+           transition-all duration-300 shadow-subtle hover:shadow-card
+           hover:bg-bright-silver hover:scale-[1.02] active:scale-[0.98];
+    letter-spacing: 0.02em;
+  }
+  
+  .btn-outline {
+    @apply bg-transparent text-charcoal-black px-8 py-3 rounded-soft font-sans-clean font-medium
+           border border-silver-shimmer transition-all duration-300
+           hover:bg-charcoal-black hover:text-pure-white hover:border-charcoal-black
+           hover:scale-[1.02] active:scale-[0.98];
+    letter-spacing: 0.02em;
+  }
+  
+  .btn-ghost {
+    @apply bg-transparent text-steel-gray px-6 py-2 font-sans-clean font-medium
+           transition-all duration-300 hover:text-charcoal-black hover:bg-frost;
+    letter-spacing: 0.02em;
+  }
+  
+  /* Premium Card Styles */
+  .card-luxury {
+    @apply bg-pure-white rounded-luxury p-8 shadow-card transition-all duration-300
+           hover:shadow-hover hover:translate-y-[-4px];
+  }
+  
+  .card-silver {
+    @apply bg-gradient-to-br from-pearl-silver via-silver-shimmer to-bright-silver
+           rounded-luxury p-8 shadow-metallic transition-all duration-300
+           hover:shadow-hover hover:translate-y-[-4px];
+  }
+  
+  .card-minimal {
+    @apply bg-snow-white rounded-medium p-6 border border-platinum
+           transition-all duration-300 hover:border-silver-shimmer hover:shadow-soft;
+  }
+  
+  /* Premium Input Styles */
+  .input-luxury {
+    @apply w-full px-6 py-3 bg-pure-white border border-platinum rounded-soft
+           font-sans-clean text-charcoal-black placeholder-silver-mist
+           transition-all duration-300 focus:border-pure-silver focus:shadow-focus
+           focus:outline-none;
+  }
+  
+  .input-minimal {
+    @apply w-full px-4 py-3 bg-transparent border-b border-silver-shimmer
+           font-sans-clean text-charcoal-black placeholder-silver-mist
+           transition-all duration-300 focus:border-charcoal-black
+           focus:outline-none;
+  }
+  
+  /* Navigation Styles */
+  .nav-link {
+    @apply font-sans-clean text-ui-regular text-steel-gray transition-all duration-300
+           hover:text-charcoal-black relative;
+    letter-spacing: 0.03em;
+  }
+  
+  .nav-link-active {
+    @apply text-charcoal-black font-medium;
+  }
+  
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-[1px] bg-pure-silver transition-all duration-300;
+  }
+  
+  .nav-link:hover::after,
+  .nav-link-active::after {
+    @apply w-full;
+  }
+  
+  /* Badge Styles */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-pill text-ui-small font-medium;
+    letter-spacing: 0.05em;
+  }
+  
+  .badge-silver {
+    @apply bg-pearl-silver text-charcoal-black;
+  }
+  
+  .badge-dark {
+    @apply bg-charcoal-black text-pure-white;
+  }
+  
+  .badge-outline {
+    @apply bg-transparent border border-silver-shimmer text-steel-gray;
+  }
+  
+  /* Divider Styles */
+  .divider {
+    @apply w-full h-[1px] bg-gradient-to-r from-transparent via-silver-shimmer to-transparent;
+  }
+  
+  .divider-solid {
+    @apply w-full h-[1px] bg-platinum;
+  }
+  
+  /* Loading States */
+  .shimmer {
+    @apply relative overflow-hidden;
+    background: linear-gradient(
+      90deg,
+      theme('colors.platinum') 0%,
+      theme('colors.silver-shimmer') 50%,
+      theme('colors.platinum') 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+}
+
+/* UTILITY EXTENSIONS */
+@layer utilities {
+  /* Text Gradients */
+  .text-gradient-silver {
+    @apply bg-gradient-to-r from-steel-gray via-pure-silver to-steel-gray bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-luxury {
+    @apply bg-gradient-to-r from-charcoal-black via-steel-gray to-charcoal-black bg-clip-text text-transparent;
+  }
+  
+  /* Background Patterns */
+  .bg-pattern-dots {
+    background-image: radial-gradient(circle, theme('colors.silver-shimmer') 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .bg-pattern-grid {
+    background-image: 
+      linear-gradient(theme('colors.platinum') 1px, transparent 1px),
+      linear-gradient(90deg, theme('colors.platinum') 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  
+  /* Glassmorphism Effects */
+  .glass {
+    @apply bg-white/80 backdrop-blur-lg border border-white/20;
+  }
+  
+  .glass-dark {
+    @apply bg-charcoal-black/80 backdrop-blur-lg border border-white/10;
+  }
+  
+  /* Animation Classes */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Scrollbar Styling */
+  .scrollbar-luxury::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .scrollbar-luxury::-webkit-scrollbar-track {
+    @apply bg-frost;
+  }
+  
+  .scrollbar-luxury::-webkit-scrollbar-thumb {
+    @apply bg-silver-shimmer rounded-full;
+    transition: background-color 0.3s ease;
+  }
+  
+  .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
+    @apply bg-pure-silver;
   }
 }

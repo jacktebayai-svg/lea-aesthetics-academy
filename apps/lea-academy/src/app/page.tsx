@@ -1,6 +1,7 @@
 import Navigation from '../components/Navigation';
 import Hero from '../components/Hero';
 import { ServiceGrid, type Service } from '../components/ServiceCard';
+import { LEAHeader, LEAFooter } from '@leas-academy/ui';
 
 // Sample services data
 const featuredServices: Service[] = [
@@ -231,7 +232,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  );
-}
   );
 }

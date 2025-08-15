@@ -10,26 +10,39 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Lea Aesthetics Brand Colors - Monochrome Silver Palette
-        'deep-charcoal': '#111111',      // Primary text, button backgrounds, strong accents
-        'elegant-silver': '#D6D6D6',     // Primary background for cards and key interface elements
-        'light-platinum': '#EAEAEA',     // Main application background color
-        'muted-gray': '#888888',         // Subheadings, icons, muted text
-        'silver-accent': '#B8B8B8',      // Hover states, active selections, borders
-        'pure-white': '#FFFFFF',         // Pure white for contrast and highlights
+        // LEA AESTHETICS PREMIUM SILVER PALETTE
+        // Sophisticated monochrome with metallic silver accents
+        'midnight-black': '#0A0A0A',     // Deepest black for premium headers
+        'charcoal-black': '#1A1A1A',     // Rich black for elegant headers
+        'graphite': '#2D2D2D',            // Dark graphite for strong emphasis
+        'steel-gray': '#4A4A4A',          // Steel gray for subtle headers
+        'silver-mist': '#6B6B6B',         // Silver mist for secondary elements
+        'pure-silver': '#9C9C9C',         // Pure metallic silver accent
+        'bright-silver': '#B8B8B8',       // Bright silver for highlights
+        'pearl-silver': '#D0D0D0',        // Pearl silver for surfaces
+        'platinum': '#E5E5E5',            // Light platinum backgrounds
+        'frost': '#F0F0F0',               // Frost white for light backgrounds
+        'snow-white': '#F8F8F8',          // Snow white for pristine surfaces
+        'pure-white': '#FFFFFF',          // Pure white for maximum contrast
+        
+        // Metallic accent tones
+        'silver-shimmer': '#C7C7C7',      // Shimmering silver for special elements
+        'chrome': '#ADADAD',              // Chrome metallic for interactive elements
+        'gunmetal': '#525252',
         
         // Semantic color mappings for consistency
-        primary: '#111111',              // Deep charcoal for primary actions
-        secondary: '#D6D6D6',            // Elegant silver for secondary elements
-        background: '#EAEAEA',           // Light platinum application background
-        surface: '#D6D6D6',              // Elegant silver for card surfaces
-        muted: '#888888',                // Muted gray for secondary text
-        accent: '#B8B8B8',               // Silver accent for interactions
-        border: '#B8B8B8',               // Silver accent for borders
+        primary: '#1A1A1A',              // Charcoal black for primary actions
+        secondary: '#B8B8B8',            // Bright silver for secondary elements
+        background: '#F8F8F8',           // Snow white application background
+        surface: '#FFFFFF',              // Pure white for card surfaces
+        muted: '#6B6B6B',                // Silver mist for secondary text
+        accent: '#9C9C9C',               // Pure silver accent for interactions
+        border: '#E5E5E5',               // Platinum for subtle borders
         text: {
-          primary: '#111111',            // Deep charcoal for primary text
-          secondary: '#888888',          // Muted gray for secondary text
-          muted: '#B8B8B8',              // Silver accent for muted text
+          primary: '#1A1A1A',            // Charcoal black for primary text
+          secondary: '#4A4A4A',          // Steel gray for secondary text
+          muted: '#6B6B6B',              // Silver mist for muted text
+          inverse: '#FFFFFF',            // White text on dark backgrounds
         },
         
         // Legacy colors (maintain compatibility during transition)
@@ -41,38 +54,50 @@ const config: Config = {
         ivory: "#FFFFFF",
       },
       fontFamily: {
-        // Lea Aesthetics Typography System
-        'serif-elegant': ["var(--font-playfair-display)", "Georgia", "serif"], // Elegant serif for headings and accents
-        'sans-clean': ["var(--font-inter)", "system-ui", "sans-serif"],     // Clean sans-serif for body and UI
+        // LEA AESTHETICS PREMIUM TYPOGRAPHY
+        'cursive-elegant': ['"Pinyon Script"', '"Allura"', '"Great Vibes"', 'cursive'], // Elegant cursive for luxury headers
+        'serif-display': ['"Playfair Display"', '"Didot"', '"Bodoni MT"', 'Georgia', 'serif'], // Sophisticated serif display
+        'serif-elegant': ['"Cormorant Garamond"', '"EB Garamond"', 'Georgia', 'serif'], // Refined serif for subheadings
+        'sans-clean': ['"Inter"', '"Helvetica Neue"', 'Arial', 'system-ui', 'sans-serif'], // Clean modern sans-serif
+        'sans-light': ['"Inter Light"', '"Helvetica Neue Light"', 'sans-serif'], // Light weight for elegant body
         // Semantic font mappings
-        heading: ["var(--font-playfair-display)", "Georgia", "serif"],
-        body: ["var(--font-inter)", "system-ui", "sans-serif"],
-        ui: ["var(--font-inter)", "system-ui", "sans-serif"],
+        heading: ['"Pinyon Script"', '"Allura"', 'cursive'],
+        subheading: ['"Playfair Display"', '"Didot"', 'serif'],
+        body: ['"Inter"', '"Helvetica Neue"', 'sans-serif'],
+        ui: ['"Inter"', 'system-ui', 'sans-serif'],
         // Legacy (maintain compatibility)
         inter: ["var(--font-inter)", "sans-serif"],
         playfair: ["var(--font-playfair-display)", "serif"],
       },
       fontSize: {
-        // Lea Aesthetics Typography Scale
-        'heading-1': ['48px', { lineHeight: '1.3', letterSpacing: '-0.5px', fontWeight: '600' }], // Elegant serif
-        'heading-2': ['36px', { lineHeight: '1.3', letterSpacing: '-0.25px', fontWeight: '500' }], // Elegant serif
-        'heading-3': ['28px', { lineHeight: '1.4', letterSpacing: '-0.1px', fontWeight: '500' }],  // Elegant serif
-        'heading-4': ['24px', { lineHeight: '1.4', fontWeight: '500' }],                          // Elegant serif
-        'body-large': ['18px', { lineHeight: '1.6', fontWeight: '400' }],                        // Clean sans-serif
-        'body-regular': ['16px', { lineHeight: '1.6', fontWeight: '400' }],                      // Clean sans-serif
-        'body-small': ['14px', { lineHeight: '1.6', fontWeight: '400' }],                        // Clean sans-serif
-        'body-xs': ['12px', { lineHeight: '1.5', fontWeight: '400' }],                           // Clean sans-serif
-        'ui-large': ['16px', { lineHeight: '1.5', fontWeight: '500' }],                          // Clean sans-serif for UI
-        'ui-regular': ['14px', { lineHeight: '1.5', fontWeight: '400' }],                        // Clean sans-serif for UI
-        'ui-small': ['12px', { lineHeight: '1.4', fontWeight: '400' }],                          // Clean sans-serif for UI
+        // LEA AESTHETICS PREMIUM TYPOGRAPHY SCALE
+        'display-xlarge': ['72px', { lineHeight: '1.1', letterSpacing: '0.02em', fontWeight: '400' }], // Luxury cursive display
+        'display-large': ['60px', { lineHeight: '1.15', letterSpacing: '0.01em', fontWeight: '400' }], // Elegant cursive display
+        'heading-1': ['48px', { lineHeight: '1.2', letterSpacing: '0.01em', fontWeight: '400' }],      // Cursive main headers
+        'heading-2': ['36px', { lineHeight: '1.25', letterSpacing: '-0.01em', fontWeight: '500' }],    // Serif subheadings
+        'heading-3': ['28px', { lineHeight: '1.3', letterSpacing: '-0.005em', fontWeight: '500' }],    // Serif sections
+        'heading-4': ['24px', { lineHeight: '1.35', fontWeight: '500' }],                              // Serif smaller sections
+        'heading-5': ['20px', { lineHeight: '1.4', fontWeight: '500' }],                               // Serif minor headers
+        'body-xlarge': ['20px', { lineHeight: '1.7', fontWeight: '300' }],                            // Light elegant body
+        'body-large': ['18px', { lineHeight: '1.7', fontWeight: '400' }],                             // Clean body text
+        'body-regular': ['16px', { lineHeight: '1.75', fontWeight: '400' }],                          // Standard body
+        'body-small': ['14px', { lineHeight: '1.7', fontWeight: '400' }],                             // Small body text
+        'body-xs': ['12px', { lineHeight: '1.6', fontWeight: '400' }],                                // Extra small text
+        'ui-large': ['16px', { lineHeight: '1.5', fontWeight: '500' }],                               // UI elements
+        'ui-regular': ['14px', { lineHeight: '1.5', fontWeight: '500' }],                             // Standard UI
+        'ui-small': ['12px', { lineHeight: '1.4', fontWeight: '500' }],                               // Small UI
+        'caption': ['11px', { lineHeight: '1.4', fontWeight: '400', letterSpacing: '0.03em' }],       // Captions
       },
       boxShadow: {
-        // Lea Aesthetics Shadow System - Subtle and Professional
-        'subtle': '0px 2px 8px rgba(17, 17, 17, 0.06)',          // Very light shadow for subtle elevation
-        'card': '0px 4px 16px rgba(17, 17, 17, 0.08)',            // Card shadow with monochrome base
-        'elevated': '0px 8px 24px rgba(17, 17, 17, 0.12)',        // Elevated elements
-        'focus': '0px 0px 0px 3px rgba(184, 184, 184, 0.3)',      // Silver accent focus ring
-        'glow': '0px 0px 16px rgba(184, 184, 184, 0.2)',          // Subtle silver glow for interactions
+        // LEA AESTHETICS PREMIUM SHADOW SYSTEM
+        'subtle': '0px 2px 8px rgba(0, 0, 0, 0.04)',               // Ultra-subtle elevation
+        'soft': '0px 4px 12px rgba(0, 0, 0, 0.06)',                // Soft shadow for cards
+        'card': '0px 8px 24px rgba(0, 0, 0, 0.08)',                // Standard card elevation
+        'elevated': '0px 12px 32px rgba(0, 0, 0, 0.10)',           // Elevated modal shadow
+        'hover': '0px 16px 40px rgba(0, 0, 0, 0.12)',              // Hover state elevation
+        'focus': '0px 0px 0px 3px rgba(156, 156, 156, 0.25)',      // Silver focus ring
+        'glow': '0px 0px 20px rgba(156, 156, 156, 0.15)',          // Subtle silver glow
+        'metallic': '0px 4px 16px rgba(192, 192, 192, 0.2)',       // Metallic silver shadow
         
         // Legacy shadows (maintain compatibility)
         'maerose-soft': '0px 4px 16px rgba(17, 17, 17, 0.08)',
@@ -101,7 +126,16 @@ const config: Config = {
         'page': '600ms',
       },
       borderRadius: {
-        // Maerose Border Radius (24px for cards)
+        // LEA Border Radius System
+        'none': '0',
+        'subtle': '4px',
+        'soft': '8px',
+        'medium': '12px',
+        'large': '16px',
+        'xlarge': '20px',
+        'luxury': '24px',
+        'pill': '9999px',
+        // Legacy
         'maerose': '24px',
         xl: "1rem",
         "2xl": "1.5rem",
