@@ -4,6 +4,7 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
+import { CommonModule } from './common/common.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PaymentsModule } from './payments/payments.module';
@@ -22,7 +23,6 @@ import { StorageModule } from './storage/storage.module';
 import { TenantInterceptor } from './common/tenant/tenant.interceptor';
 import { TenantGuard } from './common/tenant/tenant.guard';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
-import { TenantScopingMiddleware } from './common/middleware/tenant-scoping.middleware';
 
 @Module({
   imports: [
@@ -33,6 +33,7 @@ import { TenantScopingMiddleware } from './common/middleware/tenant-scoping.midd
     }]),
     
     // Core modules
+    CommonModule,
     PrismaModule,
     AuthModule,
     UsersModule,
@@ -55,7 +56,6 @@ import { TenantScopingMiddleware } from './common/middleware/tenant-scoping.midd
     AppService,
     AvailabilityService,
     PolicyService,
-    TenantScopingMiddleware,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

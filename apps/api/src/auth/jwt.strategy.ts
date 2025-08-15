@@ -38,14 +38,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     const issuer = configService.get<string>('AUTH0_ISSUER');
     const audience = configService.get<string>('AUTH0_AUDIENCE');
-    const domain = configService.get<string>('AUTH0_DOMAIN');
+    
+    let strategyConfig: any;
 
     if (issuer && audience) {
       // Auth0 JWKS mode for production
       try {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const jwksRsa = require('jwks-rsa');
-        super({
+        strategyConfig = {
           jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
           ignoreExpiration: false,
           secretOrKeyProvider: jwksRsa.passportJwtSecret({
@@ -57,7 +57,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           issuer,
           audience,
           algorithms: ['RS256'],
-        });
+        };
       } catch (error) {
         throw new Error('Failed to initialize Auth0 JWKS. Install jwks-rsa: npm install jwks-rsa');
       }
@@ -67,13 +67,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       if (!secret) {
         throw new Error('JWT_SECRET is required for development mode');
       }
-      super({
+      strategyConfig = {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         ignoreExpiration: false,
         secretOrKey: secret,
         algorithms: ['HS256'],
-      });
+      };
     }
+
+    super(strategyConfig);
   }
 
   async validate(payload: JwtPayload): Promise<AuthUser> {
