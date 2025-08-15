@@ -1,0 +1,228 @@
+/* 
+ * Maerose Brand Tokens
+ * "Elegant Noir" Old Money Edition
+ * Version 1.0 
+ */
+
+:root {
+  /* Brand Colors - Exact Hex Values (no deviations allowed) */
+  --maerose-primary-noir: #1A1A1A;
+  --maerose-deep-charcoal: #2B2B2B;
+  --maerose-champagne-gold: #C5A880;
+  --maerose-champagne-highlight: #D4B97A;
+  --maerose-ivory-white: #FFFFFF;
+  --maerose-soft-mist-grey: #E0E0E0;
+  --maerose-estate-border-grey: #333333;
+
+  /* Typography Scale - Inter Variable Font Only */
+  --maerose-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  /* Heading Scales */
+  --maerose-h1-size: 48px;
+  --maerose-h1-weight: 700;
+  --maerose-h1-line-height: 1.4;
+  --maerose-h1-letter-spacing: -0.5px;
+  
+  --maerose-h2-size: 36px;
+  --maerose-h2-weight: 600;
+  --maerose-h2-line-height: 1.4;
+  --maerose-h2-letter-spacing: -0.25px;
+  
+  --maerose-h3-size: 28px;
+  --maerose-h3-weight: 500;
+  --maerose-h3-line-height: 1.4;
+  --maerose-h3-letter-spacing: 0;
+
+  /* Body Text Scales */
+  --maerose-body-large-size: 18px;
+  --maerose-body-regular-size: 16px;
+  --maerose-body-small-size: 14px;
+  --maerose-body-weight: 400;
+  --maerose-body-line-height: 1.6;
+
+  /* Spacing System - Generous Whitespace */
+  --maerose-section-padding-desktop: 96px;
+  --maerose-section-padding-mobile: 48px;
+  --maerose-component-gap-desktop: 64px;
+  --maerose-component-gap-mobile: 32px;
+  --maerose-gutter-desktop: 24px;
+  --maerose-gutter-mobile: 16px;
+  --maerose-card-padding: 24px;
+
+  /* Layout System */
+  --maerose-max-container-width: 1440px;
+  --maerose-grid-columns: 12;
+
+  /* Shadow System - Soft and Feathered */
+  --maerose-shadow-soft: 0px 8px 40px rgba(0, 0, 0, 0.4);
+  --maerose-shadow-card: 0px 4px 20px rgba(0, 0, 0, 0.3);
+  --maerose-shadow-elevated: 0px 12px 48px rgba(0, 0, 0, 0.5);
+  --maerose-shadow-button: 0px 2px 8px rgba(197, 168, 128, 0.3);
+
+  /* Border Radius */
+  --maerose-border-radius: 24px;
+  --maerose-border-radius-sm: 8px;
+  --maerose-border-radius-lg: 32px;
+
+  /* Motion System - Calm and Deliberate */
+  --maerose-duration-micro: 0.15s;
+  --maerose-duration-interaction: 0.3s;
+  --maerose-duration-modal: 0.4s;
+  --maerose-duration-page: 0.6s;
+  --maerose-easing: cubic-bezier(0.4, 0, 0.2, 1); /* ease-in-out */
+  --maerose-easing-gentle: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Gradients - Subtle Noir to Charcoal Only */
+  --maerose-gradient-noir: linear-gradient(180deg, var(--maerose-primary-noir) 0%, var(--maerose-deep-charcoal) 100%);
+  --maerose-gradient-noir-opacity: linear-gradient(180deg, 
+    rgba(26, 26, 26, 1) 0%, 
+    rgba(26, 26, 26, 0.92) 100%
+  );
+
+  /* Focus States */
+  --maerose-focus-outline: 2px solid var(--maerose-champagne-gold);
+  --maerose-focus-offset: 2px;
+}
+
+/* Utility Classes for Common Maerose Patterns */
+.maerose-heading-1 {
+  font-family: var(--maerose-font-family);
+  font-size: var(--maerose-h1-size);
+  font-weight: var(--maerose-h1-weight);
+  line-height: var(--maerose-h1-line-height);
+  letter-spacing: var(--maerose-h1-letter-spacing);
+  color: var(--maerose-ivory-white);
+}
+
+.maerose-heading-2 {
+  font-family: var(--maerose-font-family);
+  font-size: var(--maerose-h2-size);
+  font-weight: var(--maerose-h2-weight);
+  line-height: var(--maerose-h2-line-height);
+  letter-spacing: var(--maerose-h2-letter-spacing);
+  color: var(--maerose-ivory-white);
+}
+
+.maerose-heading-3 {
+  font-family: var(--maerose-font-family);
+  font-size: var(--maerose-h3-size);
+  font-weight: var(--maerose-h3-weight);
+  line-height: var(--maerose-h3-line-height);
+  letter-spacing: var(--maerose-h3-letter-spacing);
+  color: var(--maerose-ivory-white);
+}
+
+.maerose-body-large {
+  font-family: var(--maerose-font-family);
+  font-size: var(--maerose-body-large-size);
+  font-weight: var(--maerose-body-weight);
+  line-height: var(--maerose-body-line-height);
+  color: var(--maerose-soft-mist-grey);
+}
+
+.maerose-body-regular {
+  font-family: var(--maerose-font-family);
+  font-size: var(--maerose-body-regular-size);
+  font-weight: var(--maerose-body-weight);
+  line-height: var(--maerose-body-line-height);
+  color: var(--maerose-soft-mist-grey);
+}
+
+.maerose-body-small {
+  font-family: var(--maerose-font-family);
+  font-size: var(--maerose-body-small-size);
+  font-weight: var(--maerose-body-weight);
+  line-height: var(--maerose-body-line-height);
+  color: var(--maerose-soft-mist-grey);
+}
+
+/* Button Foundation Classes */
+.maerose-button-primary {
+  background-color: var(--maerose-champagne-gold);
+  color: var(--maerose-ivory-white);
+  border-radius: var(--maerose-border-radius);
+  padding: 12px 24px;
+  font-family: var(--maerose-font-family);
+  font-weight: 600;
+  box-shadow: var(--maerose-shadow-button);
+  transition: all var(--maerose-duration-interaction) var(--maerose-easing);
+  border: none;
+  cursor: pointer;
+}
+
+.maerose-button-primary:hover {
+  background-color: var(--maerose-champagne-highlight);
+  transform: scale(1.02);
+  box-shadow: var(--maerose-shadow-elevated);
+}
+
+.maerose-button-primary:active {
+  transform: scale(0.98);
+  box-shadow: var(--maerose-shadow-card);
+}
+
+.maerose-button-secondary {
+  background-color: transparent;
+  color: var(--maerose-champagne-gold);
+  border: 2px solid var(--maerose-champagne-gold);
+  border-radius: var(--maerose-border-radius);
+  padding: 10px 22px; /* Adjusted for border */
+  font-family: var(--maerose-font-family);
+  font-weight: 600;
+  transition: all var(--maerose-duration-interaction) var(--maerose-easing);
+  cursor: pointer;
+}
+
+.maerose-button-secondary:hover {
+  background-color: var(--maerose-champagne-gold);
+  color: var(--maerose-ivory-white);
+}
+
+/* Card Foundation */
+.maerose-card {
+  background-color: var(--maerose-deep-charcoal);
+  border-radius: var(--maerose-border-radius);
+  padding: var(--maerose-card-padding);
+  box-shadow: var(--maerose-shadow-card);
+  border: 1px solid var(--maerose-estate-border-grey);
+  transition: all var(--maerose-duration-interaction) var(--maerose-easing);
+}
+
+.maerose-card:hover {
+  box-shadow: var(--maerose-shadow-elevated);
+  border-color: rgba(197, 168, 128, 0.3);
+}
+
+/* Focus Styles for Accessibility */
+.maerose-focus:focus {
+  outline: var(--maerose-focus-outline);
+  outline-offset: var(--maerose-focus-offset);
+}
+
+/* Animation Classes */
+.maerose-fade-in {
+  animation: maeroseFadeIn var(--maerose-duration-interaction) var(--maerose-easing) forwards;
+}
+
+@keyframes maeroseFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  :root {
+    --maerose-h1-size: 36px;
+    --maerose-h2-size: 28px;
+    --maerose-h3-size: 24px;
+    --maerose-body-large-size: 16px;
+    --maerose-body-regular-size: 15px;
+    --maerose-body-small-size: 13px;
+  }
+}

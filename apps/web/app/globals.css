@@ -1,9 +1,69 @@
+@import './styles/tokens.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /* Maerose Foundation Styles */
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+  
   body {
-    @apply bg-ivory font-inter text-slate;
+    @apply font-inter;
+    background-color: var(--maerose-primary-noir);
+    color: var(--maerose-soft-mist-grey);
+    font-size: var(--maerose-body-regular-size);
+    line-height: var(--maerose-body-line-height);
+    font-weight: var(--maerose-body-weight);
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Maerose Typography Base */
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-family: var(--maerose-font-family);
+    color: var(--maerose-ivory-white);
+  }
+  
+  h1 {
+    @apply maerose-heading-1;
+  }
+  
+  h2 {
+    @apply maerose-heading-2;
+  }
+  
+  h3 {
+    @apply maerose-heading-3;
+  }
+  
+  p {
+    margin: 0;
+    @apply maerose-body-regular;
+  }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    outline: var(--maerose-focus-outline);
+    outline-offset: var(--maerose-focus-offset);
+  }
+  
+  /* Remove default focus outline */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Selection styles */
+  ::selection {
+    background-color: var(--maerose-champagne-gold);
+    color: var(--maerose-primary-noir);
   }
 }
