@@ -34,20 +34,39 @@
   }
   
   h1 {
-    @apply maerose-heading-1;
+    font-family: var(--maerose-font-family);
+    font-size: var(--maerose-h1-size);
+    font-weight: var(--maerose-h1-weight);
+    line-height: var(--maerose-h1-line-height);
+    letter-spacing: var(--maerose-h1-letter-spacing);
+    color: var(--maerose-ivory-white);
   }
   
   h2 {
-    @apply maerose-heading-2;
+    font-family: var(--maerose-font-family);
+    font-size: var(--maerose-h2-size);
+    font-weight: var(--maerose-h2-weight);
+    line-height: var(--maerose-h2-line-height);
+    letter-spacing: var(--maerose-h2-letter-spacing);
+    color: var(--maerose-ivory-white);
   }
   
   h3 {
-    @apply maerose-heading-3;
+    font-family: var(--maerose-font-family);
+    font-size: var(--maerose-h3-size);
+    font-weight: var(--maerose-h3-weight);
+    line-height: var(--maerose-h3-line-height);
+    letter-spacing: var(--maerose-h3-letter-spacing);
+    color: var(--maerose-ivory-white);
   }
   
   p {
     margin: 0;
-    @apply maerose-body-regular;
+    font-family: var(--maerose-font-family);
+    font-size: var(--maerose-body-regular-size);
+    font-weight: var(--maerose-body-weight);
+    line-height: var(--maerose-body-line-height);
+    color: var(--maerose-soft-mist-grey);
   }
 
   /* Focus styles for accessibility */

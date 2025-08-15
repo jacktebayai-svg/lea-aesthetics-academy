@@ -2,7 +2,7 @@
 
 import React, { forwardRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../utils/cn';
+import { cn } from './utils/cn';
 
 // Enterprise-grade Icon system with comprehensive library
 const iconVariants = cva(

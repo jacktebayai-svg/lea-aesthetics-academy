@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../utils/cn';
+import { cn } from './utils/cn';
 
 // Enterprise-grade Button component with premium interactions
 const buttonVariants = cva(
@@ -95,7 +95,7 @@ interface ButtonProps
 }
 
 // Premium loading spinner component
-const LoadingSpinner = ({ size = "default" }: { size?: string }) => {
+const LoadingSpinner = ({ size = "default" }: { size?: string | null }) => {
   const spinnerSizes = {
     sm: "w-4 h-4",
     default: "w-5 h-5",
@@ -104,11 +104,13 @@ const LoadingSpinner = ({ size = "default" }: { size?: string }) => {
     icon: "w-5 h-5",
   };
 
+  const currentSize = size || "default";
+
   return (
     <svg
       className={cn(
         "animate-spin text-current",
-        spinnerSizes[size as keyof typeof spinnerSizes] || spinnerSizes.default
+        spinnerSizes[currentSize as keyof typeof spinnerSizes] || spinnerSizes.default
       )}
       fill="none"
       viewBox="0 0 24 24"
