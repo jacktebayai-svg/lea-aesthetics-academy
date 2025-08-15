@@ -7,5 +7,9 @@ export class CreateTenantDto {
 
   @IsString()
   @IsNotEmpty()
+  slug: string;
+
+  @IsString()
+  @IsNotEmpty()
   plan: string;
 }

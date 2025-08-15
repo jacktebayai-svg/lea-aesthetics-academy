@@ -18,6 +18,7 @@ export class DocumentsController {
         tenantId,
         clientId,
         type,
+        title: `${type} Document`,
         content,
         version: 'v0',
         locked: false,

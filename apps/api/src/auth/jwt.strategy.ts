@@ -205,6 +205,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       tenant = await this.prisma.tenant.create({
         data: {
           name: 'Demo Tenant',
+          slug: 'demo-tenant',
           plan: 'basic',
         },
       });

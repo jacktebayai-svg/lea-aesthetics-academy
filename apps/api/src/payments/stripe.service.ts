@@ -73,6 +73,7 @@ export class StripeService {
           currency,
           status: 'REQUIRES_ACTION',
           depositCents,
+          type: depositCents > 0 ? 'DEPOSIT' : 'FULL',
         },
       });
 
@@ -171,7 +172,7 @@ export class StripeService {
       });
 
       // Save subscription to database
-      const plan: Prisma.InputJsonValue = {
+      const planDetails: Prisma.InputJsonValue = {
         priceId,
         status: subscription.status,
         items: subscription.items.data.map((i) => ({ id: i.id, price: i.price?.id })),
@@ -185,7 +186,7 @@ export class StripeService {
           status: subscription.status,
           currentPeriodStart: new Date(subscription.current_period_start * 1000),
           currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-          plan,
+          plan: priceId, // Use string for plan field
         },
       });
 
