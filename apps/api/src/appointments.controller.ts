@@ -270,12 +270,12 @@ export class AppointmentsController {
         clientId: createData.clientId,
         practitionerId: createData.practitionerId,
         serviceId: createData.serviceId,
-        locationId: createData.locationId || null,
+        locationId: createData.locationId,
         startTs: new Date(createData.startTs),
         endTs: new Date(createData.endTs),
         notes: createData.notes,
         metadata: createData.metadata,
-        status: 'CONFIRMED',
+        status: 'SCHEDULED',
         policyVersion,
       },
       include: {
@@ -459,7 +459,6 @@ export class AppointmentsController {
         notes: cancelData.notes
           ? `${appointment.notes || ''}\n\nCancellation: ${cancelData.notes}`
           : appointment.notes,
-        updatedAt: new Date(),
       },
     });
 
@@ -505,10 +504,10 @@ export class AppointmentsController {
       );
     }
 
-    // Only allow deletion of draft or cancelled appointments
-    if (!['DRAFT', 'CANCELLED'].includes(appointment.status)) {
+    // Only allow deletion of pending deposit or cancelled appointments
+    if (!['PENDING_DEPOSIT', 'CANCELLED'].includes(appointment.status)) {
       throw new HttpException(
-        'Only draft or cancelled appointments can be deleted',
+        'Only pending or cancelled appointments can be deleted',
         HttpStatus.BAD_REQUEST,
       );
     }

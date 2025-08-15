@@ -97,9 +97,8 @@ export const ServiceSchema = z.object({
 });
 
 export const AppointmentStatusSchema = z.enum([
-  'DRAFT',
-  'CONFIRMED',
-  'IN_PROGRESS',
+  'PENDING_DEPOSIT',
+  'SCHEDULED',
   'COMPLETED',
   'CANCELLED',
   'NO_SHOW'
