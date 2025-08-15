@@ -1,56 +1,524 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Patch,
+  Delete,
+  Param,
+  Query,
+  HttpStatus,
+  HttpException,
+  Logger,
+  UsePipes,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { PrismaService } from './prisma/prisma.service';
 import { PolicyService } from './policy.service';
+import { ZodValidationPipe } from './common/pipes/zod-validation.pipe';
+import {
+  CreateAppointmentSchema,
+  UpdateAppointmentSchema,
+  ListAppointmentsQuerySchema,
+  AppointmentParamsSchema,
+  CancelAppointmentSchema,
+  RescheduleAppointmentSchema,
+} from './appointments/appointments.schemas';
+import type {
+  CreateAppointmentRequest,
+  UpdateAppointmentRequest,
+  ListAppointmentsQuery,
+  AppointmentParams,
+  CancelAppointmentRequest,
+  RescheduleAppointmentRequest,
+} from './appointments/appointments.schemas';
+import { TenantId } from './common/tenant/tenant.decorator';
+import { PaginatedResponse } from './common/schemas/common.schemas';
 
+@ApiTags('Appointments')
+@ApiBearerAuth()
 @Controller('v1/appointments')
 export class AppointmentsController {
+  private readonly logger = new Logger(AppointmentsController.name);
+
   constructor(
     private prisma: PrismaService,
     private policy: PolicyService,
   ) {}
 
-  @Post()
-  async create(@Body() body: any) {
-    const {
-      tenantId,
-      clientId,
-      practitionerId,
-      serviceId,
-      locationId,
-      startTs,
-      endTs,
-    } = body;
+  @Get()
+  @ApiOperation({ summary: 'List appointments with pagination and filtering' })
+  @ApiResponse({ status: 200, description: 'Appointments retrieved successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid query parameters' })
+  @UsePipes(new ZodValidationPipe(ListAppointmentsQuerySchema))
+  async list(
+    @Query() query: ListAppointmentsQuery,
+    @TenantId() tenantId: string,
+  ): Promise<PaginatedResponse<any>> {
+    const { page, limit, sortBy, sortOrder, ...filters } = query;
+    const offset = (page - 1) * limit;
 
-    const svc = await this.prisma.service.findUnique({
-      where: { id: serviceId },
-    });
-    const price = svc?.basePrice ?? 0;
-    // record current policy version = 1, future: load tenant policy
-    const appt = await this.prisma.appointment.create({
-      data: {
+    // Build where clause with tenant isolation and filters
+    const where: any = {
+      tenantId,
+      ...filters,
+    };
+
+    // Date range filtering
+    if (query.dateFrom || query.dateTo) {
+      where.startTs = {};
+      if (query.dateFrom) where.startTs.gte = new Date(query.dateFrom);
+      if (query.dateTo) where.startTs.lte = new Date(query.dateTo);
+    }
+
+    // Exclude completed appointments unless explicitly requested
+    if (!query.includeCompleted) {
+      where.status = { notIn: ['COMPLETED', 'CANCELLED', 'NO_SHOW'] };
+    }
+
+    const [appointments, totalCount] = await Promise.all([
+      this.prisma.appointment.findMany({
+        where,
+        skip: offset,
+        take: limit,
+        orderBy: sortBy ? { [sortBy]: sortOrder } : { id: 'desc' },
+        include: {
+          client: {
+            select: {
+              id: true,
+              personal: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  phone: true,
+                },
+              },
+            },
+          },
+          practitioner: {
+            select: {
+              id: true,
+              profile: {
+                select: {
+                  displayName: true,
+                  specialties: true,
+                },
+              },
+            },
+          },
+          service: {
+            select: {
+              id: true,
+              name: true,
+              category: true,
+              durationMin: true,
+              basePrice: true,
+            },
+          },
+          location: {
+            select: {
+              id: true,
+              name: true,
+              address: true,
+            },
+          },
+        },
+      }),
+      this.prisma.appointment.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      data: appointments,
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get appointment by ID' })
+  @ApiResponse({ status: 200, description: 'Appointment found' })
+  @ApiResponse({ status: 404, description: 'Appointment not found' })
+  @UsePipes(new ZodValidationPipe(AppointmentParamsSchema))
+  async findOne(
+    @Param() params: AppointmentParams,
+    @TenantId() tenantId: string,
+  ) {
+    const appointment = await this.prisma.appointment.findFirst({
+      where: {
+        id: params.id,
         tenantId,
-        clientId,
-        practitionerId,
-        serviceId,
-        locationId,
-        startTs: new Date(startTs),
-        endTs: new Date(endTs),
-        status: 'PENDING_DEPOSIT',
-        policyVersion: 1,
+      },
+      include: {
+        client: {
+          select: {
+            id: true,
+            personal: true,
+          },
+        },
+        practitioner: {
+          select: {
+            id: true,
+            profile: true,
+          },
+        },
+        service: true,
+        location: true,
       },
     });
 
-    // enqueue notification stub via DB event (future: BullMQ)
+    if (!appointment) {
+      throw new HttpException(
+        'Appointment not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return appointment;
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new appointment' })
+  @ApiResponse({ status: 201, description: 'Appointment created successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid appointment data' })
+  @ApiResponse({ status: 409, description: 'Time slot conflict or practitioner unavailable' })
+  @UsePipes(new ZodValidationPipe(CreateAppointmentSchema))
+  async create(
+    @Body() createData: CreateAppointmentRequest,
+    @TenantId() tenantId: string,
+  ) {
+    this.logger.log(`Creating appointment for tenant: ${tenantId}`);
+
+    // Validate service exists and is active
+    const service = await this.prisma.service.findFirst({
+      where: {
+        id: createData.serviceId,
+        tenantId,
+        isActive: true,
+      },
+    });
+
+    if (!service) {
+      throw new HttpException(
+        'Service not found or inactive',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Validate practitioner exists and is available
+    const practitioner = await this.prisma.user.findFirst({
+      where: {
+        id: createData.practitionerId,
+        roles: {
+          some: {
+            tenantId,
+            role: { in: ['PRACTITIONER', 'OWNER', 'MANAGER'] },
+          },
+        },
+      },
+    });
+
+    if (!practitioner) {
+      throw new HttpException(
+        'Practitioner not found or not authorized',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Check for time slot conflicts
+    const conflictingAppointment = await this.prisma.appointment.findFirst({
+      where: {
+        tenantId,
+        practitionerId: createData.practitionerId,
+        status: { notIn: ['CANCELLED', 'NO_SHOW'] },
+        OR: [
+          {
+            startTs: {
+              lt: new Date(createData.endTs),
+            },
+            endTs: {
+              gt: new Date(createData.startTs),
+            },
+          },
+        ],
+      },
+    });
+
+    if (conflictingAppointment) {
+      throw new HttpException(
+        'Time slot conflicts with existing appointment',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    // Get current policy version (TODO: implement tenant-specific policies)
+    const policyVersion = 1;
+
+    // Create the appointment
+    const appointment = await this.prisma.appointment.create({
+      data: {
+        tenantId,
+        clientId: createData.clientId,
+        practitionerId: createData.practitionerId,
+        serviceId: createData.serviceId,
+        locationId: createData.locationId || null,
+        startTs: new Date(createData.startTs),
+        endTs: new Date(createData.endTs),
+        notes: createData.notes,
+        metadata: createData.metadata,
+        status: 'CONFIRMED',
+        policyVersion,
+      },
+      include: {
+        client: {
+          select: {
+            id: true,
+            personal: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+          },
+        },
+        service: {
+          select: {
+            id: true,
+            name: true,
+            basePrice: true,
+          },
+        },
+      },
+    });
+
+    // Create booking event for notifications and audit trail
     await this.prisma.event.create({
       data: {
         tenantId,
-        actorId: clientId,
+        actorId: createData.clientId,
         type: 'BookingCreated',
-        payload: { appointmentId: appt.id, serviceId, price },
+        payload: {
+          appointmentId: appointment.id,
+          serviceId: createData.serviceId,
+          price: service.basePrice,
+          practitionerId: createData.practitionerId,
+        },
         occurredAt: new Date(),
       },
     });
 
-    return appt;
+    this.logger.log(`Appointment created successfully: ${appointment.id}`);
+
+    return appointment;
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update appointment' })
+  @ApiResponse({ status: 200, description: 'Appointment updated successfully' })
+  @ApiResponse({ status: 404, description: 'Appointment not found' })
+  @ApiResponse({ status: 409, description: 'Time slot conflict' })
+  @UsePipes(new ZodValidationPipe(UpdateAppointmentSchema))
+  async update(
+    @Param() params: AppointmentParams,
+    @Body() updateData: UpdateAppointmentRequest,
+    @TenantId() tenantId: string,
+  ) {
+    // Verify appointment exists and belongs to tenant
+    const existingAppointment = await this.prisma.appointment.findFirst({
+      where: {
+        id: params.id,
+        tenantId,
+      },
+    });
+
+    if (!existingAppointment) {
+      throw new HttpException(
+        'Appointment not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // Check if appointment can be modified
+    if (existingAppointment.status === 'COMPLETED') {
+      throw new HttpException(
+        'Cannot modify completed appointment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // If updating time slots, check for conflicts
+    if (updateData.startTs && updateData.endTs && updateData.practitionerId) {
+      const conflictingAppointment = await this.prisma.appointment.findFirst({
+        where: {
+          id: { not: params.id }, // Exclude current appointment
+          tenantId,
+          practitionerId: updateData.practitionerId,
+          status: { notIn: ['CANCELLED', 'NO_SHOW'] },
+          OR: [
+            {
+              startTs: {
+                lt: new Date(updateData.endTs),
+              },
+              endTs: {
+                gt: new Date(updateData.startTs),
+              },
+            },
+          ],
+        },
+      });
+
+      if (conflictingAppointment) {
+        throw new HttpException(
+          'Time slot conflicts with existing appointment',
+          HttpStatus.CONFLICT,
+        );
+      }
+    }
+
+    // Update the appointment
+    const updatedAppointment = await this.prisma.appointment.update({
+      where: { id: params.id },
+      data: {
+        ...updateData,
+        startTs: updateData.startTs ? new Date(updateData.startTs) : undefined,
+        endTs: updateData.endTs ? new Date(updateData.endTs) : undefined,
+      },
+      include: {
+        client: {
+          select: {
+            id: true,
+            personal: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+          },
+        },
+        service: {
+          select: {
+            id: true,
+            name: true,
+            basePrice: true,
+          },
+        },
+      },
+    });
+
+    this.logger.log(`Appointment updated: ${params.id}`);
+
+    return updatedAppointment;
+  }
+
+  @Patch(':id/cancel')
+  @ApiOperation({ summary: 'Cancel appointment' })
+  @ApiResponse({ status: 200, description: 'Appointment cancelled successfully' })
+  @ApiResponse({ status: 404, description: 'Appointment not found' })
+  @UsePipes(new ZodValidationPipe(CancelAppointmentSchema))
+  async cancel(
+    @Param() params: AppointmentParams,
+    @Body() cancelData: CancelAppointmentRequest,
+    @TenantId() tenantId: string,
+  ) {
+    const appointment = await this.prisma.appointment.findFirst({
+      where: {
+        id: params.id,
+        tenantId,
+      },
+    });
+
+    if (!appointment) {
+      throw new HttpException(
+        'Appointment not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (appointment.status === 'CANCELLED') {
+      throw new HttpException(
+        'Appointment is already cancelled',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const cancelledAppointment = await this.prisma.appointment.update({
+      where: { id: params.id },
+      data: {
+        status: 'CANCELLED',
+        notes: cancelData.notes
+          ? `${appointment.notes || ''}\n\nCancellation: ${cancelData.notes}`
+          : appointment.notes,
+        updatedAt: new Date(),
+      },
+    });
+
+    // Create cancellation event
+    await this.prisma.event.create({
+      data: {
+        tenantId,
+        actorId: appointment.clientId,
+        type: 'BookingCancelled',
+        payload: {
+          appointmentId: params.id,
+          reason: cancelData.reason,
+          refundRequested: cancelData.refundRequested,
+        },
+        occurredAt: new Date(),
+      },
+    });
+
+    this.logger.log(`Appointment cancelled: ${params.id}`);
+
+    return cancelledAppointment;
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete appointment (hard delete)' })
+  @ApiResponse({ status: 204, description: 'Appointment deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Appointment not found' })
+  async delete(
+    @Param() params: AppointmentParams,
+    @TenantId() tenantId: string,
+  ) {
+    const appointment = await this.prisma.appointment.findFirst({
+      where: {
+        id: params.id,
+        tenantId,
+      },
+    });
+
+    if (!appointment) {
+      throw new HttpException(
+        'Appointment not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // Only allow deletion of draft or cancelled appointments
+    if (!['DRAFT', 'CANCELLED'].includes(appointment.status)) {
+      throw new HttpException(
+        'Only draft or cancelled appointments can be deleted',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.prisma.appointment.delete({
+      where: { id: params.id },
+    });
+
+    this.logger.log(`Appointment deleted: ${params.id}`);
+
+    return { message: 'Appointment deleted successfully' };
   }
 }
