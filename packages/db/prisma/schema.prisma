@@ -13,12 +13,16 @@ model Tenant {
   name      String
   plan      String
   createdAt DateTime @default(now())
+  
+  // Relations
+  userRoles UserRole[]
 }
 
 model User {
   id             String     @id @default(cuid())
   email          String     @unique
   password       String?    // Keep for demo, but spec implies external auth
+  authId         String?    @unique // Auth0 user_id
   authProviderId String?    // Optional for now, as per spec
   firstName      String?
   lastName       String?
@@ -49,6 +53,7 @@ enum Role {
   FRONTDESK
   FINANCE
   SUPPORT
+  CLIENT
 }
 
 model UserRole {
@@ -59,6 +64,7 @@ model UserRole {
   locationId String?
   
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   
   @@map("user_roles")
 }

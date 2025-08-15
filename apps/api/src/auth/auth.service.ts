@@ -6,7 +6,11 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
-import { JwtPayload } from './jwt.strategy';
+interface JwtPayloadForLogin {
+  sub: string;
+  email: string;
+  roles: string[];
+}
 
 export interface LoginResponse {
   user: {
@@ -63,7 +67,7 @@ export class AuthService {
   }
 
   async login(user: any): Promise<LoginResponse> {
-    const payload: JwtPayload = {
+    const payload: JwtPayloadForLogin = {
       sub: user.id,
       email: user.email,
       roles: user.roles?.map(r => r.role) || [],
@@ -163,7 +167,7 @@ export class AuthService {
       }
 
       // Generate new access token
-      const newPayload: JwtPayload = {
+      const newPayload: JwtPayloadForLogin = {
         sub: storedToken.user.id,
         email: storedToken.user.email,
         roles: storedToken.user.roles?.map(r => r.role) || [],

@@ -105,7 +105,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
         // Extract tenant from custom claims or use default
         const tenantId = payload['custom:tenant_id'] || await this.getDefaultTenant();
-        const role = payload['custom:role'] || 'CLIENT';
+        const role: 'OWNER' | 'MANAGER' | 'PRACTITIONER' | 'FRONTDESK' | 'FINANCE' | 'SUPPORT' | 'CLIENT' = 
+          (payload['custom:role'] as any) || 'CLIENT';
 
         user = await this.prisma.user.create({
           data: {
@@ -130,8 +131,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
 
         this.logger.log('User created successfully', {
-          id: user.id,
-          authId: user.authId,
+          id: user!.id,
+          authId: user!.authId,
           tenantId,
           role,
         });
@@ -162,7 +163,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
       const authUser: AuthUser = {
         id: user.id,
-        authId: user.authId,
+        authId: user.authId!,  // We know it's not null here
         email: user.email,
         tenantId: primaryRole.tenantId,
         role: primaryRole.role,
@@ -193,9 +194,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * TODO: Implement tenant assignment logic based on domain or invitation
    */
   private async getDefaultTenant(): Promise<string> {
-    // For development, return a demo tenant ID
-    // In production, this would be based on invitation codes, domain mapping, etc.
-    return 'demo-tenant-id';
+    // For development, find or create a demo tenant
+    let tenant = await this.prisma.tenant.findFirst({
+      where: { name: 'Demo Tenant' },
+    });
+    
+    if (!tenant) {
+      tenant = await this.prisma.tenant.create({
+        data: {
+          name: 'Demo Tenant',
+          plan: 'basic',
+        },
+      });
+    }
+    
+    return tenant.id;
   }
 
   /**
