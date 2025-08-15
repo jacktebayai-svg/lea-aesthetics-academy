@@ -16,12 +16,12 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    "inline-flex items-center justify-center font-semibold px-6 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold transition-all duration-300 ease-out-quint disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center font-ui font-medium px-6 py-3 rounded-xl focus:outline-none focus:shadow-focus transition-all duration-interaction disabled:opacity-50 disabled:cursor-not-allowed";
 
   const variantStyles = {
-    primary: "bg-slate text-ivory hover:bg-charcoal shadow-elevated",
+    primary: "bg-deep-charcoal text-pure-white hover:bg-slate shadow-card hover:shadow-elevated",
     secondary:
-      "bg-transparent text-slate border-2 border-smoke hover:border-slate",
+      "bg-transparent text-deep-charcoal border-2 border-silver-accent hover:border-deep-charcoal hover:bg-elegant-silver",
   };
 
   return (

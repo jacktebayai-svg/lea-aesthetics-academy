@@ -14,9 +14,9 @@
   }
   
   body {
-    @apply font-inter;
-    background-color: var(--maerose-primary-noir);
-    color: var(--maerose-soft-mist-grey);
+    @apply font-body;
+    background-color: var(--lea-light-platinum);
+    color: var(--lea-deep-charcoal);
     font-size: var(--maerose-body-regular-size);
     line-height: var(--maerose-body-line-height);
     font-weight: var(--maerose-body-weight);
@@ -26,11 +26,11 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Maerose Typography Base */
+  /* Lea Aesthetics Typography Base */
   h1, h2, h3, h4, h5, h6 {
     margin: 0;
-    font-family: var(--maerose-font-family);
-    color: var(--maerose-ivory-white);
+    font-family: var(--font-playfair-display), Georgia, serif;
+    color: var(--lea-deep-charcoal);
   }
   
   h1 {

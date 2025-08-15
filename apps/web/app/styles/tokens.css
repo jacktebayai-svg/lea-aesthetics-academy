@@ -1,27 +1,26 @@
 /* 
- * Maerose Brand Tokens
- * "Elegant Noir" Old Money Edition
+ * Lea Aesthetics Clinical Academy Brand Tokens
+ * "Monochrome Silver Sophistication" Edition
  * Version 1.0 
  */
 
 :root {
-  /* Brand Colors - British Heritage Edition (no deviations allowed) */
-  --maerose-deep-forest-green: #1E3A24;
-  --maerose-rich-burgundy: #7C283C;
-  --maerose-warm-cream: #F9F4E5;
-  --maerose-metallic-gold: #A18A49;
-  --maerose-pure-white: #FFFFFF;
-  --maerose-charcoal-text: #2C2C2C;
-  --maerose-sage-green: #8A9A5B;
+  /* Brand Colors - Monochrome Silver Palette */
+  --lea-deep-charcoal: #111111;      /* Primary text, button backgrounds, strong accents */
+  --lea-elegant-silver: #D6D6D6;     /* Primary background for cards and key interface elements */
+  --lea-light-platinum: #EAEAEA;     /* Main application background color */
+  --lea-muted-gray: #888888;         /* Subheadings, icons, muted text */
+  --lea-silver-accent: #B8B8B8;      /* Hover states, active selections, borders */
+  --lea-pure-white: #FFFFFF;         /* Pure white for contrast and highlights */
   
   /* Legacy color mappings for compatibility */
-  --maerose-primary-noir: #1E3A24;
-  --maerose-deep-charcoal: #7C283C;
-  --maerose-champagne-gold: #A18A49;
-  --maerose-champagne-highlight: #8A9A5B;
+  --maerose-primary-noir: #EAEAEA;
+  --maerose-deep-charcoal: #111111;
+  --maerose-champagne-gold: #B8B8B8;
+  --maerose-champagne-highlight: #888888;
   --maerose-ivory-white: #FFFFFF;
-  --maerose-soft-mist-grey: #2C2C2C;
-  --maerose-estate-border-grey: #8A9A5B;
+  --maerose-soft-mist-grey: #888888;
+  --maerose-estate-border-grey: #B8B8B8;
 
   /* Typography Scale - Inter Variable Font Only */
   --maerose-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
