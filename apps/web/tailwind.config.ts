@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 
+// Enterprise-grade design system for billion-dollar platform
 const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
