@@ -3,6 +3,19 @@
 import React, { useState } from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
 
+interface Appointment {
+  id: number;
+  client: string;
+  service: string;
+  practitioner: string;
+  date: string;
+  time: string;
+  duration: number;
+  status: 'confirmed' | 'pending' | 'completed' | 'cancelled';
+  notes: string;
+  price: number;
+}
+
 // Mock data for appointments
 const appointments = [
   {
@@ -74,7 +87,7 @@ const statusConfig = {
   cancelled: { color: 'bg-red-100 text-red-800', icon: '❌' }
 };
 
-function AppointmentCard({ appointment, onEdit, onCancel }: { appointment: any; onEdit: (appointment: any) => void; onCancel: (appointment: any) => void }) {
+function AppointmentCard({ appointment, onEdit, onCancel }: { appointment: Appointment; onEdit: (appointment: Appointment) => void; onCancel: (appointment: Appointment) => void }) {
   const status = statusConfig[appointment.status];
   
   return (
@@ -163,12 +176,12 @@ export default function AppointmentsPage() {
     return matchesStatus && matchesSearch;
   });
 
-  const handleEdit = (appointment: any) => {
+  const handleEdit = (appointment: Appointment) => {
     console.log('Edit appointment:', appointment);
     // TODO: Open edit modal
   };
 
-  const handleCancel = (appointment: any) => {
+  const handleCancel = (appointment: Appointment) => {
     console.log('Cancel appointment:', appointment);
     // TODO: Show confirmation dialog
   };
