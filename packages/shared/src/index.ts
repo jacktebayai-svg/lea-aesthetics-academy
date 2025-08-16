@@ -1,3 +1,10 @@
+// Navigation types and contexts
+export * from './types/navigation';
+export * from './contexts/NavigationContext';
+
+// Existing exports (if any)
+// Add other shared utilities, types, and components here
+
 export interface Service {
   id: string;
   name: string;
