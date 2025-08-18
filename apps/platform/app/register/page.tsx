@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useAuth } from '@/lib/auth/auth-provider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -13,7 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { AlertCircle, Eye, EyeOff, Loader2, Plus, X } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
-type UserRole = 'PRACTITIONER' | 'EDUCATOR' | 'CLIENT' | 'STUDENT'
+type UserRole = 'ADMIN' | 'CLIENT' | 'STUDENT'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -22,21 +23,21 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    phone: '',
     role: 'CLIENT' as UserRole,
-    title: '',
-    specialties: [] as string[],
-    expertise: [] as string[],
+    dateOfBirth: '',
+    emergencyContact: '',
+    goals: '',
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [newSpecialty, setNewSpecialty] = useState('')
-  const [newExpertise, setNewExpertise] = useState('')
   const [errors, setErrors] = useState<{[key: string]: string}>({})
   const [isLoading, setIsLoading] = useState(false)
   const [apiError, setApiError] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(false)
 
   const router = useRouter()
+  const { register } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -88,26 +89,32 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
-          email: formData.email,
-          password: formData.password,
-          role: formData.role,
-          title: formData.title.trim(),
-          specialties: formData.specialties,
-          expertise: formData.expertise,
+      const userData = {
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        phone: formData.phone,
+        role: formData.role,
+        ...(formData.role === 'CLIENT' && {
+          clientData: {
+            dateOfBirth: formData.dateOfBirth ? new Date(formData.dateOfBirth) : undefined,
+            emergencyContact: formData.emergencyContact ? { name: formData.emergencyContact } : undefined,
+          }
         }),
-        credentials: 'include'
-      })
+        ...(formData.role === 'STUDENT' && {
+          studentData: {
+            dateOfBirth: formData.dateOfBirth ? new Date(formData.dateOfBirth) : undefined,
+            emergencyContact: formData.emergencyContact ? { name: formData.emergencyContact } : undefined,
+            goals: formData.goals,
+          }
+        })
+      }
 
-      const result = await response.json()
-
-      if (response.ok) {
-        router.push('/dashboard')
+      const result = await register(userData)
+      
+      if (result.success) {
+        // Registration successful, user will be automatically redirected by AuthProvider
       } else {
         setApiError(result.error || 'Registration failed. Please try again.')
       }
@@ -131,42 +138,6 @@ export default function RegisterPage() {
   const handleRoleChange = (role: UserRole) => {
     setFormData(prev => ({ ...prev, role }))
   }
-
-  const addSpecialty = () => {
-    if (newSpecialty.trim() && !formData.specialties.includes(newSpecialty.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        specialties: [...prev.specialties, newSpecialty.trim()]
-      }))
-      setNewSpecialty('')
-    }
-  }
-
-  const removeSpecialty = (specialty: string) => {
-    setFormData(prev => ({
-      ...prev,
-      specialties: prev.specialties.filter(s => s !== specialty)
-    }))
-  }
-
-  const addExpertise = () => {
-    if (newExpertise.trim() && !formData.expertise.includes(newExpertise.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        expertise: [...prev.expertise, newExpertise.trim()]
-      }))
-      setNewExpertise('')
-    }
-  }
-
-  const removeExpertise = (expertise: string) => {
-    setFormData(prev => ({
-      ...prev,
-      expertise: prev.expertise.filter(e => e !== expertise)
-    }))
-  }
-
-  const isProRole = formData.role === 'PRACTITIONER' || formData.role === 'EDUCATOR'
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4 py-8">
@@ -248,91 +219,65 @@ export default function RegisterPage() {
                 <SelectContent>
                   <SelectItem value="CLIENT">Client (Book treatments)</SelectItem>
                   <SelectItem value="STUDENT">Student (Take courses)</SelectItem>
-                  <SelectItem value="PRACTITIONER">Practitioner (Provide treatments)</SelectItem>
-                  <SelectItem value="EDUCATOR">Educator (Teach courses)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {isProRole && (
+            {/* Phone Number */}
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone number (optional)</Label>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="Enter your phone number"
+                disabled={isLoading}
+              />
+            </div>
+
+            {/* Role-specific fields */}
+            {(formData.role === 'CLIENT' || formData.role === 'STUDENT') && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="dateOfBirth">Date of birth (optional)</Label>
+                  <Input
+                    id="dateOfBirth"
+                    name="dateOfBirth"
+                    type="date"
+                    value={formData.dateOfBirth}
+                    onChange={handleInputChange}
+                    disabled={isLoading}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="emergencyContact">Emergency contact (optional)</Label>
+                  <Input
+                    id="emergencyContact"
+                    name="emergencyContact"
+                    value={formData.emergencyContact}
+                    onChange={handleInputChange}
+                    placeholder="Emergency contact name"
+                    disabled={isLoading}
+                  />
+                </div>
+              </>
+            )}
+
+            {formData.role === 'STUDENT' && (
               <div className="space-y-2">
-                <Label htmlFor="title">Professional title</Label>
-                <Input
-                  id="title"
-                  name="title"
-                  value={formData.title}
+                <Label htmlFor="goals">Learning goals (optional)</Label>
+                <Textarea
+                  id="goals"
+                  name="goals"
+                  value={formData.goals}
                   onChange={handleInputChange}
-                  placeholder="e.g., Licensed Aesthetician, Master Trainer"
+                  placeholder="What do you hope to achieve through our courses?"
                   disabled={isLoading}
+                  rows={3}
                 />
-              </div>
-            )}
-
-            {formData.role === 'PRACTITIONER' && (
-              <div className="space-y-2">
-                <Label>Specialties</Label>
-                <div className="flex gap-2">
-                  <Input
-                    value={newSpecialty}
-                    onChange={(e) => setNewSpecialty(e.target.value)}
-                    placeholder="Add a specialty"
-                    disabled={isLoading}
-                  />
-                  <Button type="button" onClick={addSpecialty} size="sm" disabled={isLoading}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                {formData.specialties.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {formData.specialties.map((specialty) => (
-                      <div key={specialty} className="flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-sm">
-                        {specialty}
-                        <button
-                          type="button"
-                          onClick={() => removeSpecialty(specialty)}
-                          disabled={isLoading}
-                          className="text-blue-600 hover:text-blue-800"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {formData.role === 'EDUCATOR' && (
-              <div className="space-y-2">
-                <Label>Areas of expertise</Label>
-                <div className="flex gap-2">
-                  <Input
-                    value={newExpertise}
-                    onChange={(e) => setNewExpertise(e.target.value)}
-                    placeholder="Add area of expertise"
-                    disabled={isLoading}
-                  />
-                  <Button type="button" onClick={addExpertise} size="sm" disabled={isLoading}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                {formData.expertise.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {formData.expertise.map((exp) => (
-                      <div key={exp} className="flex items-center gap-1 bg-green-100 text-green-800 px-2 py-1 rounded-md text-sm">
-                        {exp}
-                        <button
-                          type="button"
-                          onClick={() => removeExpertise(exp)}
-                          disabled={isLoading}
-                          className="text-green-600 hover:text-green-800"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
             )}
 

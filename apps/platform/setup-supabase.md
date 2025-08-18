@@ -1,4 +1,9 @@
-# 🚀 Supabase Setup Guide
+# 🚀 Supabase Setup Guide - COMPLETE
+
+## Prerequisites
+- Supabase project created
+- Environment variables configured
+- All dependencies installed
 
 ## Step 1: Run Database Schema
 
@@ -12,6 +17,12 @@
 1. In the SQL Editor, create a new query
 2. Copy and paste the contents of `supabase/rls_policies.sql`
 3. Click **Run** to enable RLS and create all security policies
+
+## Step 2.5: Set Up Database Triggers
+
+1. In the SQL Editor, create a new query
+2. Copy and paste the contents of `supabase/trigger-functions.sql`
+3. Click **Run** to create user registration triggers
 
 ## Step 3: Configure Authentication
 
