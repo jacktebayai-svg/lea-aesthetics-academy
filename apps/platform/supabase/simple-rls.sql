@@ -1,6 +1,6 @@
 -- ==========================================
--- ROW LEVEL SECURITY POLICIES - SIMPLIFIED
--- Safe to run multiple times
+-- SIMPLE RLS POLICIES - NO CONFLICTS
+-- This version avoids all function conflicts
 -- ==========================================
 
 -- Enable RLS on all tables
@@ -9,33 +9,47 @@ ALTER TABLE public.clients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;
 
 -- ==========================================
--- HELPER FUNCTIONS
+-- CLEAN UP ALL EXISTING POLICIES AND FUNCTIONS
 -- ==========================================
 
--- Drop existing functions first to avoid return type conflicts
+-- Drop ALL existing policies to start fresh
+DROP POLICY IF EXISTS "Users can view own profile" ON public.users;
+DROP POLICY IF EXISTS "Users can update own profile" ON public.users;
+DROP POLICY IF EXISTS "Admins can view all users" ON public.users;
+DROP POLICY IF EXISTS "Admins can update all users" ON public.users;
+DROP POLICY IF EXISTS "Admins can delete users" ON public.users;
+
+DROP POLICY IF EXISTS "Clients can view own profile" ON public.clients;
+DROP POLICY IF EXISTS "Clients can update own profile" ON public.clients;
+DROP POLICY IF EXISTS "Admins can view all clients" ON public.clients;
+DROP POLICY IF EXISTS "Admins can manage all clients" ON public.clients;
+
+DROP POLICY IF EXISTS "Students can view own profile" ON public.students;
+DROP POLICY IF EXISTS "Students can update own profile" ON public.students;
+DROP POLICY IF EXISTS "Admins can view all students" ON public.students;
+DROP POLICY IF EXISTS "Admins can manage all students" ON public.students;
+
+-- Drop ALL existing functions (including any with wrong return types)
 DROP FUNCTION IF EXISTS auth.get_user_role();
 DROP FUNCTION IF EXISTS auth.is_admin();
 DROP FUNCTION IF EXISTS auth.is_client();
 DROP FUNCTION IF EXISTS auth.is_student();
+DROP FUNCTION IF EXISTS public.get_user_role();
+DROP FUNCTION IF EXISTS public.is_admin();
 
--- Get current user's role
-CREATE FUNCTION auth.get_user_role()
-RETURNS user_role AS $$
-BEGIN
-  RETURN (
-    SELECT role 
-    FROM public.users 
-    WHERE id = auth.uid()
-  );
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- ==========================================
+-- SIMPLE HELPER FUNCTIONS (NO CUSTOM TYPES)
+-- ==========================================
 
--- Check if user is admin
+-- Simple function to check if current user is admin
 CREATE FUNCTION auth.is_admin()
 RETURNS BOOLEAN AS $$
 BEGIN
   RETURN (
-    SELECT role = 'ADMIN'
+    SELECT CASE 
+      WHEN role = 'ADMIN' THEN TRUE 
+      ELSE FALSE 
+    END
     FROM public.users 
     WHERE id = auth.uid()
   );
@@ -45,13 +59,6 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- ==========================================
 -- USERS TABLE POLICIES
 -- ==========================================
-
--- Drop existing policies to avoid conflicts
-DROP POLICY IF EXISTS "Users can view own profile" ON public.users;
-DROP POLICY IF EXISTS "Users can update own profile" ON public.users;
-DROP POLICY IF EXISTS "Admins can view all users" ON public.users;
-DROP POLICY IF EXISTS "Admins can update all users" ON public.users;
-DROP POLICY IF EXISTS "Admins can delete users" ON public.users;
 
 -- Users can view their own profile
 CREATE POLICY "Users can view own profile" ON public.users
@@ -77,12 +84,6 @@ CREATE POLICY "Admins can delete users" ON public.users
 -- CLIENTS TABLE POLICIES
 -- ==========================================
 
--- Drop existing policies to avoid conflicts
-DROP POLICY IF EXISTS "Clients can view own profile" ON public.clients;
-DROP POLICY IF EXISTS "Clients can update own profile" ON public.clients;
-DROP POLICY IF EXISTS "Admins can view all clients" ON public.clients;
-DROP POLICY IF EXISTS "Admins can manage all clients" ON public.clients;
-
 -- Clients can view their own profile
 CREATE POLICY "Clients can view own profile" ON public.clients
   FOR SELECT USING (user_id = auth.uid());
@@ -102,12 +103,6 @@ CREATE POLICY "Admins can manage all clients" ON public.clients
 -- ==========================================
 -- STUDENTS TABLE POLICIES
 -- ==========================================
-
--- Drop existing policies to avoid conflicts
-DROP POLICY IF EXISTS "Students can view own profile" ON public.students;
-DROP POLICY IF EXISTS "Students can update own profile" ON public.students;
-DROP POLICY IF EXISTS "Admins can view all students" ON public.students;
-DROP POLICY IF EXISTS "Admins can manage all students" ON public.students;
 
 -- Students can view their own profile
 CREATE POLICY "Students can view own profile" ON public.students
