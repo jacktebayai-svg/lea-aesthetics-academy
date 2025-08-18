@@ -107,8 +107,10 @@ export async function POST(request: NextRequest) {
         amount: amount,
         currency: currency.toUpperCase(),
         status: 'PENDING',
-        type: type.toUpperCase() as 'BOOKING' | 'COURSE',
-        itemId,
+        type: type === 'booking' ? 'BOOKING_DEPOSIT' : 'COURSE_PAYMENT',
+        bookingId: type === 'booking' ? itemId : null,
+        enrollmentId: type === 'course' ? itemId : null,
+        description: description,
         stripePaymentIntentId: paymentIntent.id,
         metadata: paymentMetadata,
       }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useAuth } from '@/lib/auth/auth-provider'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Route } from 'next'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')
@@ -105,7 +106,7 @@ export default function SignInPage() {
 
             <div className="flex items-center justify-between">
               <div className="text-sm">
-                <Link href="/auth/forgot-password" className="font-medium text-amber-600 hover:text-amber-500">
+                <Link href={"/auth/forgot-password" as Route} className="font-medium text-amber-600 hover:text-amber-500">
                   Forgot your password?
                 </Link>
               </div>

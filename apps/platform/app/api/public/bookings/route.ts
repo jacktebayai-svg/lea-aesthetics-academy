@@ -34,8 +34,11 @@ export async function POST(request: NextRequest) {
     const treatment = await prisma.treatment.findUnique({
       where: { id: treatmentId },
       include: { 
-        practitioner: true,
-        category: true,
+        practitioner: {
+          include: {
+            user: true,
+          },
+        },
       },
     })
 
@@ -85,12 +88,12 @@ export async function POST(request: NextRequest) {
     const existingBooking = await prisma.booking.findFirst({
       where: {
         treatmentId,
-        scheduledAt: {
+        dateTime: {
           gte: new Date(scheduledDate.getTime() - treatment.duration * 60000), // Start of conflict window
           lt: new Date(scheduledDate.getTime() + treatment.duration * 60000),  // End of conflict window
         },
         status: {
-          in: ['CONFIRMED', 'IN_PROGRESS']
+          in: ['CONFIRMED']
         }
       }
     })
@@ -121,15 +124,7 @@ export async function POST(request: NextRequest) {
               email: clientInfo.email!,
               password: '', // Will need to set password later
               phone: clientInfo.phone,
-              activeMode: 'PRACTITIONER', // Default mode
-            }
-          })
-
-          // Add CLIENT role
-          await tx.userRole.create({
-            data: {
-              userId: newUser.id,
-              name: 'CLIENT',
+              roles: ['CLIENT'], // Set CLIENT role
             }
           })
 
@@ -153,9 +148,13 @@ export async function POST(request: NextRequest) {
         clientId,
         treatmentId,
         practitionerId: treatment.practitionerId,
-        scheduledAt: scheduledDate,
-        status: 'PENDING_PAYMENT',
-        depositAmount: treatment.depositAmount || treatment.price * 0.3, // 30% deposit
+        dateTime: scheduledDate,
+        duration: treatment.duration,
+        status: 'PENDING_DEPOSIT',
+        clientName: clientInfo?.firstName && clientInfo?.lastName ? `${clientInfo.firstName} ${clientInfo.lastName}` : 'Guest',
+        clientEmail: clientInfo?.email || '',
+        clientPhone: clientInfo?.phone || '',
+        depositAmount: treatment.depositAmount || Math.floor(treatment.price * 0.3), // 30% deposit
         totalAmount: treatment.price,
         notes: notes || '',
       },
@@ -163,8 +162,11 @@ export async function POST(request: NextRequest) {
         client: true,
         treatment: {
           include: {
-            practitioner: true,
-            category: true,
+            practitioner: {
+              include: {
+                user: true,
+              },
+            },
           },
         },
       },
@@ -176,8 +178,8 @@ export async function POST(request: NextRequest) {
       booking: {
         id: booking.id,
         treatmentName: treatment.name,
-        practitionerName: `${treatment.practitioner.firstName} ${treatment.practitioner.lastName}`,
-        scheduledAt: booking.scheduledAt,
+        practitionerName: `${treatment.practitioner.user.firstName} ${treatment.practitioner.user.lastName}`,
+        scheduledAt: booking.dateTime,
         duration: treatment.duration,
         totalAmount: booking.totalAmount,
         depositAmount: booking.depositAmount,
@@ -237,14 +239,17 @@ export async function GET(request: NextRequest) {
       include: {
         treatment: {
           include: {
-            practitioner: true,
-            category: true,
+            practitioner: {
+              include: {
+                user: true,
+              },
+            },
           },
         },
-        payment: true,
+        payments: true,
       },
       orderBy: {
-        scheduledAt: 'desc',
+        dateTime: 'desc',
       },
       take: limit,
       skip: offset,
@@ -258,20 +263,20 @@ export async function GET(request: NextRequest) {
         treatment: {
           id: booking.treatment.id,
           name: booking.treatment.name,
-          category: booking.treatment.category?.name,
+        category: booking.treatment.category,
           duration: booking.treatment.duration,
         },
         practitioner: {
           id: booking.treatment.practitioner.id,
-          name: `${booking.treatment.practitioner.firstName} ${booking.treatment.practitioner.lastName}`,
+          name: `${booking.treatment.practitioner.user.firstName} ${booking.treatment.practitioner.user.lastName}`,
           title: booking.treatment.practitioner.title,
         },
-        scheduledAt: booking.scheduledAt,
+        scheduledAt: booking.dateTime,
         status: booking.status,
         totalAmount: booking.totalAmount,
         depositAmount: booking.depositAmount,
         notes: booking.notes,
-        paymentStatus: booking.payment?.status,
+        paymentStatus: booking.payments?.[0]?.status,
         createdAt: booking.createdAt,
         updatedAt: booking.updatedAt,
       })),

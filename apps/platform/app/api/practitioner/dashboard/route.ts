@@ -38,10 +38,8 @@ export async function GET(request: NextRequest) {
       include: {
         user: true,
         treatments: {
-          where: { isActive: true },
-          include: { category: true }
+          where: { isActive: true }
         },
-        specialties: true,
       }
     })
 
@@ -61,22 +59,22 @@ export async function GET(request: NextRequest) {
     // Get upcoming bookings (next 7 days)
     const upcomingBookings = await prisma.booking.findMany({
       where: {
-        practitionerId: decoded.userId,
-        scheduledAt: {
+        practitionerId: practitioner.id,
+        dateTime: {
           gte: now,
           lte: subDays(now, -7),
         },
         status: {
-          in: ['CONFIRMED', 'IN_PROGRESS']
+          in: ['CONFIRMED']
         }
       },
       include: {
         client: true,
         treatment: true,
-        payment: true,
+        payments: true,
       },
       orderBy: {
-        scheduledAt: 'asc',
+        dateTime: 'asc',
       },
       take: 10,
     })
@@ -84,12 +82,12 @@ export async function GET(request: NextRequest) {
     // Get recent bookings for activity feed
     const recentBookings = await prisma.booking.findMany({
       where: {
-        practitionerId: decoded.userId,
+        practitionerId: practitioner.id,
       },
       include: {
         client: true,
         treatment: true,
-        payment: true,
+        payments: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -110,7 +108,7 @@ export async function GET(request: NextRequest) {
       // Total bookings
       prisma.booking.count({
         where: {
-          practitionerId: decoded.userId,
+          practitionerId: practitioner.id,
           status: { in: ['CONFIRMED', 'COMPLETED'] }
         }
       }),
@@ -118,8 +116,8 @@ export async function GET(request: NextRequest) {
       // Weekly bookings
       prisma.booking.count({
         where: {
-          practitionerId: decoded.userId,
-          scheduledAt: { gte: weekStart, lte: weekEnd },
+          practitionerId: practitioner.id,
+          dateTime: { gte: weekStart, lte: weekEnd },
           status: { in: ['CONFIRMED', 'COMPLETED'] }
         }
       }),
@@ -127,8 +125,8 @@ export async function GET(request: NextRequest) {
       // Monthly bookings
       prisma.booking.count({
         where: {
-          practitionerId: decoded.userId,
-          scheduledAt: { gte: monthStart, lte: monthEnd },
+          practitionerId: practitioner.id,
+          dateTime: { gte: monthStart, lte: monthEnd },
           status: { in: ['CONFIRMED', 'COMPLETED'] }
         }
       }),
@@ -137,9 +135,9 @@ export async function GET(request: NextRequest) {
       prisma.payment.aggregate({
         where: {
           booking: {
-            practitionerId: decoded.userId,
+            practitionerId: practitioner.id,
           },
-          status: 'COMPLETED',
+          status: 'SUCCEEDED',
         },
         _sum: { amount: true }
       }),
@@ -148,10 +146,10 @@ export async function GET(request: NextRequest) {
       prisma.payment.aggregate({
         where: {
           booking: {
-            practitionerId: decoded.userId,
-            scheduledAt: { gte: weekStart, lte: weekEnd },
+            practitionerId: practitioner.id,
+            dateTime: { gte: weekStart, lte: weekEnd },
           },
-          status: 'COMPLETED',
+          status: 'SUCCEEDED',
         },
         _sum: { amount: true }
       }),
@@ -160,10 +158,10 @@ export async function GET(request: NextRequest) {
       prisma.payment.aggregate({
         where: {
           booking: {
-            practitionerId: decoded.userId,
-            scheduledAt: { gte: monthStart, lte: monthEnd },
+            practitionerId: practitioner.id,
+            dateTime: { gte: monthStart, lte: monthEnd },
           },
-          status: 'COMPLETED',
+          status: 'SUCCEEDED',
         },
         _sum: { amount: true }
       }),
@@ -171,8 +169,8 @@ export async function GET(request: NextRequest) {
       // Pending bookings
       prisma.booking.count({
         where: {
-          practitionerId: decoded.userId,
-          status: 'PENDING_PAYMENT',
+          practitionerId: practitioner.id,
+          status: 'PENDING_DEPOSIT',
         }
       }),
     ])
@@ -185,8 +183,8 @@ export async function GET(request: NextRequest) {
       
       const count = await prisma.booking.count({
         where: {
-          practitionerId: decoded.userId,
-          scheduledAt: { gte: weekStart, lte: weekEnd },
+          practitionerId: practitioner.id,
+          dateTime: { gte: weekStart, lte: weekEnd },
           status: { in: ['CONFIRMED', 'COMPLETED'] }
         }
       })
@@ -201,7 +199,7 @@ export async function GET(request: NextRequest) {
     const treatmentStats = await prisma.booking.groupBy({
       by: ['treatmentId'],
       where: {
-        practitionerId: decoded.userId,
+        practitionerId: practitioner.id,
         status: { in: ['CONFIRMED', 'COMPLETED'] }
       },
       _count: {
@@ -234,8 +232,8 @@ export async function GET(request: NextRequest) {
         title: practitioner.title,
         bio: practitioner.bio,
         isActive: practitioner.isActive,
-        specialties: practitioner.specialties.map(s => s.name),
-        joinedAt: practitioner.createdAt,
+        specialties: practitioner.specialties,
+        joinedAt: practitioner.user.createdAt,
       },
       
       statistics: {
@@ -260,14 +258,14 @@ export async function GET(request: NextRequest) {
         id: booking.id,
         client: {
           name: `${booking.client.firstName} ${booking.client.lastName}`,
-          email: booking.client.email,
-          phone: booking.client.phone,
+          email: booking.clientEmail,
+          phone: booking.clientPhone,
         },
         treatment: {
           name: booking.treatment.name,
           duration: booking.treatment.duration,
         },
-        scheduledAt: booking.scheduledAt,
+        dateTime: booking.dateTime,
         status: booking.status,
         totalAmount: booking.totalAmount,
         notes: booking.notes,
@@ -291,7 +289,7 @@ export async function GET(request: NextRequest) {
       treatments: practitioner.treatments.map(treatment => ({
         id: treatment.id,
         name: treatment.name,
-        category: treatment.category?.name,
+        category: treatment.category,
         price: treatment.price,
         duration: treatment.duration,
         isActive: treatment.isActive,

@@ -1,77 +1,63 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import jwt from 'jsonwebtoken'
+import { createClient } from '@supabase/supabase-js'
 
-const prisma = new PrismaClient()
-
-interface JWTPayload {
-  userId: string
-  email: string
-  roles: string[]
-}
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 export async function GET(request: NextRequest) {
   try {
-    // Get token from cookie
-    const token = request.cookies.get('auth-token')?.value
+    // Get Supabase tokens from cookies
+    const accessToken = request.cookies.get('supabase-access-token')?.value
+    const refreshToken = request.cookies.get('supabase-refresh-token')?.value
 
-    if (!token) {
+    if (!accessToken) {
       return NextResponse.json(
         { error: 'No authentication token found' },
         { status: 401 }
       )
     }
 
-    // Verify JWT token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload
+    // Set the session in Supabase client
+    const { data: { user }, error: userError } = await supabase.auth.getUser(accessToken)
 
-    // Fetch user data from database
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      include: {
-        practitionerProfile: {
-          include: {
-            specialties: true,
-          },
-        },
-        educatorProfile: {
-          include: {
-            expertise: true,
-          },
-        },
-        roles: true,
-      },
-    })
-
-    if (!user) {
+    if (userError || !user) {
       return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
+        { error: 'Invalid authentication token' },
+        { status: 401 }
+      )
+    }
+
+    // Get user profile from public.users table
+    const { data: userProfile, error: profileError } = await supabase
+      .from('users')
+      .select(`
+        *,
+        clients(*),
+        students(*)
+      `)
+      .eq('id', user.id)
+      .single()
+
+    if (profileError) {
+      console.error('Profile fetch error:', profileError)
+      return NextResponse.json(
+        { error: 'Failed to fetch user profile' },
+        { status: 500 }
       )
     }
 
     // Prepare user data for response
     const userData = {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      roles: user.roles.map(r => r.name),
-      activeMode: user.activeMode || 'PRACTITIONER',
-      practitionerProfile: user.practitionerProfile ? {
-        id: user.practitionerProfile.id,
-        title: user.practitionerProfile.title,
-        bio: user.practitionerProfile.bio,
-        specialties: user.practitionerProfile.specialties.map(s => s.name),
-        isActive: user.practitionerProfile.isActive,
-      } : undefined,
-      educatorProfile: user.educatorProfile ? {
-        id: user.educatorProfile.id,
-        title: user.educatorProfile.title,
-        bio: user.educatorProfile.bio,
-        expertise: user.educatorProfile.expertise.map(e => e.name),
-        isActive: user.educatorProfile.isActive,
-      } : undefined,
+      id: userProfile.id,
+      email: userProfile.email,
+      firstName: userProfile.first_name,
+      lastName: userProfile.last_name,
+      role: userProfile.role,
+      isActive: userProfile.is_active,
+      emailVerified: userProfile.email_verified,
+      client: userProfile.clients?.[0] || null,
+      student: userProfile.students?.[0] || null,
     }
 
     return NextResponse.json({
@@ -81,13 +67,6 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Auth verification error:', error)
     
-    if (error instanceof jwt.JsonWebTokenError) {
-      return NextResponse.json(
-        { error: 'Invalid authentication token' },
-        { status: 401 }
-      )
-    }
-
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

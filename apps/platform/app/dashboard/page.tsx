@@ -116,7 +116,7 @@ export default function DashboardPage() {
                 <CardDescription>
                   System administration and settings
                 </CardDescription>
-                <Button className="w-full mt-4" onClick={() => router.push('/admin')}>
+                <Button className="w-full mt-4" onClick={() => router.push('/admin' as any)}>
                   Admin Panel
                 </Button>
               </CardContent>

@@ -31,8 +31,11 @@ export async function POST(request: NextRequest) {
     const course = await prisma.course.findUnique({
       where: { id: courseId },
       include: { 
-        educator: true,
-        category: true,
+        educator: {
+          include: {
+            user: true,
+          },
+        },
       },
     })
 
@@ -102,15 +105,7 @@ export async function POST(request: NextRequest) {
               email: studentInfo.email!,
               password: '', // Will need to set password later
               phone: studentInfo.phone,
-              activeMode: 'PRACTITIONER', // Default mode
-            }
-          })
-
-          // Add STUDENT role
-          await tx.userRole.create({
-            data: {
-              userId: newUser.id,
-              name: 'STUDENT',
+              roles: ['STUDENT'], // Set STUDENT role
             }
           })
 
@@ -151,16 +146,20 @@ export async function POST(request: NextRequest) {
       data: {
         studentId,
         courseId,
-        status: 'PENDING_PAYMENT',
+        status: 'ENROLLED',
         progress: 0,
-        enrolledAt: new Date(),
+        amountPaid: course.price || 0,
+        paymentComplete: (course.price || 0) === 0,
       },
       include: {
         student: true,
         course: {
           include: {
-            educator: true,
-            category: true,
+            educator: {
+              include: {
+                user: true,
+              },
+            },
           },
         },
       },
@@ -172,7 +171,7 @@ export async function POST(request: NextRequest) {
       enrollment: {
         id: enrollment.id,
         courseTitle: course.title,
-        educatorName: `${course.educator.firstName} ${course.educator.lastName}`,
+        educatorName: `${course.educator.user.firstName} ${course.educator.user.lastName}`,
         duration: course.duration,
         level: course.level,
         price: course.price,
@@ -232,14 +231,17 @@ export async function GET(request: NextRequest) {
       include: {
         course: {
           include: {
-            educator: true,
-            category: true,
+            educator: {
+              include: {
+                user: true,
+              },
+            },
           },
         },
-        payment: true,
+        payments: true,
       },
       orderBy: {
-        enrolledAt: 'desc',
+        startDate: 'desc',
       },
       take: limit,
       skip: offset,
@@ -254,22 +256,22 @@ export async function GET(request: NextRequest) {
           id: enrollment.course.id,
           title: enrollment.course.title,
           description: enrollment.course.description,
-          category: enrollment.course.category?.name,
+          category: enrollment.course.category,
           duration: enrollment.course.duration,
           level: enrollment.course.level,
           price: enrollment.course.price,
         },
         educator: {
           id: enrollment.course.educator.id,
-          name: `${enrollment.course.educator.firstName} ${enrollment.course.educator.lastName}`,
+          name: `${enrollment.course.educator.user.firstName} ${enrollment.course.educator.user.lastName}`,
           title: enrollment.course.educator.title,
         },
-        enrolledAt: enrollment.enrolledAt,
+        startDate: enrollment.startDate,
         status: enrollment.status,
         progress: enrollment.progress,
-        completedAt: enrollment.completedAt,
+        completionDate: enrollment.completionDate,
         certificateIssued: enrollment.certificateIssued,
-        paymentStatus: enrollment.payment?.status,
+        paymentStatus: enrollment.payments?.[0]?.status,
         createdAt: enrollment.createdAt,
         updatedAt: enrollment.updatedAt,
       })),

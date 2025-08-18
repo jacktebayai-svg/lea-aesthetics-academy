@@ -18,6 +18,7 @@ import {
   Play
 } from 'lucide-react'
 import Link from 'next/link'
+import { Route } from 'next'
 
 export default function HomePage() {
   const { user, isLoading } = useAuth()
@@ -32,13 +33,13 @@ export default function HomePage() {
         // Redirect based on user role
         switch (user.role) {
           case 'ADMIN':
-            router.push('/admin/dashboard')
+            router.push('/admin/dashboard' as any)
             break
           case 'CLIENT':
-            router.push('/client/dashboard')
+            router.push('/client/dashboard' as any)
             break
           case 'STUDENT':
-            router.push('/student/dashboard')
+            router.push('/student/dashboard' as any)
             break
           default:
             router.push('/dashboard')
@@ -221,7 +222,7 @@ export default function HomePage() {
                 </Button>
               </Link>
               
-              <Link href="/contact">
+              <Link href={"/contact" as Route}>
                 <Button size="lg" variant="outline" className="lea-button-secondary">
                   Schedule Demo
                 </Button>

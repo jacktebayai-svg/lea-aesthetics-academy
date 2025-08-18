@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+import { createClient } from '@supabase/supabase-js'
 import { z } from 'zod'
 
-const prisma = new PrismaClient()
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -16,89 +16,77 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { email, password } = loginSchema.parse(body)
 
-    // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email },
-      include: {
-        practitionerProfile: {
-          include: {
-            specialties: true,
-          },
-        },
-        educatorProfile: {
-          include: {
-            expertise: true,
-          },
-        },
-        roles: true,
-      },
+    // Sign in with Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     })
 
-    if (!user) {
+    if (authError || !authData.user) {
       return NextResponse.json(
-        { error: 'Invalid credentials' },
+        { error: authError?.message || 'Invalid credentials' },
         { status: 401 }
       )
     }
 
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password)
-    if (!isValidPassword) {
+    // Get user profile from public.users table
+    const { data: userProfile, error: profileError } = await supabase
+      .from('users')
+      .select(`
+        *,
+        clients(*),
+        students(*)
+      `)
+      .eq('id', authData.user.id)
+      .single()
+
+    if (profileError) {
+      console.error('Profile fetch error:', profileError)
       return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
+        { error: 'Failed to fetch user profile' },
+        { status: 500 }
       )
     }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { 
-        userId: user.id,
-        email: user.email,
-        roles: user.roles.map(r => r.name),
-      },
-      process.env.JWT_SECRET!,
-      { expiresIn: '7d' }
-    )
 
     // Prepare user data for response
     const userData = {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      roles: user.roles.map(r => r.name),
-      activeMode: user.activeMode || 'PRACTITIONER',
-      practitionerProfile: user.practitionerProfile ? {
-        id: user.practitionerProfile.id,
-        title: user.practitionerProfile.title,
-        bio: user.practitionerProfile.bio,
-        specialties: user.practitionerProfile.specialties.map(s => s.name),
-        isActive: user.practitionerProfile.isActive,
-      } : undefined,
-      educatorProfile: user.educatorProfile ? {
-        id: user.educatorProfile.id,
-        title: user.educatorProfile.title,
-        bio: user.educatorProfile.bio,
-        expertise: user.educatorProfile.expertise.map(e => e.name),
-        isActive: user.educatorProfile.isActive,
-      } : undefined,
+      id: userProfile.id,
+      email: userProfile.email,
+      firstName: userProfile.first_name,
+      lastName: userProfile.last_name,
+      role: userProfile.role,
+      isActive: userProfile.is_active,
+      emailVerified: userProfile.email_verified,
+      client: userProfile.clients?.[0] || null,
+      student: userProfile.students?.[0] || null,
     }
 
-    // Set HTTP-only cookie
+    // Set session cookies
     const response = NextResponse.json({
       success: true,
       user: userData,
     })
 
-    response.cookies.set({
-      name: 'auth-token',
-      value: token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-    })
+    // Set Supabase session cookies
+    if (authData.session) {
+      response.cookies.set({
+        name: 'supabase-access-token',
+        value: authData.session.access_token,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: authData.session.expires_in,
+      })
+
+      response.cookies.set({
+        name: 'supabase-refresh-token',
+        value: authData.session.refresh_token,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+      })
+    }
 
     return response
   } catch (error) {

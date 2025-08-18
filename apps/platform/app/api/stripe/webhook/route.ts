@@ -61,8 +61,7 @@ async function handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent) {
     const payment = await prisma.payment.update({
       where: { stripePaymentIntentId: paymentIntent.id },
       data: { 
-        status: 'COMPLETED',
-        completedAt: new Date(),
+        status: 'SUCCEEDED',
       },
       include: {
         user: true,
@@ -88,10 +87,14 @@ async function handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent) {
             treatmentId: itemId,
             practitionerId: treatment.practitionerId,
             status: 'CONFIRMED',
-            paymentId: payment.id,
+            dateTime: metadata.scheduledAt ? new Date(metadata.scheduledAt) : new Date(),
+            duration: treatment.duration,
+            clientName: `${payment.user.firstName} ${payment.user.lastName}`,
+            clientEmail: payment.user.email,
+            clientPhone: payment.user.phone || '',
             depositAmount: payment.amount,
-            // Use metadata for scheduling details if provided
-            scheduledAt: metadata.scheduledAt ? new Date(metadata.scheduledAt) : new Date(),
+            totalAmount: treatment.price,
+            depositPaid: true,
             notes: metadata.notes || '',
           }
         })
@@ -132,9 +135,9 @@ async function handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent) {
             studentId: userId,
             courseId: itemId,
             status: 'ENROLLED',
-            paymentId: payment.id,
-            enrolledAt: new Date(),
             progress: 0,
+            amountPaid: payment.amount,
+            paymentComplete: true,
           }
         })
 
@@ -178,7 +181,6 @@ async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
       where: { stripePaymentIntentId: paymentIntent.id },
       data: { 
         status: 'FAILED',
-        failedAt: new Date(),
       }
     })
 
@@ -196,7 +198,6 @@ async function handlePaymentCanceled(paymentIntent: Stripe.PaymentIntent) {
       where: { stripePaymentIntentId: paymentIntent.id },
       data: { 
         status: 'CANCELLED',
-        cancelledAt: new Date(),
       }
     })
 

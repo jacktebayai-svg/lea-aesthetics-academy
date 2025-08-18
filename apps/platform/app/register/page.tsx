@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Route } from 'next'
 import { useAuth } from '@/lib/auth/auth-provider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -354,11 +355,11 @@ export default function RegisterPage() {
               />
               <Label htmlFor="terms" className="text-sm">
                 I accept the{' '}
-                <Link href="/terms" className="text-blue-600 hover:text-blue-500">
+                <Link href={"/terms" as Route} className="text-blue-600 hover:text-blue-500">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link href="/privacy" className="text-blue-600 hover:text-blue-500">
+                <Link href={"/privacy" as Route} className="text-blue-600 hover:text-blue-500">
                   Privacy Policy
                 </Link>
               </Label>
