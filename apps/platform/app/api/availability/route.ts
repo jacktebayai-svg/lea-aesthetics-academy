@@ -11,8 +11,8 @@ interface TimeSlot {
 
 interface BusinessHours {
   [key: string]: {
-    open: string
-    close: string
+    open?: string
+    close?: string
     closed?: boolean
   }
 }
@@ -20,7 +20,7 @@ interface BusinessHours {
 // GET /api/availability - Get available time slots
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { searchParams } = new URL(request.url)
     
     const serviceId = searchParams.get('service_id')
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
       thursday: { open: '09:00', close: '17:00' },
       friday: { open: '09:00', close: '17:00' },
       saturday: { open: '10:00', close: '16:00' },
-      sunday: { closed: true }
+      sunday: { closed: true, open: '', close: '' }
     }
 
     // Use business hours from settings or default
@@ -114,7 +114,7 @@ async function generateSlotsForDate(
   const dayHours = businessHours[dayName]
   
   // Skip if business is closed
-  if (!dayHours || dayHours.closed) {
+  if (!dayHours || dayHours.closed || !dayHours.open || !dayHours.close) {
     return slots
   }
 

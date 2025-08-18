@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // GET /api/services - List all active services
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { searchParams } = new URL(request.url)
     
     // Optional category filter
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 // POST /api/services - Create new service (owner only)
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Check if user is authenticated
     const { data: { user }, error: authError } = await supabase.auth.getUser()

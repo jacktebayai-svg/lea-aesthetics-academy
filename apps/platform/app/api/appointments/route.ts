@@ -5,7 +5,7 @@ import { addMinutes, parseISO } from 'date-fns'
 // GET /api/appointments - List appointments
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { searchParams } = new URL(request.url)
     
     // Check if user is authenticated
@@ -128,7 +128,7 @@ export async function GET(request: NextRequest) {
 // POST /api/appointments - Create new appointment
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Parse request body
     const body = await request.json()

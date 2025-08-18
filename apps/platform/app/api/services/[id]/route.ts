@@ -4,11 +4,11 @@ import { NextRequest, NextResponse } from 'next/server'
 // GET /api/services/[id] - Get specific service
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = createClient()
-    const { id } = params
+    const supabase = await createClient()
+    const { id } = await params
 
     const { data: service, error } = await supabase
       .from('services')
@@ -35,11 +35,11 @@ export async function GET(
 // PUT /api/services/[id] - Update service (owner only)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = createClient()
-    const { id } = params
+    const supabase = await createClient()
+    const { id } = await params
 
     // Check if user is authenticated
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -119,11 +119,11 @@ export async function PUT(
 // DELETE /api/services/[id] - Soft delete service (owner only)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = createClient()
-    const { id } = params
+    const supabase = await createClient()
+    const { id } = await params
 
     // Check if user is authenticated
     const { data: { user }, error: authError } = await supabase.auth.getUser()

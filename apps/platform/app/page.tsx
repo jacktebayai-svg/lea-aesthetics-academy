@@ -15,10 +15,27 @@ import {
   BookOpen, 
   Award,
   ChevronRight,
-  Play
+  Play,
+  ArrowRight,
+  Heart,
+  Shield,
+  Zap
 } from 'lucide-react'
 import Link from 'next/link'
 import { Route } from 'next'
+import { motion } from 'framer-motion'
+import {
+  LuxuryButton,
+  LuxuryCard,
+  LuxurySection,
+  LuxuryHero,
+  FeatureCard,
+  LuxuryStats,
+  LuxuryCTA,
+  LuxuryBadge,
+  fadeInUp,
+  staggerContainer
+} from '@/components/ui/luxury-components'
 
 export default function HomePage() {
   const { user, isLoading } = useAuth()
@@ -67,171 +84,245 @@ export default function HomePage() {
 
   // Public landing page
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary via-background to-accent/10">
+    <div className="min-h-screen lea-gradient-bg">
       <LEAHeader />
       
       {/* Hero Section */}
-      <section className="lea-section relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
-        <div className="lea-container relative">
-          <div className="text-center max-w-4xl mx-auto animate-fade-in">
-            <div className="relative inline-flex items-center mb-6">
-              <Crown className="h-20 w-20 text-primary lea-text-gradient" />
-              <Sparkles className="h-8 w-8 text-accent absolute -top-2 -right-2 animate-pulse" />
-            </div>
-            
-            <h1 className="lea-text-heading mb-6">
-              Welcome to{' '}
-              <span className="lea-text-gradient">LEA Aesthetics Academy</span>
-            </h1>
-            
-            <p className="lea-text-subheading mb-8 max-w-2xl mx-auto">
-              Where luxury meets education. Transform your aesthetic journey with our 
-              comprehensive training programs and practice management solutions.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/register">
-                <Button size="lg" className="lea-button-primary group">
-                  Begin Your Journey
-                  <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              
-              <Link href="/login">
-                <Button size="lg" variant="outline" className="lea-button-secondary">
-                  Sign In
-                </Button>
-              </Link>
-            </div>
-          </div>
+      <LuxuryHero
+        subtitle={<><Crown className="h-5 w-5 mr-2" />Luxury Aesthetic Education</>}
+        title={
+          <>
+            Welcome to{' '}
+            <span className="lea-text-gradient">LEA Aesthetics Academy</span>
+          </>
+        }
+        description="Where luxury meets education. Transform your aesthetic journey with our comprehensive training programs and practice management solutions."
+        primaryAction={
+          <Link href="/register">
+            <LuxuryButton size="xl" variant="primary" rightIcon={<ArrowRight className="h-5 w-5" />}>
+              Begin Your Journey
+            </LuxuryButton>
+          </Link>
+        }
+        secondaryAction={
+          <Link href="/login">
+            <LuxuryButton size="xl" variant="secondary">
+              Sign In
+            </LuxuryButton>
+          </Link>
+        }
+      />
+
+      {/* Trust Indicators Section */}
+      <LuxurySection background="default" padding="md">
+        <div className="lea-container">
+          <motion.div
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="text-center mb-16"
+          >
+            <motion.div variants={fadeInUp}>
+              <LuxuryBadge variant="gold" size="lg" className="mb-6">
+                Trusted by Industry Leaders
+              </LuxuryBadge>
+            </motion.div>
+          </motion.div>
+          
+          <LuxuryStats 
+            stats={[
+              { value: "500+", label: "Certified Students", description: "Successfully trained" },
+              { value: "50+", label: "Expert Practitioners", description: "Actively teaching" },
+              { value: "10k+", label: "Treatments Managed", description: "Through our platform" },
+              { value: "98%", label: "Satisfaction Rate", description: "Student success" }
+            ]}
+          />
         </div>
-      </section>
+      </LuxurySection>
 
       {/* Features Section */}
-      <section className="lea-section bg-secondary/30">
+      <LuxurySection background="accent" padding="lg">
         <div className="lea-container">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Elevate Your Aesthetic Practice
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Comprehensive solutions for practitioners and students in the luxury aesthetics industry
-            </p>
-          </div>
+          <motion.div
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="text-center mb-16"
+          >
+            <motion.div variants={fadeInUp}>
+              <h2 className="text-4xl md:text-5xl font-bold text-[#1c1917] mb-6">
+                Elevate Your Aesthetic Practice
+              </h2>
+              <p className="lea-text-subheading max-w-3xl mx-auto">
+                Comprehensive solutions for practitioners and students in the luxury aesthetics industry
+              </p>
+            </motion.div>
+          </motion.div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* For Practitioners */}
-            <Card className="lea-card group hover:lea-shadow-gold transition-all duration-300">
-              <CardHeader>
-                <Crown className="h-12 w-12 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                <CardTitle>For Practitioners</CardTitle>
-                <CardDescription>
-                  Complete practice management and advanced training
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center">
-                    <Star className="h-4 w-4 text-accent mr-2" />
-                    Client management system
-                  </li>
-                  <li className="flex items-center">
-                    <Calendar className="h-4 w-4 text-accent mr-2" />
-                    Advanced booking platform
-                  </li>
-                  <li className="flex items-center">
-                    <Award className="h-4 w-4 text-accent mr-2" />
-                    Continuing education courses
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            <motion.div variants={fadeInUp}>
+              <FeatureCard
+                icon={<Crown className="h-12 w-12 text-[#b45309]" />}
+                title="For Practitioners"
+                description="Complete practice management and advanced training programs designed for luxury aesthetic professionals."
+                features={[
+                  "Advanced client management system",
+                  "Smart booking and scheduling platform",
+                  "Continuing education courses",
+                  "Business analytics and insights",
+                  "Treatment protocol libraries"
+                ]}
+                action={
+                  <Link href="/register?type=practitioner">
+                    <LuxuryButton variant="primary" size="sm" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                      Get Started
+                    </LuxuryButton>
+                  </Link>
+                }
+              />
+            </motion.div>
 
-            {/* For Students */}
-            <Card className="lea-card group hover:lea-shadow-gold transition-all duration-300">
-              <CardHeader>
-                <BookOpen className="h-12 w-12 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                <CardTitle>For Students</CardTitle>
-                <CardDescription>
-                  World-class aesthetic education and certification
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center">
-                    <Star className="h-4 w-4 text-accent mr-2" />
-                    Level 2, 3, 4 courses
-                  </li>
-                  <li className="flex items-center">
-                    <Play className="h-4 w-4 text-accent mr-2" />
-                    Interactive learning modules
-                  </li>
-                  <li className="flex items-center">
-                    <Award className="h-4 w-4 text-accent mr-2" />
-                    Industry certifications
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+            <motion.div variants={fadeInUp}>
+              <FeatureCard
+                icon={<BookOpen className="h-12 w-12 text-[#b45309]" />}
+                title="For Students"
+                description="World-class aesthetic education with industry-leading certification programs and hands-on training."
+                features={[
+                  "Level 2, 3, 4 certification courses",
+                  "Interactive learning modules",
+                  "Virtual reality training",
+                  "Industry expert mentorship",
+                  "Career placement assistance"
+                ]}
+                action={
+                  <Link href="/register?type=student">
+                    <LuxuryButton variant="accent" size="sm" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                      Enroll Now
+                    </LuxuryButton>
+                  </Link>
+                }
+              />
+            </motion.div>
 
-            {/* For Clients */}
-            <Card className="lea-card group hover:lea-shadow-gold transition-all duration-300">
-              <CardHeader>
-                <Users className="h-12 w-12 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                <CardTitle>For Clients</CardTitle>
-                <CardDescription>
-                  Seamless booking and luxury treatment experience
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center">
-                    <Star className="h-4 w-4 text-accent mr-2" />
-                    Easy online booking
-                  </li>
-                  <li className="flex items-center">
-                    <Calendar className="h-4 w-4 text-accent mr-2" />
-                    Treatment history tracking
-                  </li>
-                  <li className="flex items-center">
-                    <Sparkles className="h-4 w-4 text-accent mr-2" />
-                    Personalized care plans
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
+            <motion.div variants={fadeInUp}>
+              <FeatureCard
+                icon={<Heart className="h-12 w-12 text-[#ec4899]" />}
+                title="For Clients"
+                description="Seamless booking experience and luxury treatment journey with personalized care protocols."
+                features={[
+                  "Easy online booking system",
+                  "Treatment history tracking",
+                  "Personalized care plans",
+                  "Digital consultation forms",
+                  "Secure document management"
+                ]}
+                action={
+                  <Link href="/book">
+                    <LuxuryButton variant="secondary" size="sm" rightIcon={<Calendar className="h-4 w-4" />}>
+                      Book Treatment
+                    </LuxuryButton>
+                  </Link>
+                }
+              />
+            </motion.div>
+          </motion.div>
         </div>
-      </section>
+      </LuxurySection>
+
+      {/* Why Choose LEA Section */}
+      <LuxurySection background="default" padding="lg">
+        <div className="lea-container">
+          <motion.div
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="text-center mb-16"
+          >
+            <motion.div variants={fadeInUp}>
+              <h2 className="text-4xl md:text-5xl font-bold text-[#1c1917] mb-6">
+                Why Choose <span className="lea-text-gradient">LEA</span>?
+              </h2>
+              <p className="lea-text-subheading max-w-3xl mx-auto">
+                Experience the difference of luxury aesthetic education and practice management
+              </p>
+            </motion.div>
+          </motion.div>
+          
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
+          >
+            <motion.div variants={fadeInUp} className="text-center">
+              <div className="mb-4 mx-auto w-16 h-16 bg-gradient-to-br from-[#fcd34d] to-[#f59e0b] rounded-full flex items-center justify-center">
+                <Shield className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-[#1c1917] mb-2">Industry Leading</h3>
+              <p className="text-sm text-[#57534e]">Recognized certification programs meeting the highest industry standards</p>
+            </motion.div>
+
+            <motion.div variants={fadeInUp} className="text-center">
+              <div className="mb-4 mx-auto w-16 h-16 bg-gradient-to-br from-[#ec4899] to-[#f472b6] rounded-full flex items-center justify-center">
+                <Star className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-[#1c1917] mb-2">Expert Faculty</h3>
+              <p className="text-sm text-[#57534e]">Learn from world-renowned practitioners with decades of experience</p>
+            </motion.div>
+
+            <motion.div variants={fadeInUp} className="text-center">
+              <div className="mb-4 mx-auto w-16 h-16 bg-gradient-to-br from-[#8b5cf6] to-[#a855f7] rounded-full flex items-center justify-center">
+                <Zap className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-[#1c1917] mb-2">Cutting Edge</h3>
+              <p className="text-sm text-[#57534e]">Latest techniques and technologies in aesthetic medicine and education</p>
+            </motion.div>
+
+            <motion.div variants={fadeInUp} className="text-center">
+              <div className="mb-4 mx-auto w-16 h-16 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-full flex items-center justify-center">
+                <Users className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-[#1c1917] mb-2">Community</h3>
+              <p className="text-sm text-[#57534e]">Join an exclusive network of aesthetic professionals worldwide</p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </LuxurySection>
 
       {/* CTA Section */}
-      <section className="lea-section">
-        <div className="lea-container">
-          <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Ready to Transform Your Practice?
-            </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join the elite community of aesthetic professionals who trust LEA for their success
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/register">
-                <Button size="lg" className="lea-button-primary">
-                  Start Free Trial
-                </Button>
-              </Link>
-              
-              <Link href={"/contact" as Route}>
-                <Button size="lg" variant="outline" className="lea-button-secondary">
-                  Schedule Demo
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <LuxuryCTA
+        title={
+          <>
+            Ready to Transform Your{' '}
+            <span className="lea-text-gradient">Practice</span>?
+          </>
+        }
+        description="Join the elite community of aesthetic professionals who trust LEA for their success. Start your journey today with our comprehensive platform."
+        primaryAction={
+          <Link href="/register">
+            <LuxuryButton size="xl" variant="primary" rightIcon={<Sparkles className="h-5 w-5" />}>
+              Start Free Trial
+            </LuxuryButton>
+          </Link>
+        }
+        secondaryAction={
+          <Link href={'/contact' as Route}>
+            <LuxuryButton size="xl" variant="secondary" rightIcon={<Calendar className="h-5 w-5" />}>
+              Schedule Demo
+            </LuxuryButton>
+          </Link>
+        }
+      />
 
       {/* Footer */}
       <footer className="bg-foreground/5 border-t border-border py-12">
