@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { LEALoginForm } from '@leas-academy/ui';
+import { LEALoginForm } from '@master-aesthetics-suite/ui';
 
 export default function ClientLoginPage() {
   const handleLogin = (email: string, password: string) => {

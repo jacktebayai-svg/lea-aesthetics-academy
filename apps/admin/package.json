@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@leas-academy/shared": "workspace:*",
-    "@leas-academy/ui": "workspace:*",
+    "@master-aesthetics-suite/shared": "workspace:*",
+    "@master-aesthetics-suite/ui": "workspace:*",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "next": "15.4.6",

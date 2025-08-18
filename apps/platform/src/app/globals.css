@@ -1,0 +1,292 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import luxury fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* CSS Custom Properties for Luxury Aesthetics */
+:root {
+  /* Base Colors */
+  --color-platinum: #E5E4E2;
+  --color-silver: #C0C0C0;
+  --color-rose-gold: #E8B4B8;
+  --color-charcoal: #36454F;
+  
+  /* Semantic Mappings */
+  --color-primary: var(--color-charcoal);
+  --color-accent: var(--color-rose-gold);
+  --color-surface: var(--color-platinum);
+  --color-background: #FAFAFA;
+  --color-background-paper: #FFFFFF;
+  
+  /* Text Colors */
+  --color-text-primary: var(--color-charcoal);
+  --color-text-secondary: #6B7780;
+  --color-text-muted: #8A9BA8;
+  --color-text-inverse: #FFFFFF;
+  
+  /* Border Colors */
+  --color-border: var(--color-silver);
+  --color-border-light: var(--color-platinum);
+  --color-border-subtle: #F1F3F4;
+  
+  /* Shadows */
+  --shadow-card: 0px 4px 16px rgba(54, 69, 79, 0.10);
+  --shadow-elevated: 0px 8px 24px rgba(54, 69, 79, 0.15);
+  --shadow-subtle: 0px 2px 8px rgba(54, 69, 79, 0.08);
+  --shadow-luxury: 0px 12px 40px rgba(54, 69, 79, 0.20);
+  --shadow-focus: 0px 0px 0px 3px rgba(232, 180, 184, 0.4);
+  --shadow-rose-glow: 0px 4px 20px rgba(232, 180, 184, 0.25);
+  
+  /* Transitions */
+  --transition-elegant: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-duration: 300ms;
+  
+  /* Border Radius */
+  --radius-card: 12px;
+  --radius-button: 8px;
+  --radius-input: 6px;
+}
+
+/* Base layer improvements */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-text-primary font-sans antialiased;
+    font-feature-settings: 'cv03', 'cv04', 'cv11';
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-medium text-text-primary;
+  }
+  
+  h1 {
+    @apply text-heading-1;
+  }
+  
+  h2 {
+    @apply text-heading-2;
+  }
+  
+  h3 {
+    @apply text-heading-3;
+  }
+  
+  h4 {
+    @apply text-heading-4;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Focus styles */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-background;
+  }
+  
+  /* Selection styles */
+  ::selection {
+    @apply bg-accent/20 text-text-primary;
+  }
+}
+
+/* Component layer for luxury aesthetics */
+@layer components {
+  /* Luxury card component */
+  .luxury-card {
+    @apply bg-background-paper border border-border rounded-card shadow-card;
+    @apply transition-all duration-300 ease-lea;
+  }
+  
+  .luxury-card:hover {
+    @apply shadow-elevated border-border-light;
+  }
+  
+  /* Elegant button */
+  .btn-elegant {
+    @apply inline-flex items-center justify-center px-6 py-3 text-ui-md font-medium;
+    @apply bg-primary text-white rounded-button border border-transparent;
+    @apply transition-all duration-300 ease-lea;
+    @apply focus:ring-2 focus:ring-accent focus:ring-offset-2;
+    @apply hover:bg-primary/90 hover:shadow-subtle;
+    @apply active:scale-[0.98];
+  }
+  
+  .btn-elegant-outline {
+    @apply btn-elegant bg-transparent text-primary border-border;
+    @apply hover:bg-surface hover:border-border-light;
+  }
+  
+  .btn-elegant-accent {
+    @apply btn-elegant bg-accent text-white;
+    @apply hover:bg-accent/90 hover:shadow-rose-glow;
+  }
+  
+  /* Luxury input */
+  .input-luxury {
+    @apply w-full px-4 py-3 text-ui-md bg-background-paper border border-border rounded-input;
+    @apply placeholder:text-text-muted focus:border-accent focus:ring-1 focus:ring-accent;
+    @apply transition-all duration-300 ease-lea;
+  }
+  
+  /* Elegant text styles */
+  .text-elegant {
+    @apply text-body-md text-text-primary leading-relaxed;
+  }
+  
+  .text-elegant-lg {
+    @apply text-body-lg text-text-primary leading-relaxed;
+  }
+  
+  .text-muted {
+    @apply text-body-sm text-text-muted;
+  }
+  
+  /* Luxury spacing */
+  .section-padding {
+    @apply px-6 py-12 lg:px-8 lg:py-16;
+  }
+  
+  .container-luxury {
+    @apply max-w-7xl mx-auto px-6 lg:px-8;
+  }
+  
+  /* Elegant dividers */
+  .divider-elegant {
+    @apply h-px bg-gradient-to-r from-transparent via-border to-transparent;
+  }
+  
+  /* Loading states */
+  .loading-shimmer {
+    @apply bg-gradient-to-r from-surface via-background-paper to-surface;
+    @apply bg-[length:200%_100%] animate-shimmer;
+  }
+  
+  /* Luxury glassmorphism */
+  .glass-luxury {
+    @apply bg-background-paper/80 backdrop-blur-lg border border-border/50;
+  }
+  
+  /* Status indicators */
+  .status-success {
+    @apply bg-success-light text-success border border-success/20;
+  }
+  
+  .status-warning {
+    @apply bg-warning-light text-warning border border-warning/20;
+  }
+  
+  .status-error {
+    @apply bg-error-light text-error border border-error/20;
+  }
+  
+  .status-info {
+    @apply bg-info-light text-info border border-info/20;
+  }
+}
+
+/* Utility layer for luxury aesthetics */
+@layer utilities {
+  /* Text gradient utilities */
+  .text-gradient-rose {
+    @apply bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-charcoal {
+    @apply bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent;
+  }
+  
+  /* Background gradient utilities */
+  .bg-gradient-luxury {
+    @apply bg-gradient-to-br from-background via-surface to-background;
+  }
+  
+  .bg-gradient-rose {
+    @apply bg-gradient-to-br from-accent/10 via-accent/5 to-transparent;
+  }
+  
+  /* Animation utilities */
+  .animate-fade-in {
+    @apply animate-fade-in;
+  }
+  
+  .animate-slide-up {
+    @apply animate-slide-up;
+  }
+  
+  .animate-elegant-slide {
+    @apply animate-elegant-slide;
+  }
+  
+  /* Hover effects */
+  .hover-lift {
+    @apply transition-transform duration-300 ease-lea hover:scale-[1.02] hover:shadow-elevated;
+  }
+  
+  .hover-glow {
+    @apply transition-shadow duration-300 ease-lea hover:shadow-rose-glow;
+  }
+  
+  /* Luxury borders */
+  .border-luxury {
+    @apply border border-border;
+  }
+  
+  .border-luxury-thick {
+    @apply border-2 border-border;
+  }
+  
+  /* Custom scrollbar */
+  .scrollbar-luxury {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+  
+  .scrollbar-luxury::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-luxury::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-luxury::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 3px;
+  }
+  
+  .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-accent);
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    @apply text-black bg-white;
+  }
+  
+  .luxury-card {
+    @apply shadow-none border border-gray-300;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

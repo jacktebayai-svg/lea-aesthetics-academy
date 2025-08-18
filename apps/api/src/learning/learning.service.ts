@@ -76,7 +76,7 @@ export class LearningService {
         prerequisites: data.prerequisites || [],
         duration: data.duration,
         content: data.content,
-        order: data.order || 0,
+        displayOrder: data.order || 0,
       },
     });
   }
@@ -84,7 +84,7 @@ export class LearningService {
   async getAllCourses() {
     return this.prisma.course.findMany({
       where: { isActive: true },
-      orderBy: { order: 'asc' },
+      orderBy: { displayOrder: 'asc' },
       include: {
         modules: {
           orderBy: { order: 'asc' },

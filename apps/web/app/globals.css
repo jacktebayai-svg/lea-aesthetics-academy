@@ -17,7 +17,7 @@
   }
   
   body {
-    @apply font-body bg-snow-white text-charcoal-black;
+    @apply font-body bg-background text-charcoal;
     font-size: 16px;
     line-height: 1.75;
     font-weight: 400;
@@ -35,40 +35,40 @@
     transition: color 0.3s ease;
   }
   
-  /* Elegant Cursive Headers */
+  /* Elegant Headers */
   h1 {
-    @apply font-cursive-elegant text-heading-1 text-charcoal-black;
+    @apply font-luxury-script text-heading-1 text-charcoal;
     letter-spacing: 0.01em;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   }
   
   /* Sophisticated Serif Subheadings */
   h2 {
-    @apply font-serif-display text-heading-2 text-charcoal-black;
+    @apply font-luxury-serif text-heading-2 text-charcoal;
     font-weight: 500;
     letter-spacing: -0.01em;
   }
   
   h3 {
-    @apply font-serif-elegant text-heading-3 text-graphite;
+    @apply font-luxury-serif text-heading-3 text-charcoal-light;
     font-weight: 500;
     letter-spacing: -0.005em;
   }
   
   h4 {
-    @apply font-serif-elegant text-heading-4 text-steel-gray;
+    @apply font-luxury-serif text-heading-4 text-charcoal-light;
     font-weight: 500;
   }
   
   h5 {
-    @apply font-sans-clean text-heading-5 text-steel-gray;
+    @apply font-body text-heading-5 text-charcoal-light;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
   
   h6 {
-    @apply font-sans-clean text-body-large text-silver-mist;
+    @apply font-body text-body-large text-muted;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -76,50 +76,35 @@
   
   /* Clean Black Body Text */
   p {
-    @apply font-sans-clean text-body-regular text-charcoal-black;
+    @apply font-body text-body-regular text-charcoal;
     margin: 0 0 1.5em 0;
   }
   
   /* Text Variations */
   .text-lead {
-    @apply font-sans-light text-body-xlarge text-steel-gray;
+    @apply font-body text-body-xlarge text-charcoal-light;
     letter-spacing: 0.01em;
   }
   
   .text-caption {
-    @apply font-sans-clean text-caption text-silver-mist uppercase;
+    @apply font-body text-caption text-muted uppercase;
     letter-spacing: 0.1em;
   }
   
   /* Link Styles */
   a {
-    @apply text-pure-silver transition-colors duration-300;
+    @apply text-secondary transition-colors duration-300;
     text-decoration: none;
     position: relative;
   }
   
   a:hover {
-    @apply text-charcoal-black;
+    @apply text-charcoal;
   }
   
-  a::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    @apply bg-pure-silver;
-    transition: width 0.3s ease;
-  }
-  
-  a:hover::after {
-    width: 100%;
-  }
-
   /* Focus styles for accessibility */
   :focus-visible {
-    @apply outline-none ring-2 ring-pure-silver ring-offset-2 ring-offset-snow-white;
+    @apply outline-none ring-2 ring-secondary ring-offset-2 ring-offset-background;
   }
   
   /* Remove default focus outline */
@@ -129,7 +114,7 @@
 
   /* Selection styles */
   ::selection {
-    @apply bg-silver-shimmer text-charcoal-black;
+    @apply bg-accent text-charcoal;
   }
 }
 
@@ -137,79 +122,73 @@
 @layer components {
   /* Luxury Button Styles */
   .btn-primary {
-    @apply bg-charcoal-black text-pure-white px-8 py-3 rounded-soft font-sans-clean font-medium
-           transition-all duration-300 shadow-soft hover:shadow-elevated
-           hover:bg-graphite hover:scale-[1.02] active:scale-[0.98];
+    @apply bg-charcoal text-white px-8 py-3 rounded-medium font-body font-medium
+           transition-all duration-300 shadow-card hover:shadow-elevated
+           hover:bg-charcoal-light hover:scale-[1.02] active:scale-[0.98];
     letter-spacing: 0.02em;
   }
   
   .btn-secondary {
-    @apply bg-pearl-silver text-charcoal-black px-8 py-3 rounded-soft font-sans-clean font-medium
+    @apply bg-secondary text-charcoal px-8 py-3 rounded-medium font-body font-medium
            transition-all duration-300 shadow-subtle hover:shadow-card
-           hover:bg-bright-silver hover:scale-[1.02] active:scale-[0.98];
+           hover:bg-silver-light hover:scale-[1.02] active:scale-[0.98];
     letter-spacing: 0.02em;
   }
   
   .btn-outline {
-    @apply bg-transparent text-charcoal-black px-8 py-3 rounded-soft font-sans-clean font-medium
-           border border-silver-shimmer transition-all duration-300
-           hover:bg-charcoal-black hover:text-pure-white hover:border-charcoal-black
+    @apply bg-transparent text-charcoal px-8 py-3 rounded-medium font-body font-medium
+           border border-border transition-all duration-300
+           hover:bg-charcoal hover:text-white hover:border-charcoal
            hover:scale-[1.02] active:scale-[0.98];
     letter-spacing: 0.02em;
   }
   
   .btn-ghost {
-    @apply bg-transparent text-steel-gray px-6 py-2 font-sans-clean font-medium
-           transition-all duration-300 hover:text-charcoal-black hover:bg-frost;
+    @apply bg-transparent text-muted px-6 py-2 font-body font-medium
+           transition-all duration-300 hover:text-charcoal hover:bg-surface-elevated;
     letter-spacing: 0.02em;
   }
   
   /* Premium Card Styles */
   .card-luxury {
-    @apply bg-pure-white rounded-luxury p-8 shadow-card transition-all duration-300
-           hover:shadow-hover hover:translate-y-[-4px];
-  }
-  
-  .card-silver {
-    @apply bg-gradient-to-br from-pearl-silver via-silver-shimmer to-bright-silver
-           rounded-luxury p-8 shadow-metallic transition-all duration-300
-           hover:shadow-hover hover:translate-y-[-4px];
+    @apply bg-surface rounded-luxury p-8 shadow-card transition-all duration-300
+           hover:shadow-elevated hover:translate-y-[-4px];
   }
   
   .card-minimal {
-    @apply bg-snow-white rounded-medium p-6 border border-platinum
-           transition-all duration-300 hover:border-silver-shimmer hover:shadow-soft;
+    @apply bg-surface rounded-medium p-6 border border-border
+           transition-all duration-300 hover:border-accent hover:shadow-subtle;
   }
   
   /* Premium Input Styles */
   .input-luxury {
-    @apply w-full px-6 py-3 bg-pure-white border border-platinum rounded-soft
-           font-sans-clean text-charcoal-black placeholder-silver-mist
-           transition-all duration-300 focus:border-pure-silver focus:shadow-focus
+    @apply w-full px-6 py-3 bg-surface border border-border rounded-medium
+           font-body text-charcoal placeholder-muted
+           transition-all duration-300 focus:border-secondary focus:shadow-focus
            focus:outline-none;
   }
   
   .input-minimal {
-    @apply w-full px-4 py-3 bg-transparent border-b border-silver-shimmer
-           font-sans-clean text-charcoal-black placeholder-silver-mist
-           transition-all duration-300 focus:border-charcoal-black
+    @apply w-full px-4 py-3 bg-transparent border-b border-border
+           font-body text-charcoal placeholder-muted
+           transition-all duration-300 focus:border-charcoal
            focus:outline-none;
   }
   
   /* Navigation Styles */
   .nav-link {
-    @apply font-sans-clean text-ui-regular text-steel-gray transition-all duration-300
-           hover:text-charcoal-black relative;
+    @apply font-body text-ui-regular text-muted transition-all duration-300
+           hover:text-charcoal relative;
     letter-spacing: 0.03em;
   }
   
   .nav-link-active {
-    @apply text-charcoal-black font-medium;
+    @apply text-charcoal font-medium;
   }
   
   .nav-link::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-0 h-[1px] bg-pure-silver transition-all duration-300;
+    @apply absolute bottom-0 left-0 w-0 h-[1px] bg-secondary transition-all duration-300;
   }
   
   .nav-link:hover::after,
@@ -219,29 +198,29 @@
   
   /* Badge Styles */
   .badge {
-    @apply inline-flex items-center px-3 py-1 rounded-pill text-ui-small font-medium;
+    @apply inline-flex items-center px-3 py-1 rounded-full text-ui-small font-medium;
     letter-spacing: 0.05em;
   }
   
   .badge-silver {
-    @apply bg-pearl-silver text-charcoal-black;
+    @apply bg-accent text-charcoal;
   }
   
   .badge-dark {
-    @apply bg-charcoal-black text-pure-white;
+    @apply bg-charcoal text-white;
   }
   
   .badge-outline {
-    @apply bg-transparent border border-silver-shimmer text-steel-gray;
+    @apply bg-transparent border border-border text-muted;
   }
   
   /* Divider Styles */
   .divider {
-    @apply w-full h-[1px] bg-gradient-to-r from-transparent via-silver-shimmer to-transparent;
+    @apply w-full h-[1px] bg-gradient-to-r from-transparent via-border to-transparent;
   }
   
   .divider-solid {
-    @apply w-full h-[1px] bg-platinum;
+    @apply w-full h-[1px] bg-border;
   }
   
   /* Loading States */
@@ -249,9 +228,9 @@
     @apply relative overflow-hidden;
     background: linear-gradient(
       90deg,
-      theme('colors.platinum') 0%,
-      theme('colors.silver-shimmer') 50%,
-      theme('colors.platinum') 100%
+      theme('colors.accent') 0%,
+      theme('colors.secondary') 50%,
+      theme('colors.accent') 100%
     );
     background-size: 200% 100%;
     animation: shimmer 1.5s ease-in-out infinite;
@@ -267,33 +246,11 @@
 @layer utilities {
   /* Text Gradients */
   .text-gradient-silver {
-    @apply bg-gradient-to-r from-steel-gray via-pure-silver to-steel-gray bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-muted via-secondary to-muted bg-clip-text text-transparent;
   }
   
   .text-gradient-luxury {
-    @apply bg-gradient-to-r from-charcoal-black via-steel-gray to-charcoal-black bg-clip-text text-transparent;
-  }
-  
-  /* Background Patterns */
-  .bg-pattern-dots {
-    background-image: radial-gradient(circle, theme('colors.silver-shimmer') 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-  
-  .bg-pattern-grid {
-    background-image: 
-      linear-gradient(theme('colors.platinum') 1px, transparent 1px),
-      linear-gradient(90deg, theme('colors.platinum') 1px, transparent 1px);
-    background-size: 50px 50px;
-  }
-  
-  /* Glassmorphism Effects */
-  .glass {
-    @apply bg-white/80 backdrop-blur-lg border border-white/20;
-  }
-  
-  .glass-dark {
-    @apply bg-charcoal-black/80 backdrop-blur-lg border border-white/10;
+    @apply bg-gradient-to-r from-charcoal via-muted to-charcoal bg-clip-text text-transparent;
   }
   
   /* Animation Classes */
@@ -308,24 +265,5 @@
   
   .animate-pulse-slow {
     animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-  
-  /* Scrollbar Styling */
-  .scrollbar-luxury::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  
-  .scrollbar-luxury::-webkit-scrollbar-track {
-    @apply bg-frost;
-  }
-  
-  .scrollbar-luxury::-webkit-scrollbar-thumb {
-    @apply bg-silver-shimmer rounded-full;
-    transition: background-color 0.3s ease;
-  }
-  
-  .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
-    @apply bg-pure-silver;
   }
 }

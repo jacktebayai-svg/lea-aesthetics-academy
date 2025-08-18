@@ -8,74 +8,92 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Lea Aesthetics Brand Colors
-        'deep-charcoal': '#111111',
-        'elegant-silver': '#D6D6D6', 
-        'light-platinum': '#EAEAEA',
-        'muted-gray': '#888888',
-        'silver-accent': '#B8B8B8',
-        'pure-white': '#FFFFFF',
+        // Luxury Aesthetics Brand Colors
+        platinum: '#E5E4E2',
+        silver: '#C0C0C0',
+        'rose-gold': '#E8B4B8',
+        charcoal: '#36454F',
 
         // Semantic Mappings
         primary: {
-          DEFAULT: '#111111', // Deep Charcoal
-          50: '#F5F5F5',
-          100: '#E5E5E5',
-          200: '#D6D6D6', 
-          300: '#B8B8B8',
-          400: '#888888',
-          500: '#111111',
-          600: '#0D0D0D',
-          700: '#0A0A0A',
-          800: '#070707',
-          900: '#030303',
+          DEFAULT: '#36454F', // Charcoal
+          50: '#F8F9FA',
+          100: '#F1F3F4',
+          200: '#E8EAEC',
+          300: '#C0C0C0', // Silver
+          400: '#8A9BA8',
+          500: '#36454F', // Charcoal
+          600: '#2D3A44',
+          700: '#242F39',
+          800: '#1B242D',
+          900: '#121922',
         },
         
+        accent: {
+          DEFAULT: '#E8B4B8', // Rose Gold
+          50: '#FDF8F9',
+          100: '#FBF1F2',
+          200: '#F7E3E5',
+          300: '#F3D5D8',
+          400: '#EBC4C8',
+          500: '#E8B4B8', // Rose Gold
+          600: '#E19DA2',
+          700: '#DA868C',
+          800: '#D36F76',
+          900: '#CC5860',
+        },
+
         surface: {
-          DEFAULT: '#D6D6D6', // Elegant Silver
-          light: '#EAEAEA', // Light Platinum  
-          dark: '#B8B8B8', // Silver Accent
+          DEFAULT: '#E5E4E2', // Platinum
+          light: '#F2F1EF',
+          dark: '#C0C0C0', // Silver
         },
 
         background: {
-          DEFAULT: '#EAEAEA', // Light Platinum
+          DEFAULT: '#FAFAFA', // Clean white base
           paper: '#FFFFFF', // Pure White
           subtle: '#F8F8F8',
+          platinum: '#E5E4E2',
         },
 
         text: {
-          primary: '#111111', // Deep Charcoal
-          secondary: '#888888', // Muted Gray
-          muted: '#B8B8B8', // Silver Accent
-          inverse: '#FFFFFF', // Pure White
+          primary: '#36454F', // Charcoal
+          secondary: '#6B7780',
+          muted: '#8A9BA8',
+          inverse: '#FFFFFF',
+          accent: '#E8B4B8', // Rose Gold for highlights
         },
 
         border: {
-          DEFAULT: '#B8B8B8', // Silver Accent
-          light: '#D6D6D6', // Elegant Silver
-          subtle: '#EAEAEA', // Light Platinum
+          DEFAULT: '#C0C0C0', // Silver
+          light: '#E5E4E2', // Platinum
+          subtle: '#F1F3F4',
         },
 
-        // Status colors (subtle versions maintaining theme)
+        // Status colors (luxury theme consistent)
         success: {
-          DEFAULT: '#4A5D4A',
-          light: '#E8F0E8',
-          dark: '#3A4D3A',
+          DEFAULT: '#4A6741', // Deep sage green
+          light: '#F0F7ED',
+          dark: '#3A5235',
+          accent: '#E8F5E3',
         },
         warning: {
-          DEFAULT: '#5D5A4A', 
-          light: '#F0EEE8',
-          dark: '#4D4A3A',
+          DEFAULT: '#B8860B', // Dark goldenrod 
+          light: '#FDF9E7',
+          dark: '#996F09',
+          accent: '#F9F1D1',
         },
         error: {
-          DEFAULT: '#5D4A4A',
-          light: '#F0E8E8', 
-          dark: '#4D3A3A',
+          DEFAULT: '#A0424D', // Muted burgundy
+          light: '#F8ECED', 
+          dark: '#7A323B',
+          accent: '#F2E1E4',
         },
         info: {
-          DEFAULT: '#4A4A5D',
-          light: '#E8E8F0',
-          dark: '#3A3A4D', 
+          DEFAULT: '#4A5B6B', // Steel blue
+          light: '#EDF1F4',
+          dark: '#394954',
+          accent: '#E3EAEF', 
         },
       },
 
@@ -104,12 +122,14 @@ module.exports = {
       },
 
       boxShadow: {
-        // Professional shadows using monochrome base
-        card: '0px 4px 16px rgba(17, 17, 17, 0.08)',
-        elevated: '0px 8px 24px rgba(17, 17, 17, 0.12)',
-        subtle: '0px 2px 8px rgba(17, 17, 17, 0.06)',
-        focus: '0px 0px 0px 3px rgba(184, 184, 184, 0.3)',
-        'focus-ring': '0 0 0 2px rgba(184, 184, 184, 0.3)',
+        // Luxury shadows using charcoal base
+        card: '0px 4px 16px rgba(54, 69, 79, 0.10)',
+        elevated: '0px 8px 24px rgba(54, 69, 79, 0.15)',
+        subtle: '0px 2px 8px rgba(54, 69, 79, 0.08)',
+        luxury: '0px 12px 40px rgba(54, 69, 79, 0.20)',
+        focus: '0px 0px 0px 3px rgba(232, 180, 184, 0.4)', // Rose gold focus
+        'focus-ring': '0 0 0 2px rgba(232, 180, 184, 0.3)',
+        'rose-glow': '0px 4px 20px rgba(232, 180, 184, 0.25)',
       },
 
       spacing: {
@@ -128,8 +148,10 @@ module.exports = {
       animation: {
         'fade-in': 'fadeIn 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         'slide-up': 'slideUp 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-        'silver-glow': 'silverGlow 2s ease-in-out infinite',
-        'pulse-silver': 'pulseSilver 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'luxury-glow': 'luxuryGlow 2s ease-in-out infinite',
+        'pulse-rose': 'pulseRose 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'shimmer': 'shimmer 2.5s linear infinite',
+        'elegant-slide': 'elegantSlide 400ms cubic-bezier(0.23, 1, 0.32, 1)',
       },
 
       keyframes: {
@@ -141,13 +163,21 @@ module.exports = {
           '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        silverGlow: {
-          '0%, 100%': { boxShadow: '0 0 0 rgba(184, 184, 184, 0)' },
-          '50%': { boxShadow: '0 0 20px rgba(184, 184, 184, 0.3)' },
+        luxuryGlow: {
+          '0%, 100%': { boxShadow: '0 0 0 rgba(232, 180, 184, 0)' },
+          '50%': { boxShadow: '0 0 25px rgba(232, 180, 184, 0.4)' },
         },
-        pulseSilver: {
-          '0%, 100%': { backgroundColor: 'rgba(214, 214, 214, 0.5)' },
-          '50%': { backgroundColor: 'rgba(184, 184, 184, 0.8)' },
+        pulseRose: {
+          '0%, 100%': { backgroundColor: 'rgba(232, 180, 184, 0.1)' },
+          '50%': { backgroundColor: 'rgba(232, 180, 184, 0.2)' },
+        },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+        elegantSlide: {
+          '0%': { opacity: '0', transform: 'translateY(20px) scale(0.95)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
         },
       },
 

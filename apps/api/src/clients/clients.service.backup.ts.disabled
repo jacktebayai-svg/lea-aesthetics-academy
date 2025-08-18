@@ -8,24 +8,22 @@ import { Prisma } from '@prisma/client';
 
 export interface CreateClientDto {
   tenantId: string;
-  personal: {
-    email: string;
-    firstName: string;
-    lastName: string;
-    phone?: string;
-    dateOfBirth?: string;
-    address?: {
-      line1: string;
-      line2?: string;
-      city: string;
-      postalCode: string;
-      country: string;
-    };
-    emergencyContact?: {
-      name: string;
-      phone: string;
-      relationship: string;
-    };
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  dateOfBirth?: Date;
+  address?: {
+    line1: string;
+    line2?: string;
+    city: string;
+    postcode: string;
+    country: string;
+  };
+  emergencyContact?: {
+    name: string;
+    phone: string;
+    relationship: string;
   };
   preferences?: {
     communicationPreferences?: string[];
@@ -69,7 +67,7 @@ export class ClientsService {
     const existingClients = await this.prisma.client.findMany({
       where: {
         tenantId: data.tenantId,
-        personal: {
+        // personal: {
           path: ['email'],
           equals: data.personal.email,
         },

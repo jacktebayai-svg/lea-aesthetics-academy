@@ -182,11 +182,17 @@ export class StripeService {
         data: {
           tenantId,
           stripeSubId: subscription.id,
-          stripeCustId: customer.id,
+          stripeCustId: subscription.customer as string,
           status: subscription.status,
           currentPeriodStart: new Date(subscription.current_period_start * 1000),
           currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-          plan: priceId, // Use string for plan field
+          plan: 'starter', // Default plan
+          planDetails: {
+            name: 'starter',
+            priceId,
+            features: [],
+            limits: {},
+          },
         },
       });
 

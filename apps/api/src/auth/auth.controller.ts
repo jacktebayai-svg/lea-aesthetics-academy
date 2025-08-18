@@ -30,6 +30,23 @@ export class RefreshTokenDto {
   refreshToken: string;
 }
 
+export class ForgotPasswordDto {
+  email: string;
+}
+
+export class ResetPasswordDto {
+  token: string;
+  newPassword: string;
+}
+
+export class Setup2FADto {
+  // No fields needed - uses authenticated user
+}
+
+export class Verify2FADto {
+  token: string;
+}
+
 @ApiTags('Authentication')
 @Controller('v1/auth')
 export class AuthController {
@@ -80,5 +97,49 @@ export class AuthController {
   async logoutAll(@Request() req) {
     await this.authService.logoutAll(req.user.id);
     return { message: 'Logged out from all devices' };
+  }
+
+  @ApiOperation({ summary: 'Request password reset' })
+  @ApiResponse({ status: 200, description: 'Password reset email sent' })
+  @HttpCode(HttpStatus.OK)
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.requestPasswordReset(forgotPasswordDto.email);
+  }
+
+  @ApiOperation({ summary: 'Reset password with token' })
+  @ApiResponse({ status: 200, description: 'Password reset successfully' })
+  @ApiResponse({ status: 401, description: 'Invalid or expired token' })
+  @HttpCode(HttpStatus.OK)
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto.token, resetPasswordDto.newPassword);
+  }
+
+  @ApiOperation({ summary: 'Setup 2FA for user' })
+  @ApiResponse({ status: 200, description: '2FA setup initiated' })
+  @UseGuards(AuthGuard('jwt'))
+  @Post('2fa/setup')
+  async setup2FA(@Request() req) {
+    return this.authService.setup2FA(req.user.id);
+  }
+
+  @ApiOperation({ summary: 'Verify 2FA token' })
+  @ApiResponse({ status: 200, description: '2FA token verified' })
+  @ApiResponse({ status: 401, description: 'Invalid 2FA token' })
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.OK)
+  @Post('2fa/verify')
+  async verify2FA(@Request() req, @Body() verify2FADto: Verify2FADto) {
+    return this.authService.verify2FA(req.user.id, verify2FADto.token);
+  }
+
+  @ApiOperation({ summary: 'Disable 2FA for user' })
+  @ApiResponse({ status: 200, description: '2FA disabled successfully' })
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.OK)
+  @Post('2fa/disable')
+  async disable2FA(@Request() req) {
+    return this.authService.disable2FA(req.user.id);
   }
 }
