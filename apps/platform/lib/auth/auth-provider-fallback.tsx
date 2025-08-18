@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           // Redirect based on role
           const redirectPath = getRedirectPath(transformedUser.role)
-          router.push(redirectPath)
+          router.push(redirectPath as any)
           
           return { success: true }
         }
@@ -210,7 +210,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Logout error:', error)
     } finally {
       setUser(null)
-      router.push('/login')
+      router.push('/login' as any)
     }
   }
 

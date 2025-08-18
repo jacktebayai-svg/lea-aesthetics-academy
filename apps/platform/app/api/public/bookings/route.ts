@@ -110,14 +110,14 @@ export async function POST(request: NextRequest) {
     
     if (!userId && clientInfo?.email) {
       // Try to find existing user by email
-      let existingUser = await prisma.user.findUnique({
+      let existingUser = await prisma.appUser.findUnique({
         where: { email: clientInfo.email }
       })
 
       if (!existingUser && clientInfo.firstName && clientInfo.lastName) {
         // Create new client user
         existingUser = await prisma.$transaction(async (tx) => {
-          const newUser = await tx.user.create({
+          const newUser = await tx.appUser.create({
             data: {
               firstName: clientInfo.firstName!,
               lastName: clientInfo.lastName!,

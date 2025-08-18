@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { User, ActiveMode } from '@/lib/auth/auth-provider'
 import { cn } from '@/lib/utils'
 import { 
@@ -22,9 +22,9 @@ interface ModeSelectorProps {
 export function ModeSelector({ user, activeMode, onModeChange }: ModeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false)
 
-  const availableModes = user.roles.filter((role): role is ActiveMode => 
+  const availableModes = (user.roles || []).filter((role): role is ActiveMode => 
     role === 'PRACTITIONER' || role === 'EDUCATOR'
-  )
+  ) as ActiveMode[]
 
   if (availableModes.length <= 1) {
     return null // Don't show selector if user only has one mode
@@ -59,7 +59,7 @@ export function ModeSelector({ user, activeMode, onModeChange }: ModeSelectorPro
         )}
       >
         <div className={cn("w-8 h-8 rounded-full flex items-center justify-center text-white", modes[activeMode].color)}>
-          {modes[activeMode].icon && <modes[activeMode].icon className="w-4 h-4" />}
+          {React.createElement(modes[activeMode].icon, { className: "w-4 h-4" })}
         </div>
         <div className="text-left">
           <div className="text-sm font-medium text-foreground">

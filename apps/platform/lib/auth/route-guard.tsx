@@ -30,22 +30,22 @@ export function RouteGuard({
     // If authentication is required but user is not logged in
     if (requireAuth && !user) {
       const loginUrl = redirectTo || '/login'
-      router.push(loginUrl)
+      router.push(loginUrl as any)
       return
     }
 
     // If user is logged in but roles are restricted
-    if (user && allowedRoles && !allowedRoles.includes(user.role)) {
+    if (user && allowedRoles && !user.roles.some(role => allowedRoles.includes(role))) {
       // Redirect to appropriate dashboard based on user's role
-      const userDashboard = getRoleDashboard(user.role)
-      router.push(userDashboard)
+      const userDashboard = getRoleDashboard(user.roles[0])
+      router.push(userDashboard as any)
       return
     }
 
     // If user is logged in and trying to access auth pages
     if (!requireAuth && user) {
-      const userDashboard = getRoleDashboard(user.role)
-      router.push(userDashboard)
+      const userDashboard = getRoleDashboard(user.roles[0])
+      router.push(userDashboard as any)
       return
     }
   }, [user, isLoading, requireAuth, allowedRoles, redirectTo, router])
@@ -61,7 +61,7 @@ export function RouteGuard({
   }
 
   // If roles are restricted and user doesn't have access
-  if (user && allowedRoles && !allowedRoles.includes(user.role)) {
+  if (user && allowedRoles && !user.roles.some(role => allowedRoles.includes(role))) {
     return null // Router will handle redirect
   }
 
@@ -139,11 +139,11 @@ export function usePermissions() {
   const { user } = useAuth()
 
   return {
-    isAdmin: user?.role === 'ADMIN',
-    isClient: user?.role === 'CLIENT',
-    isStudent: user?.role === 'STUDENT',
-    hasRole: (role: UserRole) => user?.role === role,
-    hasAnyRole: (roles: UserRole[]) => user ? roles.includes(user.role) : false,
-    canAccess: (allowedRoles: UserRole[]) => user ? allowedRoles.includes(user.role) : false,
+    isAdmin: user?.roles.includes('ADMIN') || false,
+    isClient: user?.roles.includes('CLIENT') || false,
+    isStudent: user?.roles.includes('STUDENT') || false,
+    hasRole: (role: UserRole) => user?.roles.includes(role) || false,
+    hasAnyRole: (roles: UserRole[]) => user ? roles.some(role => user.roles.includes(role)) : false,
+    canAccess: (allowedRoles: UserRole[]) => user ? user.roles.some(role => allowedRoles.includes(role)) : false,
   }
 }

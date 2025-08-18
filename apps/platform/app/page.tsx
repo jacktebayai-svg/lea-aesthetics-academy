@@ -31,7 +31,8 @@ export default function HomePage() {
       
       if (user) {
         // Redirect based on user role
-        switch (user.role) {
+        const primaryRole = user.roles[0]
+        switch (primaryRole) {
           case 'ADMIN':
             router.push('/admin/dashboard' as any)
             break

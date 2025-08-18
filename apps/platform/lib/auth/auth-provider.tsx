@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 
-export type UserRole = 'ADMIN' | 'CLIENT' | 'STUDENT'
+export type UserRole = 'ADMIN' | 'CLIENT' | 'STUDENT' | 'PRACTITIONER' | 'EDUCATOR'
+export type ActiveMode = 'PRACTITIONER' | 'EDUCATOR'
 
 export interface User {
   id: string
@@ -14,7 +15,7 @@ export interface User {
   lastName?: string
   phone?: string
   avatar?: string
-  role: UserRole
+  roles: UserRole[]
   isActive: boolean
   emailVerified: boolean
   phoneVerified: boolean
@@ -115,7 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         lastName: userProfile.last_name,
         phone: userProfile.phone,
         avatar: userProfile.avatar,
-        role: userProfile.role,
+        roles: userProfile.roles || [userProfile.role],
         isActive: userProfile.is_active,
         emailVerified: userProfile.email_verified,
         phoneVerified: userProfile.phone_verified,
@@ -170,8 +171,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(transformedUser)
           
           // Redirect based on role
-          const redirectPath = getRedirectPath(transformedUser.role)
-          router.push(redirectPath)
+          const redirectPath = getRedirectPath(transformedUser.roles)
+          router.push(redirectPath as any)
           
           return { success: true }
         }
@@ -323,7 +324,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Logout error:', error)
     } finally {
       setUser(null)
-      router.push('/login')
+      router.push('/login' as any)
     }
   }
 
@@ -388,8 +389,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   // Helper function to get redirect path based on role
-  const getRedirectPath = (role: UserRole): string => {
-    switch (role) {
+  const getRedirectPath = (roles: UserRole[]): string => {
+    const primaryRole = roles[0] || 'CLIENT'
+    switch (primaryRole) {
       case 'ADMIN':
         return '/admin/dashboard'
       case 'CLIENT':

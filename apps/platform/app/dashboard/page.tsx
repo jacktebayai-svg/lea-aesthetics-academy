@@ -58,7 +58,7 @@ export default function DashboardPage() {
               <CardTitle className="ml-2 text-sm font-medium">Profile</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{user.role}</div>
+              <div className="text-2xl font-bold">{user.roles[0]}</div>
               <CardDescription>
                 {user.firstName} {user.lastName}
               </CardDescription>
@@ -69,7 +69,7 @@ export default function DashboardPage() {
           </Card>
 
           {/* Role-specific Content */}
-          {user.role === 'CLIENT' && (
+          {user.roles.includes('CLIENT') && (
             <Card>
               <CardHeader className="flex flex-row items-center space-y-0 pb-2">
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
@@ -87,7 +87,7 @@ export default function DashboardPage() {
             </Card>
           )}
 
-          {user.role === 'STUDENT' && (
+          {user.roles.includes('STUDENT') && (
             <Card>
               <CardHeader className="flex flex-row items-center space-y-0 pb-2">
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
@@ -105,7 +105,7 @@ export default function DashboardPage() {
             </Card>
           )}
 
-          {user.role === 'ADMIN' && (
+          {user.roles.includes('ADMIN') && (
             <Card>
               <CardHeader className="flex flex-row items-center space-y-0 pb-2">
                 <Settings className="h-4 w-4 text-muted-foreground" />
@@ -142,12 +142,12 @@ export default function DashboardPage() {
                 <div>
                   <h4 className="font-medium mb-2">Quick Actions</h4>
                   <div className="space-y-2">
-                    {user.role === 'CLIENT' && (
+                    {user.roles.includes('CLIENT') && (
                       <Button variant="outline" className="w-full justify-start" onClick={() => router.push('/book')}>
                         Book an Appointment
                       </Button>
                     )}
-                    {user.role === 'STUDENT' && (
+                    {user.roles.includes('STUDENT') && (
                       <Button variant="outline" className="w-full justify-start" onClick={() => router.push('/courses')}>
                         Browse Courses
                       </Button>

@@ -49,8 +49,8 @@ export function LEAHeader() {
           {user ? (
             <div className="flex items-center space-x-4">
               {/* Quick Actions based on role */}
-              {user.role === 'CLIENT' && (
-                <Link href="/book">
+              {user.roles.includes('CLIENT') && (
+                <Link href={'/book' as any}>
                   <Button variant="ghost" size="sm" className="hidden md:flex">
                     <Calendar className="h-4 w-4 mr-2" />
                     Book Treatment
@@ -58,8 +58,8 @@ export function LEAHeader() {
                 </Link>
               )}
               
-              {user.role === 'STUDENT' && (
-                <Link href="/courses">
+              {user.roles.includes('STUDENT') && (
+                <Link href={'/courses' as any}>
                   <Button variant="ghost" size="sm" className="hidden md:flex">
                     <BookOpen className="h-4 w-4 mr-2" />
                     My Courses
@@ -67,8 +67,8 @@ export function LEAHeader() {
                 </Link>
               )}
 
-              {user.role === 'ADMIN' && (
-                <Link href="/admin">
+              {user.roles.includes('ADMIN') && (
+                <Link href={'/admin' as any}>
                   <Button variant="ghost" size="sm" className="hidden md:flex">
                     <Settings className="h-4 w-4 mr-2" />
                     Admin
@@ -96,7 +96,7 @@ export function LEAHeader() {
                         {user.email}
                       </p>
                       <p className="text-xs leading-none text-accent font-medium">
-                        {user.role}
+                        {user.roles[0]}
                       </p>
                     </div>
                   </DropdownMenuLabel>
@@ -110,7 +110,7 @@ export function LEAHeader() {
                   </DropdownMenuItem>
                   
                   <DropdownMenuItem asChild>
-                    <Link href="/profile" className="cursor-pointer">
+                    <Link href={'/profile' as any} className="cursor-pointer">
                       <Settings className="mr-2 h-4 w-4" />
                       Profile Settings
                     </Link>
@@ -130,12 +130,12 @@ export function LEAHeader() {
             </div>
           ) : (
             <div className="flex items-center space-x-3">
-              <Link href="/login">
+              <Link href={'/login' as any}>
                 <Button variant="ghost" size="sm">
                   Sign In
                 </Button>
               </Link>
-              <Link href="/register">
+              <Link href={'/register' as any}>
                 <Button size="sm" className="lea-button-primary">
                   Get Started
                 </Button>
