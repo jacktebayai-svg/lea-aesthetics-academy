@@ -1,15 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import jwt from 'jsonwebtoken'
+import { createClient } from '@/lib/supabase/server'
+import { findById, create, getCurrentUser, getStudentByUserId, getCourseBySlug, handleDatabaseError, formatPrice } from '@/lib/supabase/helpers'
 import { z } from 'zod'
-
-const prisma = new PrismaClient()
-
-interface JWTPayload {
-  userId: string
-  email: string
-  roles: string[]
-}
 
 const createEnrollmentSchema = z.object({
   courseId: z.string(),
@@ -23,21 +15,14 @@ const createEnrollmentSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = await createClient()
+    
     // Parse request body
     const body = await request.json()
     const { courseId, studentInfo } = createEnrollmentSchema.parse(body)
 
     // Get course details
-    const course = await prisma.course.findUnique({
-      where: { id: courseId },
-      include: { 
-        educator: {
-          include: {
-            user: true,
-          },
-        },
-      },
-    })
+    const course = await findById(supabase, 'courses', courseId)
 
     if (!course) {
       return NextResponse.json(
@@ -46,7 +31,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!course.isActive) {
+    if (!course.is_active) {
       return NextResponse.json(
         { error: 'Course is not available for enrollment' },
         { status: 400 }
@@ -54,17 +39,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Check enrollment capacity
-    if (course.maxStudents) {
-      const currentEnrollments = await prisma.enrollment.count({
-        where: { 
-          courseId,
-          status: {
-            in: ['ENROLLED', 'IN_PROGRESS', 'COMPLETED']
-          }
-        }
-      })
+    if (course.max_students) {
+      const { count: currentEnrollments } = await supabase
+        .from('course_enrollments')
+        .select('*', { count: 'exact', head: true })
+        .eq('course_id', courseId)
+        .in('status', ['enrolled', 'in_progress', 'completed'])
 
-      if (currentEnrollments >= course.maxStudents) {
+      if ((currentEnrollments || 0) >= course.max_students) {
         return NextResponse.json(
           { error: 'Course is fully booked' },
           { status: 400 }
@@ -72,67 +54,42 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Check if user is authenticated (optional for public enrollments)
-    let userId: string | null = null
-    const token = request.cookies.get('auth-token')?.value
-
-    if (token) {
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload
-        userId = decoded.userId
-      } catch (error) {
-        // Token is invalid but we can still proceed with guest enrollment
-        console.warn('Invalid token for enrollment:', error)
-      }
-    }
-
-    // Create or find student user
-    let studentId = userId
+    // Determine student ID
+    let studentId: string | null = null
     
-    if (!userId && studentInfo?.email) {
-      // Try to find existing user by email
-      let existingUser = await prisma.appUser.findUnique({
-        where: { email: studentInfo.email }
-      })
-
-      if (!existingUser && studentInfo.firstName && studentInfo.lastName) {
-        // Create new student user
-        existingUser = await prisma.$transaction(async (tx) => {
-          const newUser = await tx.appUser.create({
-            data: {
-              firstName: studentInfo.firstName!,
-              lastName: studentInfo.lastName!,
-              email: studentInfo.email!,
-              password: '', // Will need to set password later
-              phone: studentInfo.phone,
-              roles: ['STUDENT'], // Set STUDENT role
-            }
-          })
-
-          return newUser
-        })
+    // Try to get authenticated user
+    try {
+      const user = await getCurrentUser(supabase)
+      if (user) {
+        const student = await getStudentByUserId(supabase, user.id)
+        studentId = student?.id || null
       }
-
-      studentId = existingUser?.id || null
+    } catch (authError) {
+      // User not authenticated - for now require authentication
+      if (!studentInfo?.email) {
+        return NextResponse.json(
+          { error: 'Authentication required or student email must be provided' },
+          { status: 401 }
+        )
+      }
     }
 
+    // If no authenticated student, require authentication for course enrollment
     if (!studentId) {
       return NextResponse.json(
-        { error: 'Student information required for enrollment' },
-        { status: 400 }
+        { error: 'Please sign in to enroll in courses' },
+        { status: 401 }
       )
     }
 
     // Check if already enrolled
-    const existingEnrollment = await prisma.enrollment.findFirst({
-      where: {
-        studentId,
-        courseId,
-        status: {
-          in: ['ENROLLED', 'IN_PROGRESS', 'COMPLETED']
-        }
-      }
-    })
+    const { data: existingEnrollment } = await supabase
+      .from('course_enrollments')
+      .select('*')
+      .eq('student_id', studentId)
+      .eq('course_id', courseId)
+      .in('status', ['enrolled', 'in_progress', 'completed'])
+      .single()
 
     if (existingEnrollment) {
       return NextResponse.json(
@@ -142,28 +99,25 @@ export async function POST(request: NextRequest) {
     }
 
     // Create enrollment record
-    const enrollment = await prisma.enrollment.create({
-      data: {
-        studentId,
-        courseId,
-        status: 'ENROLLED',
-        progress: 0,
-        amountPaid: course.price || 0,
-        paymentComplete: (course.price || 0) === 0,
-      },
-      include: {
-        student: true,
-        course: {
-          include: {
-            educator: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-      },
+    const enrollment = await create(supabase, 'course_enrollments', {
+      student_id: studentId,
+      course_id: courseId,
+      status: 'enrolled',
+      progress: {},
+      certificate_issued: false
     })
+
+    // Create payment record if course has a price
+    let payment = null
+    if (course.price > 0) {
+      payment = await create(supabase, 'payments', {
+        course_enrollment_id: enrollment.id,
+        amount: course.price,
+        deposit_amount: course.price, // Full payment for courses
+        currency: 'GBP',
+        status: 'pending'
+      })
+    }
 
     // Return enrollment details for payment processing
     return NextResponse.json({
@@ -171,12 +125,16 @@ export async function POST(request: NextRequest) {
       enrollment: {
         id: enrollment.id,
         courseTitle: course.title,
-        educatorName: `${course.educator.user.firstName} ${course.educator.user.lastName}`,
-        duration: course.duration,
-        level: course.level,
+        duration: course.duration_hours,
         price: course.price,
         status: enrollment.status,
+        formattedPrice: formatPrice(course.price)
       },
+      payment: payment ? {
+        id: payment.id,
+        amount: payment.amount,
+        currency: payment.currency
+      } : null,
       paymentRequired: course.price > 0,
       nextStep: course.price > 0 ? 'payment' : 'complete',
     })
@@ -190,6 +148,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      )
+    }
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -199,16 +164,25 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = await createClient()
+    
     // Authenticate user
-    const token = request.cookies.get('auth-token')?.value
-    if (!token) {
+    const user = await getCurrentUser(supabase)
+    if (!user) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
       )
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload
+    // Get student record
+    const student = await getStudentByUserId(supabase, user.id)
+    if (!student) {
+      return NextResponse.json(
+        { error: 'Student profile not found' },
+        { status: 404 }
+      )
+    }
     
     // Get query parameters
     const { searchParams } = new URL(request.url)
@@ -216,79 +190,77 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    // Build where clause
-    const where: any = {
-      studentId: decoded.userId,
-    }
+    // Build query
+    let query = supabase
+      .from('course_enrollments')
+      .select(`
+        *,
+        course:courses(*),
+        payments(*)
+      `)
+      .eq('student_id', student.id)
+      .order('created_at', { ascending: false })
 
     if (status) {
-      where.status = status.toUpperCase()
+      query = query.eq('status', status)
     }
 
-    // Fetch user's enrollments
-    const enrollments = await prisma.enrollment.findMany({
-      where,
-      include: {
-        course: {
-          include: {
-            educator: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-        payments: true,
-      },
-      orderBy: {
-        startDate: 'desc',
-      },
-      take: limit,
-      skip: offset,
-    })
+    if (limit > 0) {
+      query = query.range(offset, offset + limit - 1)
+    }
 
-    const total = await prisma.enrollment.count({ where })
+    const { data: enrollments, error } = await query
+
+    if (error) {
+      handleDatabaseError(error)
+    }
+
+    // Get total count for pagination
+    let countQuery = supabase
+      .from('course_enrollments')
+      .select('*', { count: 'exact', head: true })
+      .eq('student_id', student.id)
+
+    if (status) {
+      countQuery = countQuery.eq('status', status)
+    }
+
+    const { count: total } = await countQuery
 
     return NextResponse.json({
-      enrollments: enrollments.map(enrollment => ({
+      success: true,
+      enrollments: enrollments?.map(enrollment => ({
         id: enrollment.id,
         course: {
           id: enrollment.course.id,
           title: enrollment.course.title,
           description: enrollment.course.description,
-          category: enrollment.course.category,
-          duration: enrollment.course.duration,
-          level: enrollment.course.level,
+          duration: enrollment.course.duration_hours,
           price: enrollment.course.price,
+          formattedPrice: formatPrice(enrollment.course.price)
         },
-        educator: {
-          id: enrollment.course.educator.id,
-          name: `${enrollment.course.educator.user.firstName} ${enrollment.course.educator.user.lastName}`,
-          title: enrollment.course.educator.title,
-        },
-        startDate: enrollment.startDate,
         status: enrollment.status,
         progress: enrollment.progress,
-        completionDate: enrollment.completionDate,
-        certificateIssued: enrollment.certificateIssued,
-        paymentStatus: enrollment.payments?.[0]?.status,
-        createdAt: enrollment.createdAt,
-        updatedAt: enrollment.updatedAt,
-      })),
+        completedAt: enrollment.completed_at,
+        certificateIssued: enrollment.certificate_issued,
+        paymentStatus: enrollment.payments?.[0]?.status || 'pending',
+        createdAt: enrollment.created_at,
+        updatedAt: enrollment.updated_at,
+      })) || [],
       pagination: {
-        total,
+        total: total || 0,
         limit,
         offset,
-        hasMore: offset + limit < total,
+        hasMore: offset + limit < (total || 0),
       },
     })
   } catch (error) {
     console.error('Get enrollments error:', error)
     
-    if (error instanceof jwt.JsonWebTokenError) {
+    if (error instanceof Error) {
       return NextResponse.json(
-        { error: 'Invalid authentication token' },
-        { status: 401 }
+        { error: error.message },
+        { status: 500 }
       )
     }
 

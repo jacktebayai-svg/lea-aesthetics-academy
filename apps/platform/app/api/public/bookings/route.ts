@@ -1,19 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import jwt from 'jsonwebtoken'
+import { createClient } from '@/lib/supabase/server'
+import { findById, create, getCurrentUser, getClientByUserId, handleDatabaseError, formatPrice } from '@/lib/supabase/helpers'
 import { z } from 'zod'
-import { format, addDays, parseISO } from 'date-fns'
-
-const prisma = new PrismaClient()
-
-interface JWTPayload {
-  userId: string
-  email: string
-  roles: string[]
-}
+import { addDays, parseISO, addMinutes } from 'date-fns'
 
 const createBookingSchema = z.object({
-  treatmentId: z.string(),
+  serviceId: z.string(),
   scheduledAt: z.string().datetime(),
   notes: z.string().optional(),
   clientInfo: z.object({
@@ -26,52 +18,32 @@ const createBookingSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = await createClient()
+    
     // Parse request body
     const body = await request.json()
-    const { treatmentId, scheduledAt, notes, clientInfo } = createBookingSchema.parse(body)
+    const { serviceId, scheduledAt, notes, clientInfo } = createBookingSchema.parse(body)
 
-    // Get treatment details
-    const treatment = await prisma.treatment.findUnique({
-      where: { id: treatmentId },
-      include: { 
-        practitioner: {
-          include: {
-            user: true,
-          },
-        },
-      },
-    })
+    // Get service details
+    const service = await findById(supabase, 'services', serviceId)
 
-    if (!treatment) {
+    if (!service) {
       return NextResponse.json(
-        { error: 'Treatment not found' },
+        { error: 'Service not found' },
         { status: 404 }
       )
     }
 
-    if (!treatment.isActive) {
+    if (!service.is_active) {
       return NextResponse.json(
-        { error: 'Treatment is not available for booking' },
+        { error: 'Service is not available for booking' },
         { status: 400 }
       )
     }
 
-    // Check if user is authenticated (optional for public bookings)
-    let userId: string | null = null
-    const token = request.cookies.get('auth-token')?.value
-
-    if (token) {
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload
-        userId = decoded.userId
-      } catch (error) {
-        // Token is invalid but we can still proceed with guest booking
-        console.warn('Invalid token for booking:', error)
-      }
-    }
-
-    // Parse scheduled date
+    // Parse scheduled date and calculate end time
     const scheduledDate = parseISO(scheduledAt)
+    const endDate = addMinutes(scheduledDate, service.duration_minutes)
     
     // Validate scheduling constraints
     const now = new Date()
@@ -84,55 +56,50 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check for conflicts (simplified - in production, you'd want more sophisticated scheduling)
-    const existingBooking = await prisma.booking.findFirst({
-      where: {
-        treatmentId,
-        dateTime: {
-          gte: new Date(scheduledDate.getTime() - treatment.duration * 60000), // Start of conflict window
-          lt: new Date(scheduledDate.getTime() + treatment.duration * 60000),  // End of conflict window
-        },
-        status: {
-          in: ['CONFIRMED']
-        }
-      }
-    })
+    // Check for conflicts
+    const { data: conflictingAppointments } = await supabase
+      .from('appointments')
+      .select('*')
+      .eq('service_id', serviceId)
+      .not('status', 'eq', 'cancelled')
+      .not('status', 'eq', 'no_show')
+      .or(`and(start_time.lte.${scheduledDate.toISOString()},end_time.gt.${scheduledDate.toISOString()}),and(start_time.lt.${endDate.toISOString()},end_time.gte.${endDate.toISOString()}),and(start_time.gte.${scheduledDate.toISOString()},end_time.lte.${endDate.toISOString()})`)
 
-    if (existingBooking) {
+    if (conflictingAppointments && conflictingAppointments.length > 0) {
       return NextResponse.json(
         { error: 'This time slot is not available' },
         { status: 400 }
       )
     }
 
-    // Create or find client user
-    let clientId = userId
+    // Determine client ID
+    let clientId: string | null = null
     
-    if (!userId && clientInfo?.email) {
-      // Try to find existing user by email
-      let existingUser = await prisma.appUser.findUnique({
-        where: { email: clientInfo.email }
-      })
-
-      if (!existingUser && clientInfo.firstName && clientInfo.lastName) {
-        // Create new client user
-        existingUser = await prisma.$transaction(async (tx) => {
-          const newUser = await tx.appUser.create({
-            data: {
-              firstName: clientInfo.firstName!,
-              lastName: clientInfo.lastName!,
-              email: clientInfo.email!,
-              password: '', // Will need to set password later
-              phone: clientInfo.phone,
-              roles: ['CLIENT'], // Set CLIENT role
-            }
-          })
-
-          return newUser
-        })
+    // Try to get authenticated user
+    try {
+      const user = await getCurrentUser(supabase)
+      if (user) {
+        const client = await getClientByUserId(supabase, user.id)
+        clientId = client?.id || null
       }
+    } catch (authError) {
+      // User not authenticated - proceed as guest if email provided
+      if (!clientInfo?.email) {
+        return NextResponse.json(
+          { error: 'Authentication required or client email must be provided' },
+          { status: 401 }
+        )
+      }
+    }
 
-      clientId = existingUser?.id || null
+    // If no authenticated client and email provided, handle guest booking
+    if (!clientId && clientInfo?.email) {
+      // For now, require authentication for bookings
+      // Later we can implement guest bookings with email verification
+      return NextResponse.json(
+        { error: 'Please sign in to book an appointment' },
+        { status: 401 }
+      )
     }
 
     if (!clientId) {
@@ -142,48 +109,47 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create booking record
-    const booking = await prisma.booking.create({
-      data: {
-        clientId,
-        treatmentId,
-        practitionerId: treatment.practitionerId,
-        dateTime: scheduledDate,
-        duration: treatment.duration,
-        status: 'PENDING_DEPOSIT',
-        clientName: clientInfo?.firstName && clientInfo?.lastName ? `${clientInfo.firstName} ${clientInfo.lastName}` : 'Guest',
-        clientEmail: clientInfo?.email || '',
-        clientPhone: clientInfo?.phone || '',
-        depositAmount: treatment.depositAmount || Math.floor(treatment.price * 0.3), // 30% deposit
-        totalAmount: treatment.price,
-        notes: notes || '',
-      },
-      include: {
-        client: true,
-        treatment: {
-          include: {
-            practitioner: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-      },
+    // Calculate deposit amount (25% as per Master Aesthetics Suite spec)
+    const depositAmount = Math.floor(service.base_price * 0.25)
+
+    // Create appointment record
+    const appointment = await create(supabase, 'appointments', {
+      client_id: clientId,
+      service_id: serviceId,
+      start_time: scheduledDate.toISOString(),
+      end_time: endDate.toISOString(),
+      status: 'pending_deposit',
+      notes: notes || '',
+      reminders_sent: 0
+    })
+
+    // Create payment record
+    const payment = await create(supabase, 'payments', {
+      appointment_id: appointment.id,
+      amount: service.base_price,
+      deposit_amount: depositAmount,
+      currency: 'GBP',
+      status: 'pending'
     })
 
     // Return booking details for payment processing
     return NextResponse.json({
       success: true,
-      booking: {
-        id: booking.id,
-        treatmentName: treatment.name,
-        practitionerName: `${treatment.practitioner.user.firstName} ${treatment.practitioner.user.lastName}`,
-        scheduledAt: booking.dateTime,
-        duration: treatment.duration,
-        totalAmount: booking.totalAmount,
-        depositAmount: booking.depositAmount,
-        status: booking.status,
+      appointment: {
+        id: appointment.id,
+        serviceName: service.name,
+        scheduledAt: appointment.start_time,
+        duration: service.duration_minutes,
+        totalAmount: service.base_price,
+        depositAmount: depositAmount,
+        status: appointment.status,
+        formattedTotal: formatPrice(service.base_price),
+        formattedDeposit: formatPrice(depositAmount)
+      },
+      payment: {
+        id: payment.id,
+        amount: depositAmount, // Initial payment is deposit
+        currency: payment.currency
       },
       paymentRequired: true,
       nextStep: 'payment',
@@ -198,6 +164,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      )
+    }
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -207,16 +180,25 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // Authenticate user
-    const token = request.cookies.get('auth-token')?.value
-    if (!token) {
+    const supabase = await createClient()
+    
+    // Authenticate user  
+    const user = await getCurrentUser(supabase)
+    if (!user) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
       )
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload
+    // Get client record
+    const client = await getClientByUserId(supabase, user.id)
+    if (!client) {
+      return NextResponse.json(
+        { error: 'Client profile not found' },
+        { status: 404 }
+      )
+    }
     
     // Get query parameters
     const { searchParams } = new URL(request.url)
@@ -224,76 +206,79 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    // Build where clause
-    const where: any = {
-      clientId: decoded.userId,
-    }
+    // Build query
+    let query = supabase
+      .from('appointments')
+      .select(`
+        *,
+        service:services(*),
+        payments(*)
+      `)
+      .eq('client_id', client.id)
+      .order('start_time', { ascending: false })
 
     if (status) {
-      where.status = status.toUpperCase()
+      query = query.eq('status', status)
     }
 
-    // Fetch user's bookings
-    const bookings = await prisma.booking.findMany({
-      where,
-      include: {
-        treatment: {
-          include: {
-            practitioner: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-        payments: true,
-      },
-      orderBy: {
-        dateTime: 'desc',
-      },
-      take: limit,
-      skip: offset,
-    })
+    if (limit > 0) {
+      query = query.range(offset, offset + limit - 1)
+    }
 
-    const total = await prisma.booking.count({ where })
+    const { data: appointments, error } = await query
+
+    if (error) {
+      handleDatabaseError(error)
+    }
+
+    // Get total count for pagination
+    let countQuery = supabase
+      .from('appointments')
+      .select('*', { count: 'exact', head: true })
+      .eq('client_id', client.id)
+
+    if (status) {
+      countQuery = countQuery.eq('status', status)
+    }
+
+    const { count: total } = await countQuery
 
     return NextResponse.json({
-      bookings: bookings.map(booking => ({
-        id: booking.id,
-        treatment: {
-          id: booking.treatment.id,
-          name: booking.treatment.name,
-        category: booking.treatment.category,
-          duration: booking.treatment.duration,
+      success: true,
+      appointments: appointments?.map(appointment => ({
+        id: appointment.id,
+        service: {
+          id: appointment.service.id,
+          name: appointment.service.name,
+          category: appointment.service.category,
+          duration: appointment.service.duration_minutes,
         },
-        practitioner: {
-          id: booking.treatment.practitioner.id,
-          name: `${booking.treatment.practitioner.user.firstName} ${booking.treatment.practitioner.user.lastName}`,
-          title: booking.treatment.practitioner.title,
-        },
-        scheduledAt: booking.dateTime,
-        status: booking.status,
-        totalAmount: booking.totalAmount,
-        depositAmount: booking.depositAmount,
-        notes: booking.notes,
-        paymentStatus: booking.payments?.[0]?.status,
-        createdAt: booking.createdAt,
-        updatedAt: booking.updatedAt,
-      })),
+        scheduledAt: appointment.start_time,
+        endTime: appointment.end_time,
+        status: appointment.status,
+        notes: appointment.notes,
+        totalAmount: appointment.service.base_price,
+        depositAmount: Math.floor(appointment.service.base_price * 0.25),
+        formattedTotal: formatPrice(appointment.service.base_price),
+        formattedDeposit: formatPrice(Math.floor(appointment.service.base_price * 0.25)),
+        paymentStatus: appointment.payments?.[0]?.status || 'pending',
+        createdAt: appointment.created_at,
+        updatedAt: appointment.updated_at,
+      })) || [],
       pagination: {
-        total,
+        total: total || 0,
         limit,
         offset,
-        hasMore: offset + limit < total,
+        hasMore: offset + limit < (total || 0),
       },
     })
   } catch (error) {
     console.error('Get bookings error:', error)
     
-    if (error instanceof jwt.JsonWebTokenError) {
+    if (error instanceof Error) {
       return NextResponse.json(
-        { error: 'Invalid authentication token' },
-        { status: 401 }
+        { error: error.message },
+        { status: 500 }
       )
     }
 
