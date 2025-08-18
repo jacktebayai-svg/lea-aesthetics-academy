@@ -2,67 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
 @layer base {
   :root {
+    /* LEA Aesthetics Luxury Color Palette */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 26 30% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 26 30% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 26 30% 8%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Champagne Gold */
+    --primary: 42 26% 64%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
+    /* Secondary: Soft Ivory */
+    --secondary: 30 33% 96%;
+    --secondary-foreground: 26 30% 8%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted: Warm Gray */
+    --muted: 30 17% 92%;
+    --muted-foreground: 26 15% 45%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+    /* Accent: Rose Gold */
+    --accent: 25 44% 76%;
+    --accent-foreground: 26 30% 8%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 30 17% 88%;
+    --input: 30 17% 92%;
+    --ring: 42 26% 64%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* LEA Custom Colors */
+    --lea-noir: 26 30% 8%;
+    --lea-champagne: 42 26% 64%;
+    --lea-ivory: 30 33% 96%;
+    --lea-rose-gold: 25 44% 76%;
+    --lea-warm-gray: 26 15% 45%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 26 30% 8%;
+    --foreground: 30 33% 96%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 26 30% 12%;
+    --card-foreground: 30 33% 96%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 26 30% 12%;
+    --popover-foreground: 30 33% 96%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 42 26% 64%;
+    --primary-foreground: 26 30% 8%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 26 30% 16%;
+    --secondary-foreground: 30 33% 96%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 26 30% 16%;
+    --muted-foreground: 26 15% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 25 44% 76%;
+    --accent-foreground: 26 30% 8%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 30 33% 96%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 26 30% 20%;
+    --input: 26 30% 16%;
+    --ring: 42 26% 64%;
   }
 }
 
@@ -70,7 +84,120 @@
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  .lea-gradient {
+    background: linear-gradient(135deg, hsl(var(--lea-champagne)) 0%, hsl(var(--lea-rose-gold)) 100%);
+  }
+
+  .lea-text-gradient {
+    background: linear-gradient(135deg, hsl(var(--lea-champagne)) 0%, hsl(var(--lea-rose-gold)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .lea-shadow {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  .lea-shadow-gold {
+    box-shadow: 0 20px 25px -5px hsl(var(--lea-champagne) / 0.2), 0 8px 10px -6px hsl(var(--lea-champagne) / 0.1);
+  }
+
+  .lea-backdrop {
+    backdrop-filter: blur(8px) saturate(180%);
+    background-color: hsl(var(--background) / 0.8);
+  }
+}
+
+@layer components {
+  .lea-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .lea-card {
+    @apply bg-card border border-border rounded-xl p-6 lea-shadow;
+  }
+
+  .lea-button-primary {
+    @apply lea-gradient text-white font-medium px-6 py-3 rounded-lg hover:opacity-90 transition-all duration-300 lea-shadow;
+  }
+
+  .lea-button-secondary {
+    @apply bg-secondary text-secondary-foreground border border-border font-medium px-6 py-3 rounded-lg hover:bg-accent transition-all duration-300;
+  }
+
+  .lea-input {
+    @apply bg-background border border-input rounded-lg px-4 py-3 focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200;
+  }
+
+  .lea-text-heading {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight;
+  }
+
+  .lea-text-subheading {
+    @apply text-xl md:text-2xl font-medium text-muted-foreground leading-relaxed;
+  }
+
+  .lea-section {
+    @apply py-16 md:py-24;
+  }
+}
+
+/* Smooth animations */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.8s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.5s ease-out forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
