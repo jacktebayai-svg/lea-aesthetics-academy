@@ -30,7 +30,6 @@ export interface CreateUserData {
   firstName?: string;
   lastName?: string;
   phone?: string;
-  tenantId?: string;
   role?: string;
 }
 
@@ -44,9 +43,6 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.prisma.user.findUnique({
       where: { email },
-      include: {
-        roles: true,
-      },
     });
 
     if (!user || !user.isActive) {
@@ -70,7 +66,7 @@ export class AuthService {
     const payload: JwtPayloadForLogin = {
       sub: user.id,
       email: user.email,
-      roles: user.roles?.map(r => r.role) || [],
+      roles: [user.role] || ['CLIENT'],
     };
 
     const accessToken = this.jwtService.sign(payload);
@@ -94,7 +90,7 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        roles: user.roles || [],
+        roles: [user.role] || ['CLIENT'],
       },
       accessToken,
       refreshToken,
@@ -123,22 +119,9 @@ export class AuthService {
         lastName: userData.lastName,
         phone: userData.phone,
         emailVerified: false,
-      },
-      include: {
-        roles: true,
+        role: (userData.role as any) || 'CLIENT',
       },
     });
-
-    // Add role if specified
-    if (userData.role && userData.tenantId) {
-      await this.prisma.userRole.create({
-        data: {
-          userId: user.id,
-          tenantId: userData.tenantId,
-          role: userData.role as any,
-        },
-      });
-    }
 
     return this.login(user);
   }
@@ -154,11 +137,7 @@ export class AuthService {
       const storedToken = await this.prisma.refreshToken.findUnique({
         where: { token: refreshToken },
         include: {
-          user: {
-            include: {
-              roles: true,
-            },
-          },
+          user: true,
         },
       });
 
@@ -170,7 +149,7 @@ export class AuthService {
       const newPayload: JwtPayloadForLogin = {
         sub: storedToken.user.id,
         email: storedToken.user.email,
-        roles: storedToken.user.roles?.map(r => r.role) || [],
+        roles: [storedToken.user.role] || ['CLIENT'],
       };
 
       const accessToken = this.jwtService.sign(newPayload);

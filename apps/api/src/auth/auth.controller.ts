@@ -22,7 +22,6 @@ export class RegisterDto {
   firstName?: string;
   lastName?: string;
   phone?: string;
-  tenantId?: string;
   role?: string;
 }
 

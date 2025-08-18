@@ -209,8 +209,8 @@ model Student {
   
   // Relations
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  enrollments      Enrollment[]
-  certificates     Certificate[]
+  enrollments      Enrollment[] @relation("StudentEnrollments")
+  certificates     Certificate[] @relation("StudentCertificates")
   
   @@index([email])
   @@index([studentNumber])
@@ -882,6 +882,7 @@ model Enrollment {
   // Relations
   user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
   course          Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student         Student? @relation("StudentEnrollments", fields: [userId], references: [userId], onDelete: Cascade, map: "enrollment_student_fkey")
   lessonProgress  LessonProgress[]
   payments        Payment[]
   
@@ -942,6 +943,7 @@ model Certificate {
   // Relations
   user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
   course       Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student      Student? @relation("StudentCertificates", fields: [userId], references: [userId], onDelete: Cascade, map: "certificate_student_fkey")
   
   @@map("certificates")
 }
