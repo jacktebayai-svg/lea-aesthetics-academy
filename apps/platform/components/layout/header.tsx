@@ -5,7 +5,7 @@ interface HeaderProps {
   className?: string;
 }
 
-export default function Header({ className = '' }: HeaderProps) {
+export default function LEAHeader({ className = '' }: HeaderProps) {
   return (
     <header className={`bg-white shadow-sm border-b ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,4 +45,4 @@ export default function Header({ className = '' }: HeaderProps) {
   );
 }
 
-export { Header };
+export { LEAHeader };

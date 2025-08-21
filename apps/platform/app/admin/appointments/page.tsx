@@ -17,7 +17,7 @@ interface Appointment {
 }
 
 // Mock data for appointments
-const appointments = [
+const appointments: Appointment[] = [
   {
     id: 1,
     client: 'Emma Watson',
