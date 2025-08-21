@@ -4,8 +4,7 @@
   "installCommand": "pnpm install --no-frozen-lockfile",
   "buildCommand": "cd apps/platform && pnpm build",
   "outputDirectory": "apps/platform/.next",
-  "rootDirectory": "apps/platform",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD .",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD apps/platform",
   "headers": [
     {
       "source": "/(.*)",
