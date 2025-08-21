@@ -1,0 +1,269 @@
+@import './styles/tokens.css';
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Allura&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* LEA AESTHETICS PREMIUM FOUNDATION */
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+  }
+  
+  body {
+    @apply font-body bg-background text-charcoal;
+    font-size: 16px;
+    line-height: 1.75;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+  }
+
+  /* LEA AESTHETICS PREMIUM TYPOGRAPHY */
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 0.75em 0;
+    font-weight: 400;
+    transition: color 0.3s ease;
+  }
+  
+  /* Elegant Headers */
+  h1 {
+    @apply font-luxury-script text-heading-1 text-charcoal;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Sophisticated Serif Subheadings */
+  h2 {
+    @apply font-luxury-serif text-heading-2 text-charcoal;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  
+  h3 {
+    @apply font-luxury-serif text-heading-3 text-charcoal-light;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  
+  h4 {
+    @apply font-luxury-serif text-heading-4 text-charcoal-light;
+    font-weight: 500;
+  }
+  
+  h5 {
+    @apply font-body text-heading-5 text-charcoal-light;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  h6 {
+    @apply font-body text-body-large text-muted;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  
+  /* Clean Black Body Text */
+  p {
+    @apply font-body text-body-regular text-charcoal;
+    margin: 0 0 1.5em 0;
+  }
+  
+  /* Text Variations */
+  .text-lead {
+    @apply font-body text-body-xlarge text-charcoal-light;
+    letter-spacing: 0.01em;
+  }
+  
+  .text-caption {
+    @apply font-body text-caption text-muted uppercase;
+    letter-spacing: 0.1em;
+  }
+  
+  /* Link Styles */
+  a {
+    @apply text-secondary transition-colors duration-300;
+    text-decoration: none;
+    position: relative;
+  }
+  
+  a:hover {
+    @apply text-charcoal;
+  }
+  
+  /* Focus styles for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-secondary ring-offset-2 ring-offset-background;
+  }
+  
+  /* Remove default focus outline */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Selection styles */
+  ::selection {
+    @apply bg-accent text-charcoal;
+  }
+}
+
+/* PREMIUM COMPONENT STYLES */
+@layer components {
+  /* Luxury Button Styles */
+  .btn-primary {
+    @apply bg-charcoal text-white px-8 py-3 rounded-medium font-body font-medium
+           transition-all duration-300 shadow-card hover:shadow-elevated
+           hover:bg-charcoal-light hover:scale-[1.02] active:scale-[0.98];
+    letter-spacing: 0.02em;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-charcoal px-8 py-3 rounded-medium font-body font-medium
+           transition-all duration-300 shadow-subtle hover:shadow-card
+           hover:bg-silver-light hover:scale-[1.02] active:scale-[0.98];
+    letter-spacing: 0.02em;
+  }
+  
+  .btn-outline {
+    @apply bg-transparent text-charcoal px-8 py-3 rounded-medium font-body font-medium
+           border border-border transition-all duration-300
+           hover:bg-charcoal hover:text-white hover:border-charcoal
+           hover:scale-[1.02] active:scale-[0.98];
+    letter-spacing: 0.02em;
+  }
+  
+  .btn-ghost {
+    @apply bg-transparent text-muted px-6 py-2 font-body font-medium
+           transition-all duration-300 hover:text-charcoal hover:bg-surface-elevated;
+    letter-spacing: 0.02em;
+  }
+  
+  /* Premium Card Styles */
+  .card-luxury {
+    @apply bg-surface rounded-luxury p-8 shadow-card transition-all duration-300
+           hover:shadow-elevated hover:translate-y-[-4px];
+  }
+  
+  .card-minimal {
+    @apply bg-surface rounded-medium p-6 border border-border
+           transition-all duration-300 hover:border-accent hover:shadow-subtle;
+  }
+  
+  /* Premium Input Styles */
+  .input-luxury {
+    @apply w-full px-6 py-3 bg-surface border border-border rounded-medium
+           font-body text-charcoal placeholder-muted
+           transition-all duration-300 focus:border-secondary focus:shadow-focus
+           focus:outline-none;
+  }
+  
+  .input-minimal {
+    @apply w-full px-4 py-3 bg-transparent border-b border-border
+           font-body text-charcoal placeholder-muted
+           transition-all duration-300 focus:border-charcoal
+           focus:outline-none;
+  }
+  
+  /* Navigation Styles */
+  .nav-link {
+    @apply font-body text-ui-regular text-muted transition-all duration-300
+           hover:text-charcoal relative;
+    letter-spacing: 0.03em;
+  }
+  
+  .nav-link-active {
+    @apply text-charcoal font-medium;
+  }
+  
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-[1px] bg-secondary transition-all duration-300;
+  }
+  
+  .nav-link:hover::after,
+  .nav-link-active::after {
+    @apply w-full;
+  }
+  
+  /* Badge Styles */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-ui-small font-medium;
+    letter-spacing: 0.05em;
+  }
+  
+  .badge-silver {
+    @apply bg-accent text-charcoal;
+  }
+  
+  .badge-dark {
+    @apply bg-charcoal text-white;
+  }
+  
+  .badge-outline {
+    @apply bg-transparent border border-border text-muted;
+  }
+  
+  /* Divider Styles */
+  .divider {
+    @apply w-full h-[1px] bg-gradient-to-r from-transparent via-border to-transparent;
+  }
+  
+  .divider-solid {
+    @apply w-full h-[1px] bg-border;
+  }
+  
+  /* Loading States */
+  .shimmer {
+    @apply relative overflow-hidden;
+    background: linear-gradient(
+      90deg,
+      theme('colors.accent') 0%,
+      theme('colors.secondary') 50%,
+      theme('colors.accent') 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+}
+
+/* UTILITY EXTENSIONS */
+@layer utilities {
+  /* Text Gradients */
+  .text-gradient-silver {
+    @apply bg-gradient-to-r from-muted via-secondary to-muted bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-luxury {
+    @apply bg-gradient-to-r from-charcoal via-muted to-charcoal bg-clip-text text-transparent;
+  }
+  
+  /* Animation Classes */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
