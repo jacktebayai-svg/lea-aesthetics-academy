@@ -19,6 +19,7 @@
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
     "@playwright/test": "^1.47.2",
+    "next": "15.4.6",
     "prettier": "^3.3.2",
     "turbo": "^2.0.6"
   },
