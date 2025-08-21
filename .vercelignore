@@ -1,4 +1,4 @@
-# Ignore specific apps to prevent auto-deployment
+# Ignore non-deployable directories
 # Only deploy the platform app automatically
-apps/admin/
-apps/web/
+apps/api/
+apps/lea-academy/

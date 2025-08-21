@@ -41,6 +41,14 @@ export async function middleware(request: NextRequest) {
   }
 
   const pathname = request.nextUrl.pathname
+  const url = request.nextUrl.clone()
+
+  // Handle tenant resolution for root path
+  if (pathname === "/") {
+    const defaultDomain = "leas-aesthetics.com";
+    url.pathname = `/${defaultDomain}`;
+    return NextResponse.rewrite(url);
+  }
 
   // Check if the route is protected
   const protectedRoute = Object.keys(protectedRoutes).find(route => 

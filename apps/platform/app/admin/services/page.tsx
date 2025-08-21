@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import AdminLayout from '@/components/layout/AdminLayout';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:3333";
 
@@ -70,11 +69,8 @@ export default function ServicesPage() {
   }
 
   return (
-    <AdminLayout 
-      title="Services" 
-      subtitle="Manage your clinic services and pricing"
-    >
-      <div className="space-y-8 animate-fade-in">
+    <main className="p-8 space-y-6">
+      <h1 className="text-xl font-semibold">Services</h1>
 
       <section className="space-y-2 max-w-xl">
         <h2 className="font-medium">Create</h2>
@@ -153,7 +149,6 @@ export default function ServicesPage() {
           ))}
         </ul>
       </section>
-      </div>
-    </AdminLayout>
+    </main>
   );
 }
