@@ -2,13 +2,13 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@leas-academy/ui/components/card';
-import { Button } from '@leas-academy/ui/components/button';
-import { Input } from '@leas-academy/ui/components/input';
-import { Badge } from '@leas-academy/ui/components/badge';
-import { Textarea } from '@leas-academy/ui/components/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@leas-academy/ui/components/select';
-import { Checkbox } from '@leas-academy/ui/components/checkbox';
+import { Card, CardContent, CardHeader, CardTitle } from '@master-aesthetics-suite/ui';
+import { Button } from '@master-aesthetics-suite/ui';
+import { Input } from '@master-aesthetics-suite/ui';
+import { Badge } from '@master-aesthetics-suite/ui';
+import { Textarea } from '@master-aesthetics-suite/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@master-aesthetics-suite/ui';
+import { Checkbox } from '@master-aesthetics-suite/ui';
 import { 
   Send, 
   FileText, 

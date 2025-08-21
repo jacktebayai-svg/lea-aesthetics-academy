@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { LEALoginForm } from '@leas-academy/ui';
+import { LEALoginForm } from '@master-aesthetics-suite/ui';
 import { useRouter } from 'next/navigation';
 
 export default function ClientLoginPage() {

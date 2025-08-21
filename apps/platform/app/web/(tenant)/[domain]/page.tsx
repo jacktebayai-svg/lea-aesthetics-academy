@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, Button, Icon } from "@leas-academy/ui";
+import { Card, Button, Icon } from "@master-aesthetics-suite/ui";
 
 export default function HomePage() {
   return (

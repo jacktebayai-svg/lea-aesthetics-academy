@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, FormEvent } from "react";
 import type { ChatMessage } from "@leas-academy/shared";
-import { Card, Button, Icon } from "@leas-academy/ui";
+import { Card, Button, Icon } from "@master-aesthetics-suite/ui";
 
 export default function StudentAssistant() {
   const [messages, setMessages] = useState<ChatMessage[]>([

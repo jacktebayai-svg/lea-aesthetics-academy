@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import type { Service } from "@leas-academy/shared";
-import { Card, Button, Icon } from "@leas-academy/ui";
+import { Card, Button, Icon } from "@master-aesthetics-suite/ui";
 
 const servicesData: Service[] = [
   {

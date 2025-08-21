@@ -2,13 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@leas-academy/ui/components/card';
-import { Button } from '@leas-academy/ui/components/button';
-import { Input } from '@leas-academy/ui/components/input';
-import { Badge } from '@leas-academy/ui/components/badge';
-import { Textarea } from '@leas-academy/ui/components/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@leas-academy/ui/components/select';
-import { Checkbox } from '@leas-academy/ui/components/checkbox';
+import { Card, CardContent, CardHeader, CardTitle, Button, Input } from '@master-aesthetics-suite/ui';
 import { 
   Send, 
   GraduationCap, 
@@ -214,10 +208,10 @@ function SendCourseContent() {
               <div>
                 <h3 className="font-semibold text-lg text-noir-900">{course.title}</h3>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge variant="outline">{course.level}</Badge>
-                  <Badge className="bg-green-100 text-green-800">
+                  <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">{course.level}</span>
+                  <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
                     {course.status.charAt(0).toUpperCase() + course.status.slice(1)}
-                  </Badge>
+                  </span>
                 </div>
               </div>
 
@@ -261,25 +255,14 @@ function SendCourseContent() {
                   <label className="text-sm font-medium text-noir-700 mb-2 block">
                     Enrollment Type
                   </label>
-                  <Select value={enrollmentType} onValueChange={(value: any) => setEnrollmentType(value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="immediate">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="w-4 h-4" />
-                          Immediate Access
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="scheduled">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          Scheduled Start
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <select
+                    value={enrollmentType}
+                    onChange={(e) => setEnrollmentType(e.target.value as any)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="immediate">Immediate Access</option>
+                    <option value="scheduled">Scheduled Start</option>
+                  </select>
                 </div>
 
                 {enrollmentType === 'scheduled' && (
@@ -300,20 +283,23 @@ function SendCourseContent() {
                 <label className="text-sm font-medium text-noir-700 mb-2 block">
                   Welcome Message
                 </label>
-                <Textarea
+                <textarea
                   placeholder="Add a welcome message for enrolled students..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Checkbox
+                  <input
+                    type="checkbox"
                     id="selfPaced"
                     checked={allowSelfPaced}
-                    onCheckedChange={(checked) => setAllowSelfPaced(checked as boolean)}
+                    onChange={(e) => setAllowSelfPaced(e.target.checked)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label
                     htmlFor="selfPaced"
@@ -324,10 +310,12 @@ function SendCourseContent() {
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <Checkbox
+                  <input
+                    type="checkbox"
                     id="notify"
                     checked={notifyStudents}
-                    onCheckedChange={(checked) => setNotifyStudents(checked as boolean)}
+                    onChange={(e) => setNotifyStudents(e.target.checked)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label
                     htmlFor="notify"
@@ -393,16 +381,18 @@ function SendCourseContent() {
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <Checkbox
+                          <input
+                            type="checkbox"
                             checked={selectedStudents.includes(student.id)}
                             readOnly
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                           />
                           <div>
                             <div className="flex items-center gap-2">
                               <h4 className="font-medium text-sm">{student.name}</h4>
-                              <Badge className={getStatusBadgeColor(student.status)}>
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadgeColor(student.status)}`}>
                                 {student.status}
-                              </Badge>
+                              </span>
                             </div>
                             <p className="text-xs text-platinum-600">{student.email}</p>
                             <p className="text-xs text-platinum-500">{student.studentNumber}</p>
