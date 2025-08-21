@@ -1,7 +1,8 @@
 {
-  "name": "@leas-academy/db",
+  "name": "@master-aesthetics-suite/db",
   "version": "0.0.0",
   "private": true,
+  "description": "Master Aesthetics Suite - Legacy Prisma database schema (reference only)",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {

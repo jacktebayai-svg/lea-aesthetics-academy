@@ -1,5 +1,7 @@
 {
   "name": "master-aesthetics-suite",
+  "description": "Master Aesthetics Suite - Comprehensive single-tenant business management platform for LEA Aesthetics Clinical Academy",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "turbo run build",

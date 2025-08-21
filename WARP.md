@@ -4,53 +4,48 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Project Overview
 
-**Lea's Aesthetics Clinical Academy (LACA)** is a comprehensive multitenant SaaS platform that combines aesthetics practice management with a learning management system (LMS). The platform serves both the clinical operations of aesthetic practices and educational services for practitioners.
+**Master Aesthetics Suite** is a comprehensive single-tenant business management platform specifically designed for LEA Aesthetics Clinical Academy. It combines practice management, client booking, payment processing, and an integrated Learning Management System (LMS) for education and certification.
 
 ### System Architecture
 
-This is a **Turborepo monorepo** with the following key characteristics:
-- **Multi-tenant SaaS** for aesthetics clinics and solo practitioners
-- **Dual-purpose platform**: Clinical practice management + Learning management system
-- **Technology stack**: Next.js 15, NestJS, Prisma, PostgreSQL, Redis, MeiliSearch
-- **Deployment**: Vercel (frontend) + Railway (API)
+This is a **single Next.js application** with the following key characteristics:
+- **Single-tenant business suite** for LEA Aesthetics Clinical Academy
+- **Integrated platform**: Practice management + Client portal + Student LMS + Business analytics  
+- **Technology stack**: Next.js 15, Supabase, Stripe, TypeScript, TailwindCSS, Framer Motion
+- **Deployment**: Single unified platform on Vercel
 
 ## Development Commands
 
-### Environment Setup
+### Development Server
 ```bash
-# Start infrastructure services
-pnpm stack:up
-
-# Stop infrastructure services  
-pnpm stack:down
-
-# Generate Prisma client
-pnpm db:generate
-
-# Run database migrations
-pnpm db:migrate
-
-# Seed database with sample data
-pnpm db:seed
-```
-
-### Development Servers
-```bash
-# Start all applications in development mode
+# Start the Master Aesthetics Suite platform
 pnpm dev
 
-# Start specific applications
-pnpm --filter api start:dev     # API server (http://localhost:3333)
-pnpm --filter web dev           # Web app (http://localhost:3000) 
-pnpm --filter admin dev         # Admin app (http://localhost:3001)
+# The platform runs on http://localhost:3000
+```
 
-# Start with specific ports for admin
-PORT=3001 pnpm --filter admin dev
+### Database Operations (Supabase)
+```bash
+# The platform uses Supabase as the primary database
+# Database operations are handled via Supabase dashboard
+# Connection configured via SUPABASE_URL and SUPABASE_ANON_KEY
+```
+
+### Legacy Database Operations (Prisma - Reference only)
+```bash
+# Generate Prisma client (for legacy schema reference only)
+pnpm db:generate
+
+# Run database migrations (for legacy schema reference only)
+pnpm db:migrate
+
+# Seed database with sample data (for legacy schema reference only)
+pnpm db:seed
 ```
 
 ### Building and Testing
 ```bash
-# Build all applications
+# Build the platform
 pnpm build
 
 # Lint codebase
@@ -65,249 +60,281 @@ pnpm test:e2e:playwright
 
 ## High-Level Architecture
 
-### Multi-Tenant Structure
-The system is designed around **tenant isolation** with the following key concepts:
+### Single-Tenant Structure
+The Master Aesthetics Suite is designed for LEA Aesthetics Clinical Academy as a single-tenant solution with:
 
-1. **Tenant-Scoped Data**: Most models include `tenantId` for row-level isolation
-2. **Role-Based Access Control (RBAC)**: Comprehensive permission system with roles like OWNER, MANAGER, PRACTITIONER, FRONTDESK, FINANCE, SUPPORT, CLIENT
-3. **Middleware-Based Isolation**: Automatic tenant scoping via Prisma middleware and NestJS guards
+1. **Unified Data Model**: All data belongs to LEA Aesthetics - no tenant isolation needed
+2. **Role-Based Access Control (RBAC)**: User roles for OWNER, PRACTITIONER, STUDENT, CLIENT access levels
+3. **Supabase-Native Authentication**: Row Level Security (RLS) policies for data access control
 
 ### Core Domain Models
 
 #### Practice Management
-- **Appointments**: Booking system with availability engine
-- **Clients**: Customer profiles with medical history
-- **Practitioners**: Provider profiles with specialties and availability
-- **Services**: Treatment offerings with pricing and duration
-- **Payments**: Stripe integration for deposits and full payments
-- **Documents**: Legal document generation with e-signature support
+- **Appointments**: Booking system with practitioner availability
+- **Clients**: Customer profiles with treatment history
+- **Services**: Treatment offerings with pricing and scheduling
+- **Payments**: Stripe integration for bookings and course payments
+- **Business Settings**: Operational configuration for the academy
 
 #### Learning Management System (LMS)
-- **Courses**: Multi-level training programs (Level 2, 3, 4)
-- **Modules & Lessons**: Structured educational content
-- **Assessments**: Quizzes and examinations with grading
-- **Enrollments**: Student progress tracking
-- **Certificates**: Digital certification issuance
+- **Courses**: Multi-level aesthetics training programs (Level 2, 3, 4)
+- **Students**: Student profiles and enrollment tracking
+- **Course Enrollments**: Progress tracking and completion status
+- **Certificates**: Digital certification for completed courses
+
+#### Content & Communications
+- **Templates**: Document templates for legal compliance
+- **Documents**: Generated legal documents and agreements
+- **Messages**: Internal communication system
+- **Campaigns**: Marketing and outreach management
 
 ### Authentication & Authorization
-- **JWT-based authentication** with refresh tokens
-- **External auth providers** (Auth0/Clerk) planned
-- **Comprehensive RBAC** with permission matrices
-- **Multi-tenant user management** with role assignments per tenant
+- **Supabase Auth**: Primary authentication system
+- **Magic Link**: Email-based passwordless authentication
+- **Social OAuth**: Google, Apple authentication (planned)
+- **Role-based permissions**: Access control based on user roles
 
-### Data Layer (Prisma Schema)
-The database schema is comprehensive and production-ready with:
-- **Multi-tenant isolation** (tenantId fields)
-- **Comprehensive business models** for both domains
-- **Proper relationships** and constraints
-- **Audit trails** and versioning for critical data
+### Data Layer (Supabase)
+The database schema is designed with:
+- **Single-tenant architecture**: All data belongs to LEA Aesthetics
+- **Comprehensive business models**: Practice management + LMS domains
+- **Row Level Security (RLS)**: Access control via Supabase policies
+- **Real-time subscriptions**: Live updates for bookings and progress
 
-### API Structure (NestJS)
-- **Domain-driven design** with separate modules
-- **Swagger documentation** auto-generated
-- **Global middleware** for tenant scoping and authentication
-- **Rate limiting** and security headers configured
-- **Comprehensive error handling** with global exception filters
-
-### Frontend Applications
-- **Web App** (`apps/web`): Tenant websites, booking portal, client portal
-- **Admin App** (`apps/admin`): Backoffice management for tenants
-- **Shared UI** (`packages/ui`): Design system components
-- **Maerose Brand System**: Luxury aesthetic theme with precise design tokens
+### Application Structure
+- **Platform App** (`apps/platform`): Single Next.js 15 application containing all functionality
+- **Shared UI** (`packages/ui`): Reusable components with LEA brand system
+- **Shared Types** (`packages/shared`): TypeScript types and utilities
+- **Legacy Packages**: AI, SDK packages (currently unused)
 
 ## Package Structure
 
 ### Applications (`apps/`)
-- `api/`: NestJS backend API with comprehensive business logic
-- `web/`: Next.js 15 tenant-facing application with booking system
-- `admin/`: Next.js 15 admin dashboard for practice management
-- `worker/`: Background job processing (BullMQ)
+- `platform/`: Single Next.js 15 application with all Master Aesthetics Suite functionality
 
 ### Packages (`packages/`)
-- `ui/`: Shared React component library with Maerose design system
-- `db/`: Prisma schema and database utilities
+- `ui/`: Shared React component library with LEA brand system
 - `shared/`: TypeScript types, validation schemas, utilities
-- `ai/`: AI orchestration and content generation services
-- `sdk/`: Partner/third-party SDK
 - `tsconfig/`: Shared TypeScript configurations
+- `db/`: Legacy Prisma schema (reference only)
+- `ai/`: AI services (currently unused)
+- `sdk/`: Partner SDK (currently unused)
+
+## Application Structure
+
+### Next.js App Router Structure
+```
+apps/platform/app/
+├── (auth)/                 # Authentication routes
+│   ├── login/
+│   └── register/
+├── (practitioner)/         # Practitioner dashboard and management
+│   ├── dashboard/
+│   ├── clients/
+│   ├── appointments/
+│   └── business/
+├── (student)/              # Student learning portal
+│   ├── courses/
+│   ├── progress/
+│   └── certificates/
+├── (client)/               # Client booking and portal
+│   ├── book/
+│   ├── profile/
+│   └── appointments/
+├── admin/                  # Admin interface
+└── api/                    # API routes
+    ├── auth/
+    ├── appointments/
+    ├── courses/
+    ├── stripe/
+    └── public/
+```
+
+### Component Architecture
+```
+components/
+├── auth/                   # Authentication components
+├── layout/                 # Layout and navigation components
+├── practitioner/           # Practitioner-specific features
+├── academy/                # LMS and student features
+├── shared/                 # Shared utility components
+└── ui/                     # Base UI components
+```
 
 ## Configuration Management
 
 ### Environment Variables
-The system uses environment-specific configuration:
-- **Development**: `.env.local` files in each app
-- **Production**: Environment variables via deployment platforms
+The platform uses the following key environment variables:
+- **Supabase**: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- **Stripe**: `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`
+- **Email**: `RESEND_API_KEY`
+- **Storage**: `BLOB_READ_WRITE_TOKEN`
+- **AI**: `GOOGLE_API_KEY` (for Google Gemini)
 
 ### Database Configuration
-**Current Setup**: PostgreSQL with the following services:
-- **Database**: `postgresql://irwell_user:irwell_secure_password_2024@localhost:55433/irwell_hospitality`
-- **Redis**: `localhost:6379` for caching and job queues
-- **MeiliSearch**: `localhost:7700` for search functionality
+**Current Setup**: Supabase PostgreSQL
+- **Primary Database**: Supabase hosted PostgreSQL
+- **Authentication**: Supabase Auth with RLS policies
+- **Real-time**: Supabase real-time subscriptions
+- **Storage**: Supabase Storage for file uploads
 
-### Docker Services
-The `docker-compose.yml` defines development infrastructure:
-- PostgreSQL 16 (port 55433)
-- Redis 7 (port 6379) 
-- MeiliSearch v1.7 (port 7700)
+### Legacy Infrastructure (Docker)
+The `docker-compose.yml` exists for legacy development but is not actively used:
+- PostgreSQL 16 (legacy Prisma setup)
+- Redis 7 (planned for caching)
+- MeiliSearch v1.7 (planned for search)
 
 ## Development Patterns
 
-### Multi-Tenant Development
-When working with tenant-scoped features:
-1. **Always use tenant context** - Data should be automatically scoped by middleware
-2. **Respect role permissions** - Check RBAC before operations
-3. **Use Prisma middleware** - Automatic tenant filtering is configured
+### Single-Tenant Development
+When working with the Master Aesthetics Suite:
+1. **No tenant scoping needed** - All data belongs to LEA Aesthetics
+2. **Use Supabase RLS** - Row Level Security for access control
+3. **Role-based UI** - Show/hide features based on user role
 
 ### API Development
-- **Use NestJS decorators** for routing and validation
-- **Implement proper DTOs** with class-validator
-- **Add Swagger documentation** using decorators
-- **Follow domain-driven structure** - group related functionality
+- **Next.js API Routes**: RESTful endpoints in `app/api/`
+- **Supabase Client**: Direct database access with RLS
+- **Type Safety**: Full TypeScript integration
+- **Zod Validation**: Request/response validation
 
 ### Frontend Development
-- **Use shared UI components** from `packages/ui`
-- **Follow Maerose design system** - luxury aesthetic with specific color palette
-- **Implement responsive design** - mobile-first approach
-- **Use Next.js 15 features** - App Router and React Server Components
+- **Shared UI Components**: Use components from `packages/ui`
+- **LEA Brand System**: Consistent styling and components
+- **Responsive Design**: Mobile-first approach
+- **Next.js 15 Features**: App Router, Server Components, Server Actions
 
 ## Critical Implementation Details
 
 ### Booking Engine
-The availability system is sophisticated with:
-- **Multi-practitioner support** with individual schedules
-- **Service-specific buffers** (prep/cleanup time)
-- **Location-based availability** across multiple sites
-- **Real-time conflict detection** and slot calculation
+The appointment system includes:
+- **Practitioner availability**: Schedule-based slot generation
+- **Service duration**: Automatic time blocking based on treatment
+- **Client preferences**: Preferred practitioners and times
+- **Payment integration**: Deposit collection at booking
 
-### Document Management
-Legal compliance features include:
-- **Template versioning** with jurisdiction-specific content
-- **Mandatory block validation** for legal requirements
-- **Cryptographic stamping** for document integrity
-- **E-signature workflow** integration planned
+### Learning Management System
+The LMS features include:
+- **Course progression**: Module and lesson completion tracking
+- **Student enrollment**: Registration and payment processing
+- **Certificate generation**: Automated certification upon completion
+- **Progress analytics**: Student performance tracking
 
 ### Payment Processing
 Stripe integration supports:
-- **Deposit workflows** with final payment collection
-- **Webhook handling** with idempotency
-- **Multi-tenant payment isolation**
-- **Refund and dispute management**
+- **Appointment deposits**: 25% deposit at booking
+- **Course payments**: Full payment for course enrollment
+- **Webhook handling**: Automated payment confirmation
+- **Receipt generation**: Email receipts for all transactions
 
-### Brand Implementation (Maerose)
-The luxury aesthetic follows strict brand guidelines:
-- **Color palette**: Primary Noir (#1A1A1A), Champagne Gold (#C5A880), Ivory White (#FFFFFF)
-- **Typography**: Inter font family with specific sizing scales
-- **Animation**: Smooth, deliberate interactions (300ms standard)
-- **Spacing**: Generous whitespace with systematic spacing scale
+### Brand Implementation (LEA Aesthetics)
+The LEA brand system includes:
+- **Professional aesthetic**: Clean, medical-grade appearance
+- **Color palette**: Medical blues, professional grays, accent colors
+- **Typography**: Professional fonts with medical credibility
+- **Components**: Specialized UI for aesthetics industry
 
 ## Current Development Status
 
-### Implemented (≈50%)
-- ✅ Monorepo structure with proper tooling
-- ✅ Comprehensive database schema
-- ✅ Basic API controllers and services
-- ✅ Authentication system foundation
-- ✅ Frontend applications scaffolded
-- ✅ Docker development environment
+### Implemented (≈45%)
+- ✅ Next.js 15 application structure with App Router
+- ✅ Supabase integration and authentication
+- ✅ Basic page routing and navigation
+- ✅ Component library foundation
+- ✅ Stripe integration setup
+- ✅ Database schema in Supabase
 
-### In Progress
-- 🔄 Multi-tenant middleware completion
-- 🔄 Production-ready booking engine
-- 🔄 Payment integration finalization
-- 🔄 Document generation system
-- 🔄 LMS content delivery
+### In Progress (≈30%)
+- 🔄 API endpoints completion
+- 🔄 Authentication flow refinement
+- 🔄 Booking system implementation
+- 🔄 Payment processing workflows
+- 🔄 LMS functionality
 
-### Planned
-- ❌ Production deployment infrastructure
-- ❌ Comprehensive testing coverage
-- ❌ Performance optimization
-- ❌ AI-powered features
-- ❌ Advanced search integration
+### Planned (≈25%)
+- ❌ Advanced booking features
+- ❌ Complete LMS implementation
+- ❌ Document generation system
+- ❌ Advanced analytics and reporting
+- ❌ Mobile app optimization
 
 ## Common Development Tasks
 
 ### Adding New Features
-1. **API**: Create controller/service in appropriate domain module
-2. **Database**: Add Prisma model updates with proper tenant scoping
-3. **Frontend**: Use shared UI components and follow Maerose design system
+1. **Database**: Create/modify Supabase tables and RLS policies
+2. **API**: Add Next.js API routes in `app/api/`
+3. **Frontend**: Create pages and components using shared UI
 4. **Types**: Update shared types in `packages/shared`
 
-### Testing Individual Components
+### Testing Components
 ```bash
-# Test specific API endpoints
-pnpm --filter api test
+# Start development server
+pnpm dev
 
-# Test database operations
-pnpm db:migrate && pnpm db:seed
+# Test specific pages
+# Visit http://localhost:3000/[route]
 
-# Test frontend components  
-pnpm --filter web dev
+# Test API endpoints
+# Use tools like Postman or curl to test /api/[endpoint]
 ```
 
-### Debugging Multi-Tenant Issues
-1. Check tenant middleware is properly configured
-2. Verify JWT token contains correct tenant claims
-3. Ensure Prisma queries include tenant scoping
-4. Review role-based permission checks
+### Working with Supabase
+1. **Database changes**: Use Supabase Dashboard for schema updates
+2. **RLS policies**: Configure access control via SQL policies
+3. **Real-time**: Subscribe to table changes for live updates
+4. **Storage**: Upload files via Supabase Storage
 
 ## Integration Points
 
 ### External Services
+- **Supabase**: Database, authentication, storage, real-time
 - **Stripe**: Payment processing and webhook handling
-- **Auth0/Clerk**: External authentication (planned)
-- **SendGrid**: Email notifications
-- **Vercel Blob**: File storage
-- **Railway**: API deployment
+- **Resend**: Email notifications and marketing
+- **Vercel Blob**: File storage (alternative to Supabase Storage)
+- **Google Gemini**: AI-powered features (planned)
 
-### API Documentation
-- **Swagger UI**: Available at `http://localhost:3333/api/docs` in development
-- **Comprehensive tags**: Authentication, Users, Services, Appointments, Payments, Documents
-
-## Performance Considerations
-
-### Database Optimization
-- **Tenant-scoped indexes** for performance
-- **Proper foreign key relationships** with cascade deletes
-- **Connection pooling** configured via Prisma
-
-### Frontend Performance
-- **Next.js 15 optimizations** with App Router
-- **Shared component caching** via Turborepo
-- **Image optimization** for luxury brand assets
+### API Endpoints
+Current API structure in `app/api/`:
+- **Auth**: `/api/auth/*` - Authentication endpoints
+- **Public**: `/api/public/*` - Public booking and enrollment endpoints
+- **Stripe**: `/api/stripe/*` - Payment webhook handling
+- **Business**: `/api/business/*` - Internal business operations
 
 ## Security Features
 
-### API Security
-- **Helmet.js** for security headers
-- **Rate limiting** via Throttler
-- **CORS** configuration for allowed origins
-- **Input validation** with class-validator
-- **JWT authentication** with refresh tokens
+### Authentication Security
+- **Supabase Auth**: Industry-standard authentication
+- **Row Level Security**: Database-level access control
+- **JWT tokens**: Secure session management
+- **Magic links**: Passwordless authentication option
 
 ### Data Protection
-- **Row-level security** for tenant isolation
-- **Encrypted sensitive data** via Prisma
-- **Audit trails** for critical operations
-- **GDPR compliance** considerations
+- **RLS policies**: Row-level security for all tables
+- **API validation**: Zod schema validation on all endpoints
+- **HTTPS encryption**: All data transmitted over HTTPS
+- **Audit logging**: Track important business operations
 
 ## Brand Guidelines Integration
 
-The Maerose aesthetic is deeply integrated into the codebase:
-- **Design tokens** defined in Tailwind configuration
-- **Component library** follows strict brand standards
-- **Animation guidelines** ensure luxury feel
-- **Accessibility compliance** (WCAG 2.2 AA)
+The LEA Aesthetics brand is integrated throughout:
+- **Professional appearance**: Medical-grade UI design
+- **Industry-specific components**: Aesthetics-focused interfaces
+- **Accessibility compliance**: WCAG 2.1 AA standards
+- **Mobile optimization**: Touch-friendly interfaces for tablets
 
-When developing UI components, always reference the technical implementation guide in `Maerose/TECHNICAL_IMPLEMENTATION_GUIDE.md` for precise specifications.
+## Known Issues & Current State
 
-## Known Issues & Workarounds
+### Architecture Decisions
+- **Single-tenant focus**: Designed specifically for LEA Aesthetics Clinical Academy
+- **Supabase-first**: Primary database and authentication via Supabase
+- **Prisma legacy**: Old multi-tenant Prisma schema kept for reference only
+- **Unified application**: Single Next.js app instead of multiple microservices
 
-### Development Environment
-- **Port conflicts**: Ensure Docker services are running on correct ports
-- **Database connection**: Verify connection string matches docker-compose configuration
-- **PNPM caching**: Use `pnpm install --frozen-lockfile=false` if lockfile issues arise
+### Development Priority
+1. **Complete booking system**: Practitioner scheduling and client booking
+2. **Finalize payment flows**: Stripe integration for all payment types  
+3. **Build LMS features**: Course management and student progress
+4. **Implement document generation**: Legal forms and certificates
+5. **Add advanced analytics**: Business intelligence and reporting
 
-### Build Issues
-- **TypeScript strict mode**: Project uses strict TypeScript configuration
-- **Workspace dependencies**: Use `workspace:*` for internal package references
-- **Turborepo caching**: May need to clear cache with `pnpm turbo clean` if builds fail
+This Master Aesthetics Suite is specifically built for LEA Aesthetics Clinical Academy as a comprehensive single-tenant business management platform combining practice management with educational services.
