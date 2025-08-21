@@ -1,3 +1,5 @@
+// Single-tenant architecture - tenant service disabled
+/*
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
@@ -11,3 +13,4 @@ export class TenantsService {
     return this.prisma.tenant.create({ data: createTenantDto });
   }
 }
+*/

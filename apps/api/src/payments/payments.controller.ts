@@ -15,10 +15,9 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard, Roles } from '../auth/roles.guard';
-import { StripeService, CreatePaymentIntentData, CreateSubscriptionData } from './stripe.service';
+import { StripeService, CreatePaymentIntentData } from './stripe.service';
 
 export class CreatePaymentIntentDto {
-  tenantId: string;
   appointmentId: string;
   amountCents: number;
   currency?: string;
@@ -28,7 +27,6 @@ export class CreatePaymentIntentDto {
 }
 
 export class CreateSubscriptionDto {
-  tenantId: string;
   customerEmail: string;
   priceId: string;
   metadata?: Record<string, string>;
@@ -94,7 +92,11 @@ export class PaymentsController {
   @Roles('OWNER', 'MANAGER')
   @Post('subscriptions')
   async createSubscription(@Body() subscriptionData: CreateSubscriptionDto) {
-    return this.stripeService.createSubscription(subscriptionData);
+    return this.stripeService.createSubscription(
+      subscriptionData.customerEmail,
+      subscriptionData.priceId,
+      subscriptionData.metadata || {}
+    );
   }
 
   @ApiOperation({ summary: 'Cancel subscription' })

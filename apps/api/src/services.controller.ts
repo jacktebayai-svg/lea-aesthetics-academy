@@ -24,7 +24,6 @@ export class ServicesController {
   @Post()
   async create(@Body() body: any) {
     const {
-      tenantId,
       name,
       slug,
       basePrice,
@@ -34,7 +33,6 @@ export class ServicesController {
     } = body;
     return this.prisma.service.create({
       data: {
-        tenantId,
         name,
         slug,
         basePrice,

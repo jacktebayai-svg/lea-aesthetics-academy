@@ -66,7 +66,7 @@ export class AuthService {
     const payload: JwtPayloadForLogin = {
       sub: user.id,
       email: user.email,
-      roles: [user.role] || ['CLIENT'],
+      roles: [user.role],
     };
 
     const accessToken = this.jwtService.sign(payload);
@@ -90,7 +90,7 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        roles: [user.role] || ['CLIENT'],
+        roles: [user.role],
       },
       accessToken,
       refreshToken,
@@ -149,7 +149,7 @@ export class AuthService {
       const newPayload: JwtPayloadForLogin = {
         sub: storedToken.user.id,
         email: storedToken.user.email,
-        roles: [storedToken.user.role] || ['CLIENT'],
+        roles: [storedToken.user.role],
       };
 
       const accessToken = this.jwtService.sign(newPayload);

@@ -20,7 +20,7 @@ import { TenantGuard } from '../common/tenant/tenant.guard';
 import { PermissionsGuard } from '../common/auth/permissions.guard';
 import { RequirePermissions } from '../common/auth/permissions.decorator';
 import { UsersService } from './users.service';
-import type { CreateUserDto, UpdateUserDto, AssignRoleDto } from './users.service';
+import type { CreateUserDto, UpdateUserDto } from './users.service';
 import { AuthUser } from '../auth/jwt.strategy';
 
 @ApiTags('Users')
@@ -68,7 +68,6 @@ export class UsersController {
   ) {
     this.logger.log('Creating user', {
       email: createUserData.email,
-      tenantId: req.user.tenantId,
     });
     return this.usersService.create(createUserData);
   }
@@ -82,7 +81,6 @@ export class UsersController {
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '50',
     @Query('search') search?: string,
-    @Query('tenantId') tenantId?: string
   ) {
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const take = parseInt(limit);
@@ -94,12 +92,6 @@ export class UsersController {
         { firstName: { contains: search, mode: 'insensitive' } },
         { lastName: { contains: search, mode: 'insensitive' } },
       ];
-    }
-
-    if (tenantId) {
-      where.roles = {
-        some: { tenantId },
-      };
     }
 
     return this.usersService.findAll({
@@ -146,52 +138,6 @@ export class UsersController {
     return this.usersService.delete(id);
   }
 
-  @ApiOperation({ summary: 'Assign role to user' })
-  @ApiResponse({ status: 201, description: 'Role assigned successfully' })
-  @RequirePermissions('user:manage')
-  @Post(':id/roles')
-  async assignRole(
-    @Param('id') userId: string,
-    @Body() roleData: AssignRoleDto,
-    @Request() req: { user: AuthUser }
-  ) {
-    this.logger.log('Assigning role', {
-      userId,
-      role: roleData.role,
-      tenantId: req.user.tenantId,
-    });
-    return this.usersService.assignRole(userId, roleData);
-  }
-
-  @ApiOperation({ summary: 'Remove role from user' })
-  @ApiResponse({ status: 200, description: 'Role removed successfully' })
-  @RequirePermissions('user:manage')
-  @Delete(':userId/roles/:roleId')
-  async removeRole(
-    @Param('userId') userId: string,
-    @Param('roleId') roleId: string,
-    @Request() req: { user: AuthUser }
-  ) {
-    this.logger.log('Removing role', {
-      userId,
-      roleId,
-      tenantId: req.user.tenantId,
-    });
-    return this.usersService.removeRole(userId, roleId);
-  }
-
-  @ApiOperation({ summary: 'Get users by tenant' })
-  @ApiResponse({ status: 200, description: 'Tenant users returned' })
-  @RequirePermissions('user:read', 'user:manage')
-  @Get('tenant/:tenantId')
-  async getUsersByTenant(
-    @Param('tenantId') tenantId: string,
-    @Request() req: { user: AuthUser }
-  ) {
-    // Only allow users to get users from their own tenant unless they're system admin
-    if (tenantId !== req.user.tenantId && !req.user.permissions.includes('system:admin')) {
-      throw new ForbiddenException('Cannot access users from other tenants');
-    }
-    return this.usersService.getUsersByTenant(tenantId);
-  }
+  // Role management removed for single-tenant architecture
+  // Roles are managed directly on the User model
 }

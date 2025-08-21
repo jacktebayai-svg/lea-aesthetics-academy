@@ -1,3 +1,5 @@
+// Single-tenant architecture - tenants controller disabled
+/*
 import { Controller, Post, Body } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
@@ -11,3 +13,4 @@ export class TenantsController {
     return this.tenantsService.create(createTenantDto);
   }
 }
+*/

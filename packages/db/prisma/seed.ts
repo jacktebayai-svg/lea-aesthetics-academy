@@ -15,28 +15,14 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Starting seed process...");
 
-  // Tenant
-  const tenant = await prisma.tenant.upsert({
-    where: { id: "tn_demo" },
-    update: {},
-    create: { 
-      id: "tn_demo", 
-      name: "Lea's Aesthetics Clinical Academy",
-      slug: "leas-aesthetics-academy",
-      plan: "professional" 
-    },
-  });
-  console.log("✅ Tenant created");
-
-  // Location
-  const locationId = "loc_demo";
-  await prisma.location.upsert({
-    where: { id: locationId },
+  // Business Profile (replaces tenant/location in single-tenant architecture)
+  const businessProfile = await prisma.businessProfile.upsert({
+    where: { slug: "leas-aesthetics-academy" },
     update: {},
     create: {
-      id: locationId,
-      name: "Main Clinic",
-      slug: "main-clinic",
+      name: "Lea's Aesthetics Clinical Academy",
+      slug: "leas-aesthetics-academy",
+      type: "clinic",
       timezone: "Europe/London",
       address: {
         line1: "123 Harley Street",
@@ -45,6 +31,9 @@ async function main() {
         postalCode: "W1G 6BA",
         country: "United Kingdom"
       },
+      phone: "+44 20 1234 5678",
+      email: "info@leas-academy.com",
+      website: "https://leas-academy.com",
       businessHours: {
         monday: { open: "09:00", close: "18:00" },
         tuesday: { open: "09:00", close: "18:00" },
@@ -55,12 +44,10 @@ async function main() {
         sunday: { closed: true }
       },
       settings: {},
-      tenant: {
-        connect: { id: tenant.id }
-      }
+      amenities: ["parking", "wheelchair-access", "wifi"]
     },
   });
-  console.log("✅ Location created");
+  console.log("✅ Business profile created");
 
   // Create admin user
   const hashedPassword = await bcrypt.hash("admin123", 10);
@@ -74,20 +61,9 @@ async function main() {
       firstName: "Lea",
       lastName: "Administrator",
       phone: "+44 20 1234 5678",
+      role: "ADMIN",
       isActive: true,
       emailVerified: true,
-    },
-  });
-
-  // Assign OWNER role to admin user
-  await prisma.userRole.upsert({
-    where: { id: "role_admin_owner" },
-    update: {},
-    create: {
-      id: "role_admin_owner",
-      userId: adminUser.id,
-      tenantId: tenant.id,
-      role: "OWNER",
     },
   });
 
@@ -102,32 +78,26 @@ async function main() {
       firstName: "Dr. Sarah",
       lastName: "Johnson",
       phone: "+44 20 1234 5679",
+      role: "ADMIN", // Can be both admin and practitioner
       isActive: true,
       emailVerified: true,
     },
   });
 
-  await prisma.userRole.upsert({
-    where: { id: "role_practitioner" },
-    update: {},
-    create: {
-      id: "role_practitioner",
-      userId: practitionerUser.id,
-      tenantId: tenant.id,
-      role: "PRACTITIONER",
-      locationId: locationId,
-    },
-  });
-
   // Create practitioner profile
   await prisma.practitioner.upsert({
-    where: { id: "prac_demo" },
+    where: { userId: practitionerUser.id },
     update: {},
     create: {
-      id: "prac_demo",
-      tenantId: tenant.id,
       userId: practitionerUser.id,
+      title: "Dr.",
+      bio: "Dr. Sarah Johnson is a highly experienced aesthetic practitioner specializing in non-surgical facial rejuvenation.",
       specialties: ["Botox", "Dermal Fillers", "Chemical Peels", "Microneedling"],
+      qualifications: {
+        degrees: ["MBBS", "MSc Aesthetic Medicine"],
+        certifications: ["GMC Registered", "Aesthetic Medicine Diploma"]
+      },
+      registrationNum: "GMC123456",
       availability: {
         weekly: {
           monday: [{ start: "09:00", end: "17:00" }],
@@ -140,9 +110,8 @@ async function main() {
         exceptions: []
       },
       profile: {
-        qualifications: ["GMC Registered", "Aesthetic Medicine Diploma"],
         experience: "8 years in aesthetic medicine",
-        bio: "Dr. Sarah Johnson is a highly experienced aesthetic practitioner specializing in non-surgical facial rejuvenation."
+        specialInterests: ["Non-surgical facial rejuvenation", "Anti-aging treatments"]
       },
     },
   });
@@ -198,7 +167,6 @@ async function main() {
       update: {},
       create: {
         ...service,
-        tenantId: tenant.id,
       },
     });
   }
@@ -246,12 +214,30 @@ async function main() {
     }
   ];
 
+  // First create user accounts for clients
   for (const client of clients) {
-    await prisma.client.upsert({
-      where: { id: client.id },
+    // Create user first
+    const clientUser = await prisma.user.upsert({
+      where: { email: client.personal.email },
       update: {},
       create: {
-        id: client.id,
+        email: client.personal.email,
+        firstName: client.personal.firstName,
+        lastName: client.personal.lastName,
+        phone: client.personal.phone,
+        password: await bcrypt.hash("client123", 10), // Sample password
+        role: "CLIENT",
+        isActive: true,
+        emailVerified: true,
+      },
+    });
+    
+    // Then create client profile
+    await prisma.client.upsert({
+      where: { userId: clientUser.id },
+      update: {},
+      create: {
+        userId: clientUser.id,
         firstName: client.personal.firstName,
         lastName: client.personal.lastName,
         email: client.personal.email,
@@ -260,9 +246,6 @@ async function main() {
         address: client.personal.address || null,
         preferences: client.preferences || null,
         tags: client.tags || [],
-        tenant: {
-          connect: { id: tenant.id }
-        }
       },
     });
   }
@@ -302,9 +285,6 @@ async function main() {
       mandatoryBlocks: ["patient-info", "consent"],
       placeholders: ["CLIENT_NAME", "DATE_OF_BIRTH", "TREATMENT_DATE"],
       effectiveFrom: new Date(),
-      tenant: {
-        connect: { id: tenant.id }
-      }
     },
   });
   console.log("✅ Document templates created");
@@ -355,7 +335,6 @@ async function main() {
           isActive: course.isActive,
           passingScore: course.passingScore,
           accreditation: course.accreditation,
-          tenant: tenant ? { connect: { id: tenant.id } } : undefined
         }
       });
       

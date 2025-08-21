@@ -9,7 +9,6 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PaymentsModule } from './payments/payments.module';
 import { TemplatesModule } from './templates/templates.module';
-import { TenantsModule } from './tenants/tenants.module';
 import { HealthController } from './health.controller';
 import { AvailabilityController } from './availability.controller';
 import { AppointmentsController } from './appointments.controller';
@@ -20,8 +19,6 @@ import { DocumentsController } from './documents.controller';
 import { FilesController } from './files.controller';
 import { AdminController } from './admin/admin.controller';
 import { StorageModule } from './storage/storage.module';
-import { TenantInterceptor } from './common/tenant/tenant.interceptor';
-import { TenantGuard } from './common/tenant/tenant.guard';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 @Module({
@@ -39,7 +36,6 @@ import { GlobalExceptionFilter } from './common/filters/global-exception.filter'
     UsersModule,
     PaymentsModule,
     TemplatesModule,
-    TenantsModule,
     StorageModule,
   ],
   controllers: [
@@ -60,18 +56,10 @@ import { GlobalExceptionFilter } from './common/filters/global-exception.filter'
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
-    // Authenticate first so TenantGuard can read user claims
+    // JWT Authentication guard
     {
       provide: APP_GUARD,
       useClass: (require('./auth/jwt-auth.guard').JwtAuthGuard),
-    },
-    {
-      provide: APP_GUARD,
-      useClass: TenantGuard,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: TenantInterceptor,
     },
     {
       provide: APP_FILTER,

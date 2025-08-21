@@ -8,14 +8,12 @@ export class DocumentsController {
   @Post('generate')
   async generate(@Body() body: any) {
     const {
-      tenantId = 'tn_demo',
       clientId = null,
       type = 'consent',
       content = { blocks: [] },
     } = body;
     const doc = await this.prisma.document.create({
       data: {
-        tenantId,
         clientId,
         type,
         title: `${type} Document`,

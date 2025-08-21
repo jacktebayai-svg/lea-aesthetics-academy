@@ -33,7 +33,7 @@ import type {
   CancelAppointmentRequest,
   RescheduleAppointmentRequest,
 } from './appointments/appointments.schemas';
-import { TenantId } from './common/tenant/tenant.decorator';
+// Removed TenantId decorator for single-tenant architecture
 import { PaginatedResponse } from './common/schemas/common.schemas';
 
 @ApiTags('Appointments')
@@ -54,14 +54,12 @@ export class AppointmentsController {
   @UsePipes(new ZodValidationPipe(ListAppointmentsQuerySchema))
   async list(
     @Query() query: ListAppointmentsQuery,
-    @TenantId() tenantId: string,
   ): Promise<PaginatedResponse<any>> {
     const { page, limit, sortBy, sortOrder, ...filters } = query;
     const offset = (page - 1) * limit;
 
-    // Build where clause with tenant isolation and filters
+    // Build where clause with filters (no tenant isolation needed)
     const where: any = {
-      tenantId,
       ...filters,
     };
 
@@ -110,12 +108,10 @@ export class AppointmentsController {
   @UsePipes(new ZodValidationPipe(AppointmentParamsSchema))
   async findOne(
     @Param() params: AppointmentParams,
-    @TenantId() tenantId: string,
   ) {
     const appointment = await this.prisma.appointment.findFirst({
       where: {
         id: params.id,
-        tenantId,
       },
       // TODO: Re-add includes when Prisma schema issues are resolved
     });
@@ -138,15 +134,13 @@ export class AppointmentsController {
   @UsePipes(new ZodValidationPipe(CreateAppointmentSchema))
   async create(
     @Body() createData: CreateAppointmentRequest,
-    @TenantId() tenantId: string,
   ) {
-    this.logger.log(`Creating appointment for tenant: ${tenantId}`);
+    this.logger.log(`Creating appointment`);
 
     // Validate service exists and is active
     const service = await this.prisma.service.findFirst({
       where: {
         id: createData.serviceId,
-        tenantId,
         isActive: true,
       },
     });
@@ -162,12 +156,8 @@ export class AppointmentsController {
     const practitioner = await this.prisma.user.findFirst({
       where: {
         id: createData.practitionerId,
-        roles: {
-          some: {
-            tenantId,
-            role: { in: ['PRACTITIONER', 'OWNER', 'MANAGER'] },
-          },
-        },
+        role: { in: ['ADMIN'] }, // In single-tenant, ADMIN can be practitioners
+        isActive: true,
       },
     });
 
@@ -181,7 +171,6 @@ export class AppointmentsController {
     // Check for time slot conflicts
     const conflictingAppointment = await this.prisma.appointment.findFirst({
       where: {
-        tenantId,
         practitionerId: createData.practitionerId,
         status: { notIn: ['CANCELLED', 'NO_SHOW'] },
         OR: [
@@ -207,37 +196,49 @@ export class AppointmentsController {
     // Get current policy version (TODO: implement tenant-specific policies)
     const policyVersion = 1;
 
+    // Get the business profile
+    const businessProfile = await this.prisma.businessProfile.findFirst();
+    if (!businessProfile) {
+      throw new HttpException(
+        'Business profile not configured',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
     // Create the appointment
     const appointment = await this.prisma.appointment.create({
       data: {
-        tenantId,
         clientId: createData.clientId,
         practitionerId: createData.practitionerId,
         serviceId: createData.serviceId,
-        locationId: createData.locationId || 'default-location',
+        businessProfileId: businessProfile.id,
         startTs: new Date(createData.startTs),
         endTs: new Date(createData.endTs),
         notes: createData.notes,
-        // TODO: Re-add metadata when Prisma schema supports it
         status: 'SCHEDULED',
         policyVersion,
       },
-      // TODO: Re-add includes when Prisma schema issues are resolved
+      include: {
+        client: true,
+        practitioner: true,
+        service: true,
+        businessProfile: true,
+      },
     });
 
-    // Create booking event for notifications and audit trail
-    await this.prisma.event.create({
+    // Create audit log entry (instead of event model)
+    await this.prisma.auditLog.create({
       data: {
-        tenantId,
-        actorId: createData.clientId,
-        type: 'BookingCreated',
-        payload: {
-          appointmentId: appointment.id,
+        userId: createData.clientId,
+        action: 'create',
+        entityType: 'Appointment',
+        entityId: appointment.id,
+        changes: {
           serviceId: createData.serviceId,
-          price: service.basePrice,
           practitionerId: createData.practitionerId,
+          startTime: createData.startTs,
+          endTime: createData.endTs,
         },
-        occurredAt: new Date(),
       },
     });
 
@@ -255,13 +256,11 @@ export class AppointmentsController {
   async update(
     @Param() params: AppointmentParams,
     @Body() updateData: UpdateAppointmentRequest,
-    @TenantId() tenantId: string,
   ) {
-    // Verify appointment exists and belongs to tenant
+    // Verify appointment exists
     const existingAppointment = await this.prisma.appointment.findFirst({
       where: {
         id: params.id,
-        tenantId,
       },
     });
 
@@ -285,7 +284,6 @@ export class AppointmentsController {
       const conflictingAppointment = await this.prisma.appointment.findFirst({
         where: {
           id: { not: params.id }, // Exclude current appointment
-          tenantId,
           practitionerId: updateData.practitionerId,
           status: { notIn: ['CANCELLED', 'NO_SHOW'] },
           OR: [
@@ -333,12 +331,10 @@ export class AppointmentsController {
   async cancel(
     @Param() params: AppointmentParams,
     @Body() cancelData: CancelAppointmentRequest,
-    @TenantId() tenantId: string,
   ) {
     const appointment = await this.prisma.appointment.findFirst({
       where: {
         id: params.id,
-        tenantId,
       },
     });
 
@@ -366,18 +362,18 @@ export class AppointmentsController {
       },
     });
 
-    // Create cancellation event
-    await this.prisma.event.create({
+    // Create audit log entry for cancellation
+    await this.prisma.auditLog.create({
       data: {
-        tenantId,
-        actorId: appointment.clientId,
-        type: 'BookingCancelled',
-        payload: {
-          appointmentId: params.id,
+        userId: appointment.clientId,
+        action: 'update',
+        entityType: 'Appointment',
+        entityId: params.id,
+        changes: {
+          status: 'CANCELLED',
           reason: cancelData.reason,
           refundRequested: cancelData.refundRequested,
         },
-        occurredAt: new Date(),
       },
     });
 
@@ -392,12 +388,10 @@ export class AppointmentsController {
   @ApiResponse({ status: 404, description: 'Appointment not found' })
   async delete(
     @Param() params: AppointmentParams,
-    @TenantId() tenantId: string,
   ) {
     const appointment = await this.prisma.appointment.findFirst({
       where: {
         id: params.id,
-        tenantId,
       },
     });
 

@@ -20,9 +20,7 @@ export interface JwtPayload {
 
 export interface AuthUser {
   id: string;         // Internal user ID
-  authId: string;     // Auth0 user_id
   email: string;
-  tenantId: string;
   role: string;
   permissions: string[];
   emailVerified: boolean;
@@ -82,60 +80,41 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     this.logger.debug('JWT validation started', {
       sub: payload.sub,
       email: payload.email,
-      customTenant: payload['custom:tenant_id'],
     });
 
     try {
-      // Find user by Auth0 ID (sub claim)
+      // Find user by ID from JWT payload
       let user = await this.prisma.user.findUnique({
-        where: { authId: payload.sub },
-        include: {
-          roles: {
-            include: {
-              tenant: true,
-            },
-          },
-        },
+        where: { id: payload.sub },
       });
 
-      // If user doesn't exist, create them (first-time login)
+      // If user doesn't exist and this is an Auth0 token, try to find by email
+      if (!user && payload.email) {
+        user = await this.prisma.user.findUnique({
+          where: { email: payload.email },
+        });
+      }
+
+      // If user doesn't exist and email is verified, create them (first-time login)
       if (!user && payload.email_verified) {
         this.logger.log('Creating new user from JWT payload', {
-          authId: payload.sub,
           email: payload.email,
         });
 
-        // Extract tenant from custom claims or use default
-        const tenantId = payload['custom:tenant_id'] || await this.getDefaultTenant();
-        const role: 'OWNER' | 'MANAGER' | 'PRACTITIONER' | 'FRONTDESK' | 'FINANCE' | 'SUPPORT' | 'CLIENT' = 
-          (payload['custom:role'] as any) || 'CLIENT';
+        const role = (payload['custom:role'] as any) || 'CLIENT';
 
         user = await this.prisma.user.create({
           data: {
-            authId: payload.sub,
             email: payload.email,
             emailVerified: payload.email_verified || false,
             isActive: true,
-            roles: {
-              create: {
-                tenantId,
-                role,
-              },
-            },
-          },
-          include: {
-            roles: {
-              include: {
-                tenant: true,
-              },
-            },
+            role,
           },
         });
 
         this.logger.log('User created successfully', {
           id: user!.id,
-          authId: user!.authId,
-          tenantId,
+          email: user!.email,
           role,
         });
       }
@@ -154,28 +133,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         data: { lastLoginAt: new Date() },
       });
 
-      // Determine primary tenant and role
-      const primaryRole = user.roles[0]; // For now, use first role as primary
-      if (!primaryRole) {
-        throw new UnauthorizedException('User has no assigned roles');
-      }
-
       // Extract permissions from custom claims or default based on role
-      const permissions = payload['custom:permissions'] || this.getDefaultPermissions(primaryRole.role);
+      const permissions = payload['custom:permissions'] || this.getDefaultPermissions(user.role);
 
       const authUser: AuthUser = {
         id: user.id,
-        authId: user.authId!,  // We know it's not null here
         email: user.email,
-        tenantId: primaryRole.tenantId,
-        role: primaryRole.role,
+        role: user.role,
         permissions,
         emailVerified: user.emailVerified,
       };
 
       this.logger.debug('JWT validation successful', {
         userId: authUser.id,
-        tenantId: authUser.tenantId,
         role: authUser.role,
         permissions: authUser.permissions.length,
       });
@@ -191,36 +161,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
   }
 
-  /**
-   * Get default tenant for new users
-   * TODO: Implement tenant assignment logic based on domain or invitation
-   */
-  private async getDefaultTenant(): Promise<string> {
-    // For development, find or create a demo tenant
-    let tenant = await this.prisma.tenant.findFirst({
-      where: { name: 'Demo Tenant' },
-    });
-    
-    if (!tenant) {
-      tenant = await this.prisma.tenant.create({
-        data: {
-          name: 'Demo Tenant',
-          slug: 'demo-tenant',
-          plan: 'basic',
-        },
-      });
-    }
-    
-    return tenant.id;
-  }
 
   /**
    * Get default permissions based on role
    */
   private getDefaultPermissions(role: string): string[] {
     const rolePermissions: Record<string, string[]> = {
-      OWNER: [
-        'tenant:manage',
+      ADMIN: [
+        'business:manage',
         'user:manage',
         'appointment:create',
         'appointment:read',
@@ -230,28 +178,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         'client:manage',
         'payment:manage',
         'document:manage',
-      ],
-      MANAGER: [
-        'user:read',
-        'appointment:create',
-        'appointment:read',
-        'appointment:update',
-        'service:read',
-        'client:manage',
-        'document:read',
-      ],
-      PRACTITIONER: [
-        'appointment:create',
-        'appointment:read',
-        'appointment:update',
-        'client:read',
-        'client:create',
-        'document:read',
+        'course:manage',
+        'student:manage',
       ],
       CLIENT: [
         'appointment:read',
         'appointment:create',
         'document:read',
+        'profile:update',
+      ],
+      STUDENT: [
+        'course:read',
+        'enrollment:read',
+        'assessment:take',
+        'certificate:read',
         'profile:update',
       ],
     };

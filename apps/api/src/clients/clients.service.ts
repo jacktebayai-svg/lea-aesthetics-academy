@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
 export interface CreateClientDto {
-  tenantId: string;
+  userId: string; // Link to user account
   firstName: string;
   lastName: string;
   email: string;
@@ -35,21 +35,20 @@ export class ClientsService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateClientDto) {
-    // Check if client with email already exists for this tenant
+    // Check if client with email already exists
     const existingClient = await this.prisma.client.findFirst({
       where: {
-        tenantId: data.tenantId,
         email: data.email,
       },
     });
 
     if (existingClient) {
-      throw new BadRequestException('Client with this email already exists for this tenant');
+      throw new BadRequestException('Client with this email already exists');
     }
 
     const client = await this.prisma.client.create({
       data: {
-        tenantId: data.tenantId,
+        userId: data.userId,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -62,32 +61,26 @@ export class ClientsService {
   }
 
   async findAll(params: {
-    tenantId: string;
     skip?: number;
     take?: number;
     cursor?: Prisma.ClientWhereUniqueInput;
     where?: Prisma.ClientWhereInput;
     orderBy?: Prisma.ClientOrderByWithRelationInput;
   }) {
-    const { tenantId, skip, take, cursor, where, orderBy } = params;
-
-    const whereClause: Prisma.ClientWhereInput = {
-      tenantId,
-      ...where,
-    };
+    const { skip, take, cursor, where, orderBy } = params;
 
     return this.prisma.client.findMany({
       skip,
       take: take || 50,
       cursor,
-      where: whereClause,
+      where: where || {},
       orderBy: orderBy || { createdAt: 'desc' },
     });
   }
 
-  async findById(id: string, tenantId: string) {
+  async findById(id: string) {
     const client = await this.prisma.client.findFirst({
-      where: { id, tenantId },
+      where: { id },
     });
 
     if (!client) {
@@ -97,10 +90,9 @@ export class ClientsService {
     return client;
   }
 
-  async findByEmail(email: string, tenantId: string) {
+  async findByEmail(email: string) {
     const client = await this.prisma.client.findFirst({
       where: {
-        tenantId,
         email,
       },
     });
@@ -108,8 +100,8 @@ export class ClientsService {
     return client;
   }
 
-  async update(id: string, tenantId: string, data: UpdateClientDto) {
-    const client = await this.findById(id, tenantId);
+  async update(id: string, data: UpdateClientDto) {
+    const client = await this.findById(id);
 
     return this.prisma.client.update({
       where: { id },
@@ -123,18 +115,17 @@ export class ClientsService {
     });
   }
 
-  async delete(id: string, tenantId: string) {
-    await this.findById(id, tenantId);
+  async delete(id: string) {
+    await this.findById(id);
 
     return this.prisma.client.delete({
       where: { id },
     });
   }
 
-  async search(tenantId: string, query: string) {
+  async search(query: string) {
     const clients = await this.prisma.client.findMany({
       where: {
-        tenantId,
         OR: [
           { firstName: { contains: query, mode: 'insensitive' } },
           { lastName: { contains: query, mode: 'insensitive' } },
@@ -162,27 +153,26 @@ export class ClientsService {
     return { id: 'temp-id', clientId: data.clientId, data: data.data };
   }
 
-  async getMedicalHistory(clientId: string, tenantId: string) {
-    await this.findById(clientId, tenantId);
+  async getMedicalHistory(clientId: string) {
+    await this.findById(clientId);
     return [];
   }
 
-  async getLatestMedicalHistory(clientId: string, tenantId: string) {
-    await this.findById(clientId, tenantId);
+  async getLatestMedicalHistory(clientId: string) {
+    await this.findById(clientId);
     return null;
   }
 
-  async getClientTimeline(clientId: string, tenantId: string) {
-    const client = await this.findById(clientId, tenantId);
+  async getClientTimeline(clientId: string) {
+    const client = await this.findById(clientId);
 
     const appointments = await this.prisma.appointment.findMany({
-      where: { clientId, tenantId },
+      where: { clientId },
       orderBy: { startTs: 'desc' },
     });
 
     const payments = await this.prisma.payment.findMany({
       where: {
-        tenantId,
         appointmentId: {
           in: appointments.map(a => a.id),
         },
@@ -198,44 +188,38 @@ export class ClientsService {
     };
   }
 
-  async addTags(clientId: string, tenantId: string, tags: string[]) {
-    await this.findById(clientId, tenantId);
+  async addTags(clientId: string, tags: string[]) {
+    await this.findById(clientId);
     // Tags functionality temporarily disabled
     return { id: clientId };
   }
 
-  async removeTags(clientId: string, tenantId: string, tags: string[]) {
-    await this.findById(clientId, tenantId);
+  async removeTags(clientId: string, tags: string[]) {
+    await this.findById(clientId);
     // Tags functionality temporarily disabled
     return { id: clientId };
   }
 
-  async getClientsByTag(tenantId: string, tag: string) {
+  async getClientsByTag(tag: string) {
     // Tags functionality temporarily disabled
     return [];
   }
 
-  async getClientStats(tenantId: string) {
-    const totalClients = await this.prisma.client.count({
-      where: { tenantId },
-    });
+  async getClientStats() {
+    const totalClients = await this.prisma.client.count();
 
     const newClientsThisMonth = await this.prisma.client.count({
       where: {
-        tenantId,
         createdAt: {
           gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
         },
       },
     });
 
-    const totalAppointments = await this.prisma.appointment.count({
-      where: { tenantId },
-    });
+    const totalAppointments = await this.prisma.appointment.count();
 
     const completedAppointments = await this.prisma.appointment.count({
       where: {
-        tenantId,
         status: 'COMPLETED',
       },
     });

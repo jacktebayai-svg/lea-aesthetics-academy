@@ -8,7 +8,6 @@ export type StoredFile = {
 
 export interface IStorageService {
   upload(params: {
-    tenantId: string;
     filename: string;
     contentType: string;
     buffer: Buffer;

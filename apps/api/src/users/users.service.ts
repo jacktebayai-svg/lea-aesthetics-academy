@@ -14,25 +14,16 @@ export interface CreateUserDto {
   firstName?: string;
   lastName?: string;
   phone?: string;
-  roles?: {
-    tenantId: string;
-    role: Role;
-    locationId?: string;
-  }[];
+  role?: Role;
 }
 
 export interface UpdateUserDto {
   firstName?: string;
   lastName?: string;
   phone?: string;
+  role?: Role;
   isActive?: boolean;
   emailVerified?: boolean;
-}
-
-export interface AssignRoleDto {
-  tenantId: string;
-  role: Role;
-  locationId?: string;
 }
 
 @Injectable()
@@ -64,30 +55,16 @@ export class UsersService {
         firstName: data.firstName,
         lastName: data.lastName,
         phone: data.phone,
+        role: data.role || 'CLIENT',
       },
       include: {
-        roles: true,
+        client: true,
+        student: true,
+        practitioner: true,
       },
     });
 
-    // Assign roles if provided
-    if (data.roles && data.roles.length > 0) {
-      await Promise.all(
-        data.roles.map((roleData) =>
-          this.prisma.userRole.create({
-            data: {
-              userId: user.id,
-              tenantId: roleData.tenantId,
-              role: roleData.role,
-              locationId: roleData.locationId,
-            },
-          })
-        )
-      );
-    }
-
-    // Fetch user with roles
-    return this.findById(user.id);
+    return user;
   }
 
   async findAll(params: {
@@ -106,7 +83,9 @@ export class UsersService {
       where,
       orderBy: orderBy || { createdAt: 'desc' },
       include: {
-        roles: true,
+        client: true,
+        student: true,
+        practitioner: true,
         _count: {
           select: {
             refreshTokens: true,
@@ -120,7 +99,8 @@ export class UsersService {
     const user = await this.prisma.user.findUnique({
       where: { id },
       include: {
-        roles: true,
+        client: true,
+        student: true,
         practitioner: true,
         _count: {
           select: {
@@ -141,7 +121,8 @@ export class UsersService {
     const user = await this.prisma.user.findUnique({
       where: { email },
       include: {
-        roles: true,
+        client: true,
+        student: true,
         practitioner: true,
       },
     });
@@ -160,7 +141,9 @@ export class UsersService {
       where: { id },
       data,
       include: {
-        roles: true,
+        client: true,
+        student: true,
+        practitioner: true,
       },
     });
   }
@@ -175,66 +158,30 @@ export class UsersService {
     });
   }
 
-  async assignRole(userId: string, roleData: AssignRoleDto) {
+  async updateRole(userId: string, role: Role) {
     const user = await this.findById(userId);
 
-    // Check if role already exists
-    const existingRole = await this.prisma.userRole.findFirst({
-      where: {
-        userId,
-        tenantId: roleData.tenantId,
-        role: roleData.role,
-      },
-    });
-
-    if (existingRole) {
-      throw new ConflictException('User already has this role for this tenant');
-    }
-
-    return this.prisma.userRole.create({
-      data: {
-        userId,
-        tenantId: roleData.tenantId,
-        role: roleData.role,
-        locationId: roleData.locationId,
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      include: {
+        client: true,
+        student: true,
+        practitioner: true,
       },
     });
   }
 
-  async removeRole(userId: string, roleId: string) {
-    const role = await this.prisma.userRole.findUnique({
-      where: { id: roleId },
-    });
-
-    if (!role) {
-      throw new NotFoundException('Role not found');
-    }
-
-    if (role.userId !== userId) {
-      throw new BadRequestException('Role does not belong to this user');
-    }
-
-    return this.prisma.userRole.delete({
-      where: { id: roleId },
-    });
-  }
-
-  async getUsersByTenant(tenantId: string) {
+  async getUsersByRole(role: Role) {
     return this.prisma.user.findMany({
       where: {
-        roles: {
-          some: {
-            tenantId,
-          },
-        },
+        role,
         isActive: true,
       },
       include: {
-        roles: {
-          where: {
-            tenantId,
-          },
-        },
+        client: true,
+        student: true,
+        practitioner: true,
       },
     });
   }
