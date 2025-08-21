@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "monorepo": true,
+  "builds": [
+    {
+      "src": "apps/platform",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "apps/platform/$1"
+    }
+  ]
+}

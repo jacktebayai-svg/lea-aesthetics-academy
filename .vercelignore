@@ -1,0 +1,4 @@
+# Ignore specific apps to prevent auto-deployment
+# Only deploy the platform app automatically
+apps/admin/
+apps/web/
