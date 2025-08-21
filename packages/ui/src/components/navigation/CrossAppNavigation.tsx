@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ChevronDownIcon, SwitchHorizontalIcon } from '@heroicons/react/outline';
-import { useNavigation } from '@lea-aesthetics/shared/contexts/NavigationContext';
+import { useNavigation } from '@master-aesthetics-suite/shared';
 
 interface CrossAppNavigationProps {
   className?: string;

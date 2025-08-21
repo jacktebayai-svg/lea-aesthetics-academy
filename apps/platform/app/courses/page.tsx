@@ -1,7 +1,30 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Clock, Users, Award, BookOpen, Star, CheckCircle } from 'lucide-react'
+import { useAuth } from '@/lib/auth/auth-provider'
+import { useRouter } from 'next/navigation'
+import { 
+  LuxuryCard, 
+  LuxuryButton, 
+  LuxuryLoader,
+  LuxuryBadge,
+  fadeInUp,
+  staggerContainer
+} from '@/components/ui/luxury-components'
+import { LEAHeader } from '@/components/layout/header'
+import { motion } from 'framer-motion'
+import { 
+  BookOpen, 
+  Clock, 
+  Users, 
+  Award,
+  PlayCircle,
+  CheckCircle,
+  Calendar,
+  Star,
+  Crown,
+  Sparkles
+} from 'lucide-react'
 
 interface Course {
   id: string
@@ -24,263 +47,286 @@ interface Course {
 }
 
 export default function CoursesPage() {
+  const { user, isLoading } = useAuth()
+  const router = useRouter()
   const [courses, setCourses] = useState<Course[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const [selectedLevel, setSelectedLevel] = useState<string>('all')
   const [loading, setLoading] = useState(true)
+  const [selectedCategory, setSelectedCategory] = useState<string>('ALL')
 
-  const categories = ['all', 'Anatomy', 'Safety', 'Treatments', 'Business']
-  const levels = ['all', 'Level 2', 'Level 3', 'Level 4']
+  const categories = [
+    'ALL',
+    'FACIAL_AESTHETICS',
+    'DERMAL_FILLERS',
+    'BOTOX',
+    'SKIN_TREATMENTS',
+    'ADVANCED_TECHNIQUES'
+  ]
 
   useEffect(() => {
-    loadCourses()
-  }, [])
+    if (!isLoading && !user) {
+      router.push('/login')
+    } else if (user) {
+      loadCourses()
+    }
+  }, [user, isLoading, router])
 
   const loadCourses = async () => {
     try {
-      const response = await fetch('/api/public/courses')
+      setLoading(true)
+      const response = await fetch('/api/courses')
       const data = await response.json()
-      setCourses(data.courses || [])
+      
+      // Mock data for development
+      const mockCourses: Course[] = [
+        {
+          id: '1',
+          title: 'Foundation in Facial Aesthetics',
+          description: 'Master the fundamentals of facial aesthetics with our comprehensive foundation course. Learn anatomy, consultation techniques, and basic procedures.',
+          category: 'Facial Aesthetics',
+          level: 'Level 2',
+          duration: 40,
+          price: 159900,
+          maxStudents: 20,
+          currentEnrollments: 12,
+          outcomes: ['Understand facial anatomy', 'Master consultation skills', 'Learn basic injection techniques', 'Patient safety protocols'],
+          requirements: ['Basic medical knowledge'],
+          isPublished: true,
+          educator: {
+            name: 'Dr. Sarah Johnson',
+            title: 'MD',
+            bio: 'Leading aesthetic practitioner with 15 years experience'
+          }
+        },
+        {
+          id: '2',
+          title: 'Advanced Dermal Filler Techniques',
+          description: 'Advanced training in dermal filler applications, complications management, and artistic enhancement techniques.',
+          category: 'Treatments',
+          level: 'Level 4',
+          duration: 60,
+          price: 249900,
+          maxStudents: 15,
+          currentEnrollments: 8,
+          outcomes: ['Advanced injection techniques', 'Complications management', 'Artistic enhancement', 'Business protocols'],
+          requirements: ['Level 2 certification', 'Clinical experience'],
+          isPublished: true,
+          educator: {
+            name: 'Prof. Michael Chen',
+            title: 'Professor',
+            bio: 'International expert in aesthetic medicine'
+          }
+        }
+      ]
+      
+      setCourses(data.courses || mockCourses)
     } catch (error) {
       console.error('Failed to load courses:', error)
+      setCourses([])
     } finally {
       setLoading(false)
     }
   }
 
   const handleEnrollment = async (courseId: string) => {
-    // For now, redirect to enrollment form
     window.location.href = `/enroll/${courseId}`
   }
 
-  const filteredCourses = courses.filter(course => {
-    if (selectedCategory !== 'all' && course.category !== selectedCategory) {
-      return false
-    }
-    if (selectedLevel !== 'all' && course.level !== selectedLevel) {
-      return false
-    }
-    return course.isPublished
-  })
+  const filteredCourses = selectedCategory === 'ALL' 
+    ? courses 
+    : courses.filter(course => course.category === selectedCategory)
 
-  if (loading) {
+  const getLevelColor = (level: string): 'gold' | 'rose' | 'success' | 'warning' | 'info' => {
+    switch (level) {
+      case 'Level 2': return 'info'
+      case 'Level 3': return 'gold'
+      case 'Level 4': return 'rose'
+      default: return 'info'
+    }
+  }
+
+  const getCategoryName = (category: string) => {
+    switch (category) {
+      case 'ALL': return 'All Courses'
+      case 'FACIAL_AESTHETICS': return 'Facial Aesthetics'
+      case 'DERMAL_FILLERS': return 'Dermal Fillers'
+      case 'BOTOX': return 'Botox'
+      case 'SKIN_TREATMENTS': return 'Skin Treatments'
+      case 'ADVANCED_TECHNIQUES': return 'Advanced Techniques'
+      default: return category
+    }
+  }
+
+  if (isLoading || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p>Loading courses...</p>
-        </div>
+      <div className="min-h-screen lea-gradient-bg flex items-center justify-center">
+        <LuxuryLoader size="lg" />
       </div>
     )
   }
 
+  if (!user) {
+    return null
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 py-16">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Professional Aesthetics Training</h1>
-            <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
-              Advance your career with industry-recognized certifications and expert-led training programs
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm">
-              <div className="flex items-center">
-                <Award className="w-4 h-4 mr-2" />
-                <span>Certified Programs</span>
-              </div>
-              <div className="flex items-center">
-                <Users className="w-4 h-4 mr-2" />
-                <span>Expert Instructors</span>
-              </div>
-              <div className="flex items-center">
-                <CheckCircle className="w-4 h-4 mr-2" />
-                <span>Industry Recognition</span>
-              </div>
-            </div>
+    <div className="min-h-screen lea-gradient-bg">
+      <LEAHeader />
+      
+      <main className="lea-container py-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <div className="flex items-center justify-center mb-4">
+            <BookOpen className="h-8 w-8 text-[#b45309] mr-3" />
+            <h1 className="text-4xl font-bold lea-text-gradient">Course Library</h1>
           </div>
-        </div>
-      </div>
+          <p className="text-xl text-[#78716c] max-w-3xl mx-auto">
+            Master the art of aesthetic medicine with our comprehensive training programs. 
+            Learn from industry experts and advance your professional skills.
+          </p>
+        </motion.div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex flex-wrap gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {categories.map(category => (
-                  <option key={category} value={category}>
-                    {category === 'all' ? 'All Categories' : category}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Level</label>
-              <select
-                value={selectedLevel}
-                onChange={(e) => setSelectedLevel(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {levels.map(level => (
-                  <option key={level} value={level}>
-                    {level === 'all' ? 'All Levels' : level}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-end">
-              <div className="text-sm text-gray-600">
-                {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Category Filter */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex flex-wrap justify-center gap-3 mb-12"
+        >
+          {categories.map((category) => (
+            <LuxuryButton
+              key={category}
+              variant={selectedCategory === category ? 'primary' : 'ghost'}
+              size="sm"
+              onClick={() => setSelectedCategory(category)}
+            >
+              {getCategoryName(category)}
+            </LuxuryButton>
+          ))}
+        </motion.div>
 
         {/* Courses Grid */}
-        {filteredCourses.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredCourses.map((course) => (
-              <div key={course.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+        <motion.div
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {filteredCourses.map((course) => (
+            <motion.div key={course.id} variants={fadeInUp}>
+              <LuxuryCard variant="premium" className="h-full flex flex-col">
                 {/* Course Header */}
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex space-x-2">
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
-                        {course.level}
-                      </span>
-                      <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
-                        {course.category}
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-600">
-                        £{(course.price / 100).toFixed(2)}
-                      </div>
-                    </div>
+                <div className="relative mb-6">
+                  <div className="aspect-video bg-gradient-to-br from-[#fefce8] to-[#fef3c7] rounded-lg flex items-center justify-center">
+                    <BookOpen className="h-16 w-16 text-[#b45309]" />
                   </div>
+                  <div className="absolute top-3 right-3">
+                    <LuxuryBadge variant={getLevelColor(course.level)} size="sm">
+                      {course.level}
+                    </LuxuryBadge>
+                  </div>
+                </div>
 
-                  <h3 className="text-xl font-semibold mb-3">{course.title}</h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">{course.description}</p>
-
-                  {/* Course Details */}
-                  <div className="flex items-center space-x-4 mb-4 text-sm text-gray-500">
-                    <span className="flex items-center">
-                      <Clock className="w-4 h-4 mr-1" />
+                {/* Course Content */}
+                <div className="flex-1 flex flex-col">
+                  <h3 className="text-xl font-semibold text-[#1c1917] mb-3">{course.title}</h3>
+                  <p className="text-[#78716c] mb-4 flex-1">{course.description}</p>
+                  
+                  {/* Course Meta */}
+                  <div className="grid grid-cols-2 gap-4 mb-4 text-sm text-[#78716c]">
+                    <div className="flex items-center">
+                      <Clock className="h-4 w-4 mr-2" />
                       {course.duration} hours
-                    </span>
-                    <span className="flex items-center">
-                      <Users className="w-4 h-4 mr-1" />
+                    </div>
+                    <div className="flex items-center">
+                      <Users className="h-4 w-4 mr-2" />
                       {course.currentEnrollments}/{course.maxStudents}
-                    </span>
+                    </div>
                   </div>
 
                   {/* Instructor */}
-                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                    <div className="text-sm">
-                      <span className="font-medium">Instructor:</span>{' '}
-                      {course.educator.title} {course.educator.name}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-[#78716c]">by {course.educator.title} {course.educator.name}</span>
+                    <div className="flex items-center text-sm text-[#b45309]">
+                      <Award className="h-4 w-4 mr-1" />
+                      Certificate
                     </div>
                   </div>
 
-                  {/* Learning Outcomes */}
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">What you'll learn:</h4>
-                    <ul className="space-y-1">
-                      {course.outcomes.slice(0, 3).map((outcome, index) => (
-                        <li key={index} className="flex items-start text-sm text-gray-600">
-                          <CheckCircle className="w-3 h-3 mt-0.5 mr-2 text-green-500 flex-shrink-0" />
-                          {outcome}
-                        </li>
-                      ))}
-                      {course.outcomes.length > 3 && (
-                        <li className="text-sm text-gray-500">
-                          +{course.outcomes.length - 3} more outcomes
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-
-                  {/* Prerequisites */}
-                  {course.requirements.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Prerequisites:</h4>
-                      <div className="flex flex-wrap gap-1">
-                        {course.requirements.map((req, index) => (
-                          <span key={index} className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                            {req}
-                          </span>
-                        ))}
-                      </div>
+                  {/* Price and Action */}
+                  <div className="flex items-center justify-between">
+                    <div className="text-2xl font-bold lea-text-gradient">
+                      £{(course.price / 100).toFixed(2)}
                     </div>
-                  )}
-
-                  {/* Enrollment Button */}
-                  <button
-                    onClick={() => handleEnrollment(course.id)}
-                    disabled={course.currentEnrollments >= course.maxStudents}
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {course.currentEnrollments >= course.maxStudents 
-                      ? 'Course Full' 
-                      : 'Enroll Now'
-                    }
-                  </button>
+                    <LuxuryButton 
+                      variant="primary"
+                      disabled={course.currentEnrollments >= course.maxStudents}
+                      onClick={() => handleEnrollment(course.id)}
+                    >
+                      {course.currentEnrollments >= course.maxStudents ? 'Course Full' : 'Enroll Now'}
+                    </LuxuryButton>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No courses found</h3>
-            <p className="text-gray-600">
-              Try adjusting your filters or check back later for new courses.
-            </p>
-          </div>
+              </LuxuryCard>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Empty State */}
+        {filteredCourses.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="text-center py-16"
+          >
+            <LuxuryCard variant="glass" className="max-w-md mx-auto">
+              <BookOpen className="h-16 w-16 text-[#78716c] mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-[#1c1917] mb-2">No Courses Found</h3>
+              <p className="text-[#78716c] mb-4">
+                No courses match your selected category. Try selecting a different category.
+              </p>
+              <LuxuryButton variant="ghost" onClick={() => setSelectedCategory('ALL')}>
+                View All Courses
+              </LuxuryButton>
+            </LuxuryCard>
+          </motion.div>
         )}
 
-        {/* Why Choose Us Section */}
-        <div className="mt-16 bg-white rounded-lg shadow-sm p-8">
-          <h2 className="text-2xl font-bold text-center mb-8">Why Choose Our Training?</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="w-6 h-6 text-blue-600" />
-              </div>
-              <h3 className="font-semibold mb-2">Industry Certified</h3>
-              <p className="text-gray-600 text-sm">
-                All our courses are industry-recognized and provide professional certifications
-              </p>
+        {/* Call to Action */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-16 text-center"
+        >
+          <LuxuryCard variant="premium" className="max-w-4xl mx-auto">
+            <div className="flex items-center justify-center mb-6">
+              <Crown className="h-8 w-8 text-[#b45309] mr-3" />
+              <Sparkles className="h-6 w-6 text-[#ec4899]" />
             </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-6 h-6 text-green-600" />
-              </div>
-              <h3 className="font-semibold mb-2">Expert Instructors</h3>
-              <p className="text-gray-600 text-sm">
-                Learn from practicing professionals with years of experience
-              </p>
+            <h2 className="text-3xl font-bold text-[#1c1917] mb-4">
+              Ready to Advance Your Career?
+            </h2>
+            <p className="text-xl text-[#78716c] mb-8 max-w-2xl mx-auto">
+              Join thousands of professionals who have transformed their practice with our 
+              industry-leading aesthetic training programs.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <LuxuryButton variant="primary" size="lg">
+                Browse All Courses
+              </LuxuryButton>
+              <LuxuryButton variant="secondary" size="lg">
+                Contact an Advisor
+              </LuxuryButton>
             </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="w-6 h-6 text-purple-600" />
-              </div>
-              <h3 className="font-semibold mb-2">Practical Learning</h3>
-              <p className="text-gray-600 text-sm">
-                Hands-on training with real-world applications and case studies
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+          </LuxuryCard>
+        </motion.div>
+      </main>
     </div>
   )
 }

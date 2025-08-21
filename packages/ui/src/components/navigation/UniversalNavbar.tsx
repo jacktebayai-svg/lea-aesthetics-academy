@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useNavigation } from '@lea-aesthetics/shared/contexts/NavigationContext';
+import { useNavigation } from '@master-aesthetics-suite/shared';
 import CrossAppNavigation from './CrossAppNavigation';
 
 interface UniversalNavbarProps {

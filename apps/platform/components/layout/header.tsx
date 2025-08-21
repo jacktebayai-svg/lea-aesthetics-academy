@@ -2,15 +2,14 @@
 
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth/auth-provider'
-import { Button } from '@/components/ui/button'
 import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+  LuxuryButton,
+  LuxuryCard,
+  LuxuryAvatar,
+  fadeInUp
+} from '@/components/ui/luxury-components'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 import { 
   User, 
   LogOut, 
@@ -19,14 +18,17 @@ import {
   BookOpen, 
   Menu,
   Crown,
-  Sparkles
+  Sparkles,
+  ChevronDown
 } from 'lucide-react'
 
 export function LEAHeader() {
   const { user, logout } = useAuth()
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   const handleLogout = async () => {
     await logout()
+    setUserMenuOpen(false)
   }
 
   return (
@@ -50,95 +52,108 @@ export function LEAHeader() {
             <div className="flex items-center space-x-4">
               {/* Quick Actions based on role */}
               {user.roles.includes('CLIENT') && (
-                <Link href={'/book' as any}>
-                  <Button variant="ghost" size="sm" className="hidden md:flex">
-                    <Calendar className="h-4 w-4 mr-2" />
+                <Link href="/book">
+                  <LuxuryButton variant="ghost" size="sm" className="hidden md:flex" leftIcon={<Calendar className="h-4 w-4" />}>
                     Book Treatment
-                  </Button>
+                  </LuxuryButton>
                 </Link>
               )}
               
               {user.roles.includes('STUDENT') && (
-                <Link href={'/courses' as any}>
-                  <Button variant="ghost" size="sm" className="hidden md:flex">
-                    <BookOpen className="h-4 w-4 mr-2" />
+                <Link href="/courses">
+                  <LuxuryButton variant="ghost" size="sm" className="hidden md:flex" leftIcon={<BookOpen className="h-4 w-4" />}>
                     My Courses
-                  </Button>
+                  </LuxuryButton>
                 </Link>
               )}
 
               {user.roles.includes('ADMIN') && (
-                <Link href={'/admin' as any}>
-                  <Button variant="ghost" size="sm" className="hidden md:flex">
-                    <Settings className="h-4 w-4 mr-2" />
+                <Link href="/admin/dashboard">
+                  <LuxuryButton variant="ghost" size="sm" className="hidden md:flex" leftIcon={<Settings className="h-4 w-4" />}>
                     Admin
-                  </Button>
+                  </LuxuryButton>
                 </Link>
               )}
 
               {/* User Menu */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="relative">
-                    <User className="h-4 w-4" />
-                    <span className="ml-2 hidden md:block">
-                      {user.firstName || user.email.split('@')[0]}
-                    </span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {user.firstName} {user.lastName}
-                      </p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {user.email}
-                      </p>
-                      <p className="text-xs leading-none text-accent font-medium">
-                        {user.roles[0]}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem asChild>
-                    <Link href={'/profile' as any} className="cursor-pointer">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Profile Settings
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-                  
-                  <DropdownMenuItem 
-                    onClick={handleLogout}
-                    className="cursor-pointer text-destructive focus:text-destructive"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="relative">
+                <LuxuryButton 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  leftIcon={<LuxuryAvatar fallback={user.firstName?.[0] || user.email[0]} size="sm" />}
+                  rightIcon={<ChevronDown className="h-4 w-4" />}
+                >
+                  <span className="ml-2 hidden md:block">
+                    {user.firstName || user.email.split('@')[0]}
+                  </span>
+                </LuxuryButton>
+                
+                <AnimatePresence>
+                  {userMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 z-50"
+                    >
+                      <LuxuryCard className="w-64 p-4">
+                        {/* User Info */}
+                        <div className="flex items-center space-x-3 mb-4 pb-4 border-b border-[#e7e5e4]">
+                          <LuxuryAvatar fallback={user.firstName?.[0] || user.email[0]} size="md" />
+                          <div className="flex-1">
+                            <p className="font-semibold text-[#1c1917]">
+                              {user.firstName} {user.lastName}
+                            </p>
+                            <p className="text-xs text-[#78716c]">{user.email}</p>
+                            <p className="text-xs font-medium text-[#b45309]">{user.roles[0]}</p>
+                          </div>
+                        </div>
+                        
+                        {/* Menu Items */}
+                        <div className="space-y-2">
+                          <Link href="/dashboard" onClick={() => setUserMenuOpen(false)}>
+                            <LuxuryButton variant="ghost" className="w-full justify-start" size="sm" leftIcon={<User className="h-4 w-4" />}>
+                              Dashboard
+                            </LuxuryButton>
+                          </Link>
+                          
+                          <Link href="/profile" onClick={() => setUserMenuOpen(false)}>
+                            <LuxuryButton variant="ghost" className="w-full justify-start" size="sm" leftIcon={<Settings className="h-4 w-4" />}>
+                              Profile Settings
+                            </LuxuryButton>
+                          </Link>
+                          
+                          <div className="pt-2 border-t border-[#e7e5e4]">
+                            <LuxuryButton 
+                              onClick={handleLogout}
+                              variant="ghost" 
+                              className="w-full justify-start text-red-600 hover:bg-red-50" 
+                              size="sm" 
+                              leftIcon={<LogOut className="h-4 w-4" />}
+                            >
+                              Sign Out
+                            </LuxuryButton>
+                          </div>
+                        </div>
+                      </LuxuryCard>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           ) : (
             <div className="flex items-center space-x-3">
-              <Link href={'/login' as any}>
-                <Button variant="ghost" size="sm">
+              <Link href="/login">
+                <LuxuryButton variant="ghost" size="sm">
                   Sign In
-                </Button>
+                </LuxuryButton>
               </Link>
-              <Link href={'/register' as any}>
-                <Button size="sm" className="lea-button-primary">
+              <Link href="/register">
+                <LuxuryButton variant="primary" size="sm">
                   Get Started
-                </Button>
+                </LuxuryButton>
               </Link>
             </div>
           )}

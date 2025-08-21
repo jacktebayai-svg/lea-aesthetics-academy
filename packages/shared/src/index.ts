@@ -2,6 +2,9 @@
 export * from './types/navigation';
 export * from './contexts/NavigationContext';
 
+// Auth utilities
+export * from './auth/role-routes';
+
 // Existing exports (if any)
 // Add other shared utilities, types, and components here
 

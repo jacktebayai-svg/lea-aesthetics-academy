@@ -89,49 +89,49 @@ export const navigationConfig: Record<string, NavigationSection[]> = {
       name: 'Overview',
       roles: ['admin', 'manager', 'owner'],
       items: [
-        { name: 'Dashboard', href: '/dashboard', icon: '📊', roles: ['admin', 'manager', 'owner'] },
-        { name: 'Analytics', href: '/analytics', icon: '📈', roles: ['admin', 'manager', 'owner'] },
+        { name: 'Dashboard', href: '/admin', icon: '📊', roles: ['admin', 'manager', 'owner'] },
+        { name: 'Analytics', href: '/admin/analytics', icon: '📈', roles: ['admin', 'manager', 'owner'] },
       ]
     },
     {
       name: 'Practice Management',
       roles: ['admin', 'manager', 'owner', 'practitioner'],
       items: [
-        { name: 'Appointments', href: '/appointments', icon: '📅', roles: ['admin', 'manager', 'owner', 'practitioner'] },
-        { name: 'Clients', href: '/clients', icon: '👥', roles: ['admin', 'manager', 'owner', 'practitioner'] },
-        { name: 'Practitioners', href: '/practitioners', icon: '👩‍⚕️', roles: ['admin', 'manager', 'owner'] },
-        { name: 'Services', href: '/services', icon: '💆‍♀️', roles: ['admin', 'manager', 'owner'] },
-        { name: 'Treatments', href: '/treatments', icon: '✨', roles: ['admin', 'manager', 'owner', 'practitioner'] },
+        { name: 'Appointments', href: '/admin/appointments', icon: '📅', roles: ['admin', 'manager', 'owner', 'practitioner'] },
+        { name: 'Clients', href: '/admin/clients', icon: '👥', roles: ['admin', 'manager', 'owner', 'practitioner'] },
+        { name: 'Practitioners', href: '/admin/practitioners', icon: '👩‍⚕️', roles: ['admin', 'manager', 'owner'] },
+        { name: 'Services', href: '/admin/services', icon: '💆‍♀️', roles: ['admin', 'manager', 'owner'] },
+        { name: 'Treatments', href: '/admin/treatments', icon: '✨', roles: ['admin', 'manager', 'owner', 'practitioner'] },
       ]
     },
     {
       name: 'Learning Management',
       roles: ['admin', 'tutor', 'manager', 'owner'],
       items: [
-        { name: 'Courses', href: '/courses', icon: '📚', roles: ['admin', 'tutor', 'manager', 'owner'] },
-        { name: 'Students', href: '/students', icon: '🎓', roles: ['admin', 'tutor', 'manager', 'owner'] },
-        { name: 'Enrollments', href: '/enrollments', icon: '📋', roles: ['admin', 'tutor', 'manager', 'owner'] },
-        { name: 'Certificates', href: '/certificates', icon: '🏆', roles: ['admin', 'tutor', 'manager', 'owner'] },
-        { name: 'Assessments', href: '/assessments', icon: '📝', roles: ['admin', 'tutor', 'manager', 'owner'] },
+        { name: 'Courses', href: '/admin/courses', icon: '📚', roles: ['admin', 'tutor', 'manager', 'owner'] },
+        { name: 'Students', href: '/admin/students', icon: '🎓', roles: ['admin', 'tutor', 'manager', 'owner'] },
+        { name: 'Enrollments', href: '/admin/enrollments', icon: '📋', roles: ['admin', 'tutor', 'manager', 'owner'] },
+        { name: 'Certificates', href: '/admin/certificates', icon: '🏆', roles: ['admin', 'tutor', 'manager', 'owner'] },
+        { name: 'Assessments', href: '/admin/assessments', icon: '📝', roles: ['admin', 'tutor', 'manager', 'owner'] },
       ]
     },
     {
       name: 'Business',
       roles: ['admin', 'manager', 'owner'],
       items: [
-        { name: 'Payments', href: '/payments', icon: '💳', roles: ['admin', 'manager', 'owner'] },
-        { name: 'Invoices', href: '/invoices', icon: '🧾', roles: ['admin', 'manager', 'owner'] },
-        { name: 'Reports', href: '/reports', icon: '📊', roles: ['admin', 'manager', 'owner'] },
-        { name: 'Documents', href: '/documents', icon: '📄', roles: ['admin', 'manager', 'owner'] },
+        { name: 'Payments', href: '/admin/payments', icon: '💳', roles: ['admin', 'manager', 'owner'] },
+        { name: 'Invoices', href: '/admin/invoices', icon: '🧾', roles: ['admin', 'manager', 'owner'] },
+        { name: 'Reports', href: '/admin/reports', icon: '📊', roles: ['admin', 'manager', 'owner'] },
+        { name: 'Documents', href: '/admin/documents', icon: '📄', roles: ['admin', 'manager', 'owner'] },
       ]
     },
     {
       name: 'System',
       roles: ['admin', 'owner'],
       items: [
-        { name: 'Settings', href: '/settings', icon: '⚙️', roles: ['admin', 'owner'] },
-        { name: 'Users', href: '/users', icon: '👤', roles: ['admin', 'owner'] },
-        { name: 'Templates', href: '/dashboard/templates', icon: '📋', roles: ['admin', 'owner'] },
+        { name: 'Settings', href: '/admin/settings', icon: '⚙️', roles: ['admin', 'owner'] },
+        { name: 'Users', href: '/admin/users', icon: '👤', roles: ['admin', 'owner'] },
+        { name: 'Templates', href: '/admin/templates', icon: '📋', roles: ['admin', 'owner'] },
       ]
     }
   ],
@@ -185,7 +185,7 @@ export const appSwitcher: NavigationItem[] = [
   { name: 'Client Portal', href: '/client', icon: '👤', roles: ['client'], description: 'Manage appointments & treatments' },
   { name: 'Student Portal', href: '/student', icon: '🎓', roles: ['student'], description: 'Access courses & learning' },
   { name: 'Academy', href: '/academy', icon: '🏫', roles: ['student', 'client'], description: 'Browse course catalog' },
-  { name: 'Admin Dashboard', href: '/dashboard', icon: '⚙️', roles: ['admin', 'manager', 'owner'], description: 'Manage practice & academy' },
+  { name: 'Admin Dashboard', href: '/admin', icon: '⚙️', roles: ['admin', 'manager', 'owner'], description: 'Manage practice & academy' },
   { name: 'Practitioner Portal', href: '/practitioner', icon: '👩‍⚕️', roles: ['practitioner'], description: 'Manage your practice' },
   { name: 'Tutor Portal', href: '/tutor', icon: '👩‍🏫', roles: ['tutor'], description: 'Manage your courses' },
 ];

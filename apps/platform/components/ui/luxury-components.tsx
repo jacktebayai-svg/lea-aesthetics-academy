@@ -3,6 +3,7 @@
 import React, { ReactNode, forwardRef } from 'react'
 import { motion, HTMLMotionProps } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 import { 
   Loader2, 
   Crown, 
@@ -840,3 +841,94 @@ export const LuxuryCTA: React.FC<LuxuryCTAProps> = ({
     </LuxurySection>
   )
 }
+
+/* === LAYOUT COMPONENTS === */
+interface LuxuryLayoutProps {
+  children: ReactNode
+  title?: string
+  subtitle?: string
+  className?: string
+  showNavigation?: boolean
+}
+
+export const LuxuryLayout: React.FC<LuxuryLayoutProps> = ({
+  children,
+  title,
+  subtitle,
+  className,
+  showNavigation = true
+}) => {
+  return (
+    <div className="min-h-screen lea-gradient-bg">
+      {showNavigation && (
+        <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 lea-backdrop">
+          <div className="lea-container">
+            <div className="flex items-center justify-between h-16">
+              <Link href="/" className="flex items-center space-x-3 group">
+                <div className="relative">
+                  <Crown className="h-8 w-8 text-primary lea-text-gradient" />
+                  <Sparkles className="h-3 w-3 text-accent absolute -top-1 -right-1 animate-pulse" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold lea-text-gradient">LEA</h1>
+                  <p className="text-xs text-muted-foreground -mt-1">Aesthetics Academy</p>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </header>
+      )}
+      
+      <main className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-4 py-8">
+        <div className={cn('w-full max-w-lg', className)}>
+          {(title || subtitle) && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-8"
+            >
+              {title && (
+                <h1 className="text-3xl md:text-4xl font-bold lea-text-gradient mb-2">
+                  {title}
+                </h1>
+              )}
+              {subtitle && (
+                <p className="text-[#78716c] text-lg">
+                  {subtitle}
+                </p>
+              )}
+            </motion.div>
+          )}
+          {children}
+        </div>
+      </main>
+    </div>
+  )
+}
+
+/* === FORM COMPONENTS === */
+interface LuxuryFormProps extends React.FormHTMLAttributes<HTMLFormElement> {
+  children: ReactNode
+}
+
+export const LuxuryForm = forwardRef<HTMLFormElement, LuxuryFormProps>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <motion.form
+        ref={ref}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className={cn('space-y-6', className)}
+        {...props}
+      >
+        {children}
+      </motion.form>
+    )
+  }
+)
+
+LuxuryForm.displayName = 'LuxuryForm'
+
+/* === NOTIFICATION COMPONENTS === */

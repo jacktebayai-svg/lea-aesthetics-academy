@@ -10,6 +10,9 @@ export * from './components/ServiceCard';
 export * from './components/CourseCard';
 export * from './components/Calendar';
 
+// Navigation Components
+export * from './components/navigation';
+
 // Legacy Components (to be updated)
 export { default as Icon } from "./Icon";
 export { default as LEALogo } from "./LEALogo";

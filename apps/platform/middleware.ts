@@ -66,7 +66,7 @@ export async function middleware(request: NextRequest) {
       const url = request.nextUrl.clone()
       switch (userRole) {
         case 'ADMIN':
-          url.pathname = '/admin/dashboard'
+          url.pathname = '/admin'
           break
         case 'CLIENT':
           url.pathname = '/client/dashboard'
@@ -88,7 +88,7 @@ export async function middleware(request: NextRequest) {
     
     switch (userRole) {
       case 'ADMIN':
-        url.pathname = '/admin/dashboard'
+        url.pathname = '/admin'
         break
       case 'CLIENT':
         url.pathname = '/client/dashboard'

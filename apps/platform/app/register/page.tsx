@@ -5,15 +5,19 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Route } from 'next'
 import { useAuth } from '@/lib/auth/auth-provider'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
+import { 
+  LuxuryInput,
+  LuxuryButton,
+  LuxuryCard,
+  LuxuryLayout,
+  LuxuryToast,
+  LuxuryForm,
+  LuxuryBadge
+} from '@/components/ui/luxury-components'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
-import { AlertCircle, Eye, EyeOff, Loader2, Plus, X } from 'lucide-react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Mail, KeyRound, Eye, EyeOff, User, Phone, Calendar, Target, Shield } from 'lucide-react'
 
 type UserRole = 'ADMIN' | 'CLIENT' | 'STUDENT'
 
@@ -141,250 +145,253 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4 py-8">
-      <Card className="w-full max-w-2xl shadow-xl">
-        <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold tracking-tight">
-            Create your account
-          </CardTitle>
-          <CardDescription>
-            Join LEA Aesthetics platform
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {apiError && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{apiError}</AlertDescription>
-              </Alert>
-            )}
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">First name</Label>
-                <Input
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  placeholder="Enter your first name"
-                  className={errors.firstName ? 'border-red-500' : ''}
-                  disabled={isLoading}
-                />
-                {errors.firstName && (
-                  <p className="text-sm text-red-500">{errors.firstName}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Last name</Label>
-                <Input
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  placeholder="Enter your last name"
-                  className={errors.lastName ? 'border-red-500' : ''}
-                  disabled={isLoading}
-                />
-                {errors.lastName && (
-                  <p className="text-sm text-red-500">{errors.lastName}</p>
-                )}
-              </div>
+    <LuxuryLayout 
+      title="Join LEA Aesthetics" 
+      subtitle="Create your luxury experience account"
+      className="max-w-2xl"
+    >
+      <LuxuryCard variant="premium">
+        {apiError && (
+          <div className="mb-6">
+            <LuxuryToast type="error" message={apiError} onClose={() => setApiError('')} />
+          </div>
+        )}
+        
+        {/* Role Selection */}
+        <div className="text-center mb-6">
+          <LuxuryBadge 
+            variant={formData.role === 'CLIENT' ? 'gold' : formData.role === 'STUDENT' ? 'rose' : 'info'} 
+            size="lg"
+          >
+            {formData.role === 'CLIENT' ? 'Client Registration' : 'Student Registration'}
+          </LuxuryBadge>
+        </div>
+        
+        <LuxuryForm onSubmit={handleSubmit}>
+          {/* Account Type Selection */}
+          <div className="text-center mb-6">
+            <div className="inline-flex rounded-lg bg-[#fafaf9] p-1 border border-[#e7e5e4]">
+              <button
+                type="button"
+                onClick={() => handleRoleChange('CLIENT')}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                  formData.role === 'CLIENT'
+                    ? 'bg-white text-[#92400e] shadow-sm border border-[#fde68a]'
+                    : 'text-[#78716c] hover:text-[#44403c]'
+                }`}
+              >
+                <User className="h-4 w-4 mr-2 inline" />
+                Client
+              </button>
+              <button
+                type="button"
+                onClick={() => handleRoleChange('STUDENT')}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                  formData.role === 'STUDENT'
+                    ? 'bg-white text-[#92400e] shadow-sm border border-[#fde68a]'
+                    : 'text-[#78716c] hover:text-[#44403c]'
+                }`}
+              >
+                <Target className="h-4 w-4 mr-2 inline" />
+                Student
+              </button>
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
+          {/* Name Fields */}
+          <div className="grid grid-cols-2 gap-4">
+            <LuxuryInput
+              id="firstName"
+              name="firstName"
+              label="First Name"
+              value={formData.firstName}
+              onChange={handleInputChange}
+              placeholder="Your first name"
+              leftIcon={<User className="h-4 w-4" />}
+              error={errors.firstName}
+              disabled={isLoading}
+            />
+            
+            <LuxuryInput
+              id="lastName"
+              name="lastName"
+              label="Last Name"
+              value={formData.lastName}
+              onChange={handleInputChange}
+              placeholder="Your last name"
+              leftIcon={<User className="h-4 w-4" />}
+              error={errors.lastName}
+              disabled={isLoading}
+            />
+          </div>
+
+          {/* Email and Phone */}
+          <LuxuryInput
+            id="email"
+            name="email"
+            label="Email Address"
+            type="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder="your@email.com"
+            leftIcon={<Mail className="h-4 w-4" />}
+            error={errors.email}
+            disabled={isLoading}
+          />
+
+          <LuxuryInput
+            id="phone"
+            name="phone"
+            label="Phone Number (Optional)"
+            type="tel"
+            value={formData.phone}
+            onChange={handleInputChange}
+            placeholder="+44 7XXX XXXXXX"
+            leftIcon={<Phone className="h-4 w-4" />}
+            disabled={isLoading}
+          />
+
+          {/* Role-specific fields */}
+          {(formData.role === 'CLIENT' || formData.role === 'STUDENT') && (
+            <>
+              <LuxuryInput
+                id="dateOfBirth"
+                name="dateOfBirth"
+                label="Date of Birth (Optional)"
+                type="date"
+                value={formData.dateOfBirth}
                 onChange={handleInputChange}
-                placeholder="Enter your email"
-                className={errors.email ? 'border-red-500' : ''}
+                leftIcon={<Calendar className="h-4 w-4" />}
                 disabled={isLoading}
               />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="role">Account type</Label>
-              <Select value={formData.role} onValueChange={handleRoleChange} disabled={isLoading}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="CLIENT">Client (Book treatments)</SelectItem>
-                  <SelectItem value="STUDENT">Student (Take courses)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Phone Number */}
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone number (optional)</Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                value={formData.phone}
+              
+              <LuxuryInput
+                id="emergencyContact"
+                name="emergencyContact"
+                label="Emergency Contact (Optional)"
+                value={formData.emergencyContact}
                 onChange={handleInputChange}
-                placeholder="Enter your phone number"
+                placeholder="Emergency contact name"
+                leftIcon={<User className="h-4 w-4" />}
                 disabled={isLoading}
               />
+            </>
+          )}
+
+          {formData.role === 'STUDENT' && (
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-[#44403c]">
+                Learning Goals (Optional)
+              </label>
+              <Textarea
+                id="goals"
+                name="goals"
+                value={formData.goals}
+                onChange={handleInputChange}
+                placeholder="What do you hope to achieve through our courses?"
+                disabled={isLoading}
+                rows={3}
+                className="lea-input w-full rounded-lg border-2 border-[#e7e5e4] bg-white px-3 py-2 focus:border-[#f59e0b] focus:ring-2 focus:ring-[#f59e0b]/20 placeholder:text-[#78716c] placeholder:italic transition-all duration-200"
+              />
             </div>
+          )}
 
-            {/* Role-specific fields */}
-            {(formData.role === 'CLIENT' || formData.role === 'STUDENT') && (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="dateOfBirth">Date of birth (optional)</Label>
-                  <Input
-                    id="dateOfBirth"
-                    name="dateOfBirth"
-                    type="date"
-                    value={formData.dateOfBirth}
-                    onChange={handleInputChange}
-                    disabled={isLoading}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="emergencyContact">Emergency contact (optional)</Label>
-                  <Input
-                    id="emergencyContact"
-                    name="emergencyContact"
-                    value={formData.emergencyContact}
-                    onChange={handleInputChange}
-                    placeholder="Emergency contact name"
-                    disabled={isLoading}
-                  />
-                </div>
-              </>
-            )}
-
-            {formData.role === 'STUDENT' && (
-              <div className="space-y-2">
-                <Label htmlFor="goals">Learning goals (optional)</Label>
-                <Textarea
-                  id="goals"
-                  name="goals"
-                  value={formData.goals}
-                  onChange={handleInputChange}
-                  placeholder="What do you hope to achieve through our courses?"
+          {/* Password Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <LuxuryInput
+              id="password"
+              name="password"
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="Create a password"
+              leftIcon={<KeyRound className="h-4 w-4" />}
+              rightIcon={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-gray-400 hover:text-gray-600"
                   disabled={isLoading}
-                  rows={3}
-                />
-              </div>
-            )}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              }
+              error={errors.password}
+              disabled={isLoading}
+            />
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    placeholder="Create a password"
-                    className={errors.password ? 'border-red-500 pr-10' : 'pr-10'}
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    disabled={isLoading}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="text-sm text-red-500">{errors.password}</p>
-                )}
-              </div>
+            <LuxuryInput
+              id="confirmPassword"
+              name="confirmPassword"
+              label="Confirm Password"
+              type={showConfirmPassword ? 'text' : 'password'}
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              placeholder="Confirm your password"
+              leftIcon={<KeyRound className="h-4 w-4" />}
+              rightIcon={
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="text-gray-400 hover:text-gray-600"
+                  disabled={isLoading}
+                >
+                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              }
+              error={errors.confirmPassword}
+              disabled={isLoading}
+            />
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm password</Label>
-                <div className="relative">
-                  <Input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    placeholder="Confirm your password"
-                    className={errors.confirmPassword ? 'border-red-500 pr-10' : 'pr-10'}
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    disabled={isLoading}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-                {errors.confirmPassword && (
-                  <p className="text-sm text-red-500">{errors.confirmPassword}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="terms"
-                checked={acceptTerms}
-                onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
-                disabled={isLoading}
-              />
-              <Label htmlFor="terms" className="text-sm">
+          {/* Terms and Conditions */}
+          <div className="flex items-start space-x-3 p-4 bg-[#fefce8] rounded-lg border border-[#fde68a]">
+            <Checkbox
+              id="terms"
+              checked={acceptTerms}
+              onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
+              disabled={isLoading}
+              className="mt-1"
+            />
+            <div className="text-sm">
+              <label htmlFor="terms" className="text-[#44403c] cursor-pointer">
                 I accept the{' '}
-                <Link href={"/terms" as Route} className="text-blue-600 hover:text-blue-500">
+                <Link href="/terms" as Route className="font-medium text-[#b45309] hover:underline">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link href={"/privacy" as Route} className="text-blue-600 hover:text-blue-500">
+                <Link href="/privacy" as Route className="font-medium text-[#b45309] hover:underline">
                   Privacy Policy
                 </Link>
-              </Label>
+              </label>
+              {errors.terms && (
+                <p className="text-red-600 mt-1 flex items-center">
+                  <Shield className="h-3 w-3 mr-1" />
+                  {errors.terms}
+                </p>
+              )}
             </div>
-            {errors.terms && (
-              <p className="text-sm text-red-500">{errors.terms}</p>
-            )}
+          </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create account
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="text-center text-sm text-gray-600">
+          <LuxuryButton 
+            type="submit" 
+            size="lg" 
+            className="w-full" 
+            isLoading={isLoading}
+            disabled={!acceptTerms}
+          >
+            Create Your Account
+          </LuxuryButton>
+        </LuxuryForm>
+
+        <div className="text-center mt-6 text-sm text-[#78716c]">
           Already have an account?{' '}
-          <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Sign in
+          <Link href="/login" className="font-medium text-[#b45309] hover:underline">
+            Sign in here
           </Link>
-        </CardFooter>
-      </Card>
-    </div>
+        </div>
+      </LuxuryCard>
+    </LuxuryLayout>
   )
 }
