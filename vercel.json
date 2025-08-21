@@ -1,16 +1,35 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "monorepo": true,
-  "builds": [
-    {
-      "src": "apps/platform/package.json",
-      "use": "@vercel/next"
+  "framework": "nextjs",
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "buildCommand": "pnpm build --filter=platform",
+  "outputDirectory": "apps/platform/.next",
+  "functions": {
+    "apps/platform/app/api/**/route.ts": {
+      "maxDuration": 30
     }
-  ],
-  "routes": [
+  },
+  "headers": [
     {
-      "src": "/(.*)",
-      "dest": "apps/platform/$1"
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "origin-when-cross-origin"
+        }
+      ]
     }
   ]
 }
