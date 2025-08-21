@@ -8,7 +8,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:migrate": "env -u DATABASE_URL pnpm dlx prisma migrate dev --schema packages/db/prisma/schema.prisma",
     "db:generate": "env -u DATABASE_URL pnpm dlx prisma generate --schema packages/db/prisma/schema.prisma",
-    "db:seed": "bash -lc 'set -a; source packages/db/prisma/.env; set +a; pnpm dlx ts-node packages/db/prisma/seed.ts'",
+"db:seed": "bash -lc 'set -a; source packages/db/prisma/.env; set +a; pnpm dlx ts-node packages/db/prisma/seed.ts'",
+    "db:import-templates": "bash -lc 'set -a; source packages/db/prisma/.env; set +a; pnpm dlx ts-node packages/db/prisma/import-templates.ts'",
     "stack:up": "docker compose up -d db redis meili",
     "stack:down": "docker compose down",
     "test:e2e:playwright": "pnpm dlx playwright test"

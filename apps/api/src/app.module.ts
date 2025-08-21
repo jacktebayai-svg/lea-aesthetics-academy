@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PaymentsModule } from './payments/payments.module';
 import { TemplatesModule } from './templates/templates.module';
+import { CoursesModule } from './courses/courses.module';
 import { HealthController } from './health.controller';
 import { AvailabilityController } from './availability.controller';
 import { AppointmentsController } from './appointments.controller';
@@ -36,6 +37,7 @@ import { GlobalExceptionFilter } from './common/filters/global-exception.filter'
     UsersModule,
     PaymentsModule,
     TemplatesModule,
+    CoursesModule,
     StorageModule,
   ],
   controllers: [

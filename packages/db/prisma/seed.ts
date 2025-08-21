@@ -1,3 +1,175 @@
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+
+const prisma = new PrismaClient();
+
+const DEFAULT_TENANT_ID = process.env.DEFAULT_TENANT_ID || 'tenant_laca';
+
+async function main() {
+  console.log('🌱 Seeding single-tenant data...');
+
+  // Tenant
+  const tenant = await prisma.tenant.upsert({
+    where: { id: DEFAULT_TENANT_ID },
+    update: { name: "Lea's Aesthetics Clinical Academy", slug: 'leas-aesthetics-academy' },
+    create: {
+      id: DEFAULT_TENANT_ID,
+      name: "Lea's Aesthetics Clinical Academy",
+      slug: 'leas-aesthetics-academy',
+      plan: 'pro',
+      status: 'active',
+      settings: {},
+    },
+  });
+  console.log('✅ Tenant upserted', tenant.id);
+
+  // Location
+  await prisma.location.upsert({
+    where: { tenantId_slug: { tenantId: tenant.id, slug: 'main-clinic' } },
+    update: {},
+    create: {
+      id: 'loc_main',
+      tenantId: tenant.id,
+      name: 'Main Clinic',
+      slug: 'main-clinic',
+      type: 'clinic',
+      timezone: 'Europe/London',
+      address: { line1: '123 Harley Street', city: 'London', postalCode: 'W1G 6BA', country: 'United Kingdom' },
+      businessHours: {
+        monday: { open: '09:00', close: '18:00' },
+        tuesday: { open: '09:00', close: '18:00' },
+        wednesday: { open: '09:00', close: '18:00' },
+        thursday: { open: '09:00', close: '18:00' },
+        friday: { open: '09:00', close: '17:00' },
+        saturday: { open: '10:00', close: '16:00' },
+        sunday: { closed: true },
+      },
+      settings: {},
+    },
+  });
+  console.log('✅ Location upserted');
+
+  // Users
+  const password = await bcrypt.hash('admin123', 10);
+  await prisma.user.upsert({
+    where: { email: 'admin@leas-academy.com' },
+    update: {},
+    create: {
+      id: 'user_admin',
+      email: 'admin@leas-academy.com',
+      password,
+      firstName: 'Lea',
+      lastName: 'Administrator',
+      role: 'ADMIN',
+      isActive: true,
+      emailVerified: true,
+    },
+  });
+
+  const practitionerUser = await prisma.user.upsert({
+    where: { email: 'tutor@leas-academy.com' },
+    update: {},
+    create: {
+      id: 'user_practitioner',
+      email: 'tutor@leas-academy.com',
+      password,
+      firstName: 'Dr. Sarah',
+      lastName: 'Johnson',
+      role: 'ADMIN',
+      isActive: true,
+      emailVerified: true,
+    },
+  });
+  console.log('✅ Users upserted');
+
+  // Practitioner profile (linked to tenant)
+  await prisma.practitioner.upsert({
+    where: { id: 'prac_main' },
+    update: {},
+    create: {
+      id: 'prac_main',
+      tenantId: tenant.id,
+      userId: 'user_practitioner',
+      title: 'Dr.',
+      bio: 'Lead tutor and practitioner',
+      qualifications: { degrees: ['MBBS'], certifications: ['Aesthetic Medicine Diploma'] },
+      registrationNum: 'GMC123456',
+      isActive: true,
+      images: [],
+      bookingBuffer: 15,
+    },
+  });
+  console.log('✅ Practitioner upserted');
+
+  // Services for tenant
+  const services = [
+    { id: 'svc_botox', name: 'Botox Treatment', slug: 'botox', basePrice: 25000, durationMin: 30, category: 'injectables', buffers: { beforeMin: 10, afterMin: 15 } },
+    { id: 'svc_fillers', name: 'Dermal Fillers', slug: 'dermal-fillers', basePrice: 45000, durationMin: 45, category: 'injectables', buffers: { beforeMin: 15, afterMin: 20 } },
+    { id: 'svc_chemical_peel', name: 'Chemical Peel', slug: 'chemical-peel', basePrice: 15000, durationMin: 60, category: 'skin-treatments', buffers: { beforeMin: 10, afterMin: 30 } },
+    { id: 'svc_microneedling', name: 'Microneedling', slug: 'microneedling', basePrice: 20000, durationMin: 75, category: 'skin-treatments', buffers: { beforeMin: 15, afterMin: 30 } },
+  ];
+
+  for (const s of services) {
+    await prisma.service.upsert({
+      where: { id: s.id },
+      update: { tenantId: tenant.id },
+      create: { tenantId: tenant.id, ...s },
+    });
+  }
+  console.log('✅ Services upserted');
+
+  // Demo client and student
+  const clientUser = await prisma.user.upsert({
+    where: { email: 'client@example.com' },
+    update: {},
+    create: { id: 'user_client', email: 'client@example.com', password: await bcrypt.hash('client123', 10), firstName: 'Sarah', lastName: 'Wilson', role: 'CLIENT', isActive: true, emailVerified: true },
+  });
+
+  await prisma.client.upsert({
+    where: { userId: clientUser.id },
+    update: {},
+    create: {
+      id: 'client_demo_1',
+      tenantId: tenant.id,
+      userId: clientUser.id,
+      firstName: 'Sarah',
+      lastName: 'Wilson',
+      email: 'client@example.com',
+      preferences: { communicationPreferences: ['email', 'sms'] },
+      tags: ['vip'],
+    },
+  });
+
+  const studentUser = await prisma.user.upsert({
+    where: { email: 'student@example.com' },
+    update: {},
+    create: { id: 'user_student', email: 'student@example.com', password: await bcrypt.hash('student123', 10), firstName: 'Alex', lastName: 'Taylor', role: 'STUDENT', isActive: true, emailVerified: true },
+  });
+
+  await prisma.student.upsert({
+    where: { userId: studentUser.id },
+    update: {},
+    create: {
+      id: 'student_demo_1',
+      userId: studentUser.id,
+      studentNumber: 'STU-0001',
+      firstName: 'Alex',
+      lastName: 'Taylor',
+      email: 'student@example.com',
+      preferences: {},
+    },
+  });
+
+  console.log('🌱 Seed complete.');
+}
+
+main().catch((e) => {
+  console.error('Seed failed', e);
+  process.exit(1);
+}).finally(async () => {
+  await prisma.$disconnect();
+});
+
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import fs from "fs";

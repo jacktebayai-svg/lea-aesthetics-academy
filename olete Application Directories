@@ -1,0 +1,78 @@
+M	.vercelignore
+D	apps/admin/.gitignore
+D	apps/admin/README.md
+D	apps/admin/app/layout.tsx
+D	apps/admin/app/page.tsx
+D	apps/admin/app/services/page.tsx
+D	apps/admin/eslint.config.mjs
+D	apps/admin/next.config.ts
+D	apps/admin/package.json
+D	apps/admin/postcss.config.mjs
+D	apps/admin/src/app/appointments/page.tsx
+D	apps/admin/src/app/courses/page.tsx
+D	apps/admin/src/app/dashboard/page.tsx
+D	apps/admin/src/app/page.tsx
+D	apps/admin/src/app/services/page.tsx
+D	apps/admin/src/components/layout/AdminHeader.tsx
+D	apps/admin/src/components/layout/AdminLayout.tsx
+D	apps/admin/src/components/layout/AdminSidebar.tsx
+D	apps/admin/src/middleware.ts
+D	apps/admin/tailwind.config.js
+D	apps/admin/tsconfig.json
+D	apps/admin/vercel.json
+R100	apps/admin/src/app/api/login/route.ts	apps/platform/app/admin/api/login/route.ts
+R100	apps/admin/src/app/dashboard/templates/[id]/page.tsx	apps/platform/app/admin/dashboard/templates/[id]/page.tsx
+R100	apps/admin/src/app/dashboard/templates/page.tsx	apps/platform/app/admin/dashboard/templates/page.tsx
+R100	apps/admin/src/app/favicon.ico	apps/platform/app/admin/favicon.ico
+R100	apps/admin/src/app/globals.css	apps/platform/app/admin/globals.css
+R100	apps/admin/src/app/layout.tsx	apps/platform/app/admin/layout.tsx
+R100	apps/admin/src/app/login/page.tsx	apps/platform/app/admin/login/page.tsx
+M	apps/platform/app/admin/page.tsx
+M	apps/platform/app/admin/services/page.tsx
+R100	apps/web/app/(auth)/client-login/page.tsx	apps/platform/app/web/(auth)/client-login/page.tsx
+R100	apps/web/app/(auth)/student-login/page.tsx	apps/platform/app/web/(auth)/student-login/page.tsx
+R100	apps/web/app/(tenant)/[domain]/layout.tsx	apps/platform/app/web/(tenant)/[domain]/layout.tsx
+R100	apps/web/app/(tenant)/[domain]/page.tsx	apps/platform/app/web/(tenant)/[domain]/page.tsx
+R100	apps/web/app/(tenant)/booking/page.tsx	apps/platform/app/web/(tenant)/booking/page.tsx
+R100	apps/web/app/(tenant)/student/page.tsx	apps/platform/app/web/(tenant)/student/page.tsx
+R100	apps/web/app/academy/page.tsx	apps/platform/app/web/academy/page.tsx
+R100	apps/web/app/api/chat/route.ts	apps/platform/app/web/api/chat/route.ts
+R100	apps/web/app/clinic/page.tsx	apps/platform/app/web/clinic/page.tsx
+R100	apps/web/app/demo-booking/confirmed/page.tsx	apps/platform/app/web/demo-booking/confirmed/page.tsx
+R100	apps/web/app/demo-booking/page.tsx	apps/platform/app/web/demo-booking/page.tsx
+R100	apps/web/app/globals.css	apps/platform/app/web/globals.css
+R100	apps/web/app/layout.tsx	apps/platform/app/web/layout.tsx
+R100	apps/web/app/page.tsx	apps/platform/app/web/page.tsx
+R100	apps/web/app/styles/tokens.css	apps/platform/app/web/styles/tokens.css
+R100	apps/web/components/academy/StudentAssistant.tsx	apps/platform/components/academy/StudentAssistant.tsx
+M	apps/platform/components/layout/AdminLayout.tsx
+R100	apps/web/components/layout/Footer.tsx	apps/platform/components/layout/Footer.tsx
+R100	apps/web/components/layout/Header.tsx	apps/platform/components/layout/Header.tsx
+R100	apps/web/components/ui/Button.tsx	apps/platform/components/ui/Button.tsx
+R100	apps/web/components/ui/Card.tsx	apps/platform/components/ui/Card.tsx
+R100	apps/web/components/ui/Input.tsx	apps/platform/components/ui/Input.tsx
+M	apps/platform/lib/utils.ts
+M	apps/platform/middleware.ts
+M	apps/platform/package.json
+R100	apps/admin/public/file.svg	apps/platform/public/file.svg
+R100	apps/admin/public/globe.svg	apps/platform/public/globe.svg
+R100	apps/admin/public/next.svg	apps/platform/public/next.svg
+R100	apps/admin/public/vercel.svg	apps/platform/public/vercel.svg
+R100	apps/admin/public/window.svg	apps/platform/public/window.svg
+R100	apps/web/src/app/client/page.tsx	apps/platform/src/app/client/page.tsx
+R100	apps/web/src/app/layout.tsx	apps/platform/src/app/layout.tsx
+R100	apps/web/src/app/page.tsx	apps/platform/src/app/page.tsx
+R100	apps/web/src/app/student/page.tsx	apps/platform/src/app/student/page.tsx
+R100	apps/web/src/components/layouts/ClientLayout.tsx	apps/platform/src/components/layouts/ClientLayout.tsx
+R100	apps/web/src/components/layouts/StudentLayout.tsx	apps/platform/src/components/layouts/StudentLayout.tsx
+D	apps/web/.env.example
+D	apps/web/.gitignore
+D	apps/web/lib/utils.ts
+D	apps/web/middleware.ts
+D	apps/web/next-env.d.ts
+D	apps/web/next.config.mjs
+D	apps/web/package.json
+D	apps/web/postcss.config.js
+D	apps/web/tailwind.config.ts
+D	apps/web/tsconfig.json
+D	apps/web/vercel.json

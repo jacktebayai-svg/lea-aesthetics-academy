@@ -1,7 +1,13 @@
+import 'dotenv/config';
 import { Queue, Worker } from "bullmq";
-import Redis from "ioredis";
 
-const connection = new Redis(process.env.REDIS_URL || "redis://localhost:6379");
+const connection = {
+  url: process.env.REDIS_URL || 'redis://localhost:6379',
+  // BullMQ 5 requires this to be null when using blocking commands
+  maxRetriesPerRequest: null as any,
+  // Skip ready check for local dev
+  enableReadyCheck: false,
+};
 
 export const indexQueue = new Queue("index", { connection });
 

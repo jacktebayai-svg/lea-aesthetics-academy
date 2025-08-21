@@ -3,7 +3,7 @@
   "monorepo": true,
   "builds": [
     {
-      "src": "apps/platform",
+      "src": "apps/platform/package.json",
       "use": "@vercel/next"
     }
   ],

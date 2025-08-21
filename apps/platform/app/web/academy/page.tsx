@@ -1,7 +1,7 @@
 import React from "react";
 import type { Course } from "@leas-academy/shared";
 import { Card } from "@leas-academy/ui";
-import StudentAssistant from "../../components/academy/StudentAssistant";
+import StudentAssistant from "@/components/academy/StudentAssistant";
 
 const coursesData: Course[] = [
   {

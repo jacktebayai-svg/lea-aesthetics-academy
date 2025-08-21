@@ -22,6 +22,17 @@ export class StripeService {
       throw new Error('STRIPE_SECRET_KEY is required');
     }
 
+    // In development, allow placeholder keys
+    const isPlaceholder = process.env.STRIPE_SECRET_KEY.includes('placeholder') || 
+                         process.env.STRIPE_SECRET_KEY.includes('your_stripe');
+    
+    if (isPlaceholder && process.env.NODE_ENV === 'development') {
+      this.logger.warn('Using placeholder Stripe key in development mode - payments will not work');
+      // Skip Stripe initialization with placeholder key
+      this.stripe = null as any;
+      return;
+    }
+
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2025-02-24.acacia',
     });
