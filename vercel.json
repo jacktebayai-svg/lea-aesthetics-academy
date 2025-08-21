@@ -4,7 +4,7 @@
   "installCommand": "pnpm install --no-frozen-lockfile --network-timeout 300000 --fetch-retries 5 --fetch-retry-mintimeout 20000 --fetch-retry-maxtimeout 120000",
   "buildCommand": "cd apps/platform && pnpm build",
   "outputDirectory": "apps/platform/.next",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- apps/platform && git diff --quiet HEAD^ HEAD -- vercel.json",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- apps/platform package.json vercel.json",
   "headers": [
     {
       "source": "/(.*)",
