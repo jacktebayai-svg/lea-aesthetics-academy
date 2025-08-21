@@ -1,8 +1,54 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Calendar, Clock, CreditCard, User, Phone, Mail } from 'lucide-react'
-import { format, addDays, startOfToday } from 'date-fns'
+import { 
+  Calendar as CalendarIcon, 
+  Clock, 
+  CreditCard, 
+  User, 
+  Phone, 
+  Mail, 
+  ArrowLeft, 
+  ArrowRight, 
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Star,
+  Award,
+  Sparkles,
+  Crown
+} from 'lucide-react'
+import { 
+  format, 
+  addDays, 
+  startOfMonth, 
+  endOfMonth, 
+  startOfWeek, 
+  endOfWeek, 
+  eachDayOfInterval,
+  isSameMonth,
+  isSameDay,
+  addMonths,
+  subMonths,
+  isToday,
+  isBefore,
+  startOfToday,
+  parseISO
+} from 'date-fns'
+import { 
+  LuxuryCard, 
+  LuxuryButton, 
+  LuxuryInput,
+  LuxuryLoader,
+  LuxuryBadge,
+  fadeInUp,
+  staggerContainer
+} from '@/components/ui/luxury-components'
+import { LEAHeader } from '@/components/layout/header'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useAuth } from '@/lib/auth/auth-provider'
+import { AuthPrompt } from '@/components/auth/auth-prompt'
+import { useBookingPersistence } from '@/hooks/use-booking-persistence'
 
 interface Treatment {
   id: string
@@ -24,25 +70,51 @@ interface TimeSlot {
 }
 
 export default function BookingPage() {
-  const [step, setStep] = useState(1) // 1: Treatment, 2: Date/Time, 3: Details, 4: Payment
+  const { user } = useAuth()
+  const { bookingState, saveBookingState, clearBookingState, hasBookingData } = useBookingPersistence()
   const [treatments, setTreatments] = useState<Treatment[]>([])
   const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
+  const [currentMonth, setCurrentMonth] = useState(new Date())
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([])
   const [loading, setLoading] = useState(false)
-
-  const [clientDetails, setClientDetails] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    notes: ''
-  })
+  const [treatmentsLoading, setTreatmentsLoading] = useState(true)
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false)
 
   // Load treatments on component mount
   useEffect(() => {
     loadTreatments()
   }, [])
+
+  // Restore booking state when available
+  useEffect(() => {
+    if (bookingState && treatments.length > 0) {
+      // Restore treatment selection
+      if (bookingState.treatmentId) {
+        const treatment = treatments.find(t => t.id === bookingState.treatmentId)
+        if (treatment) {
+          setSelectedTreatment(treatment)
+        }
+      }
+      
+      // Restore date selection
+      if (bookingState.selectedDate) {
+        try {
+          const date = new Date(bookingState.selectedDate)
+          setSelectedDate(date)
+          setCurrentMonth(date) // Also update calendar month
+        } catch (error) {
+          console.error('Failed to restore selected date:', error)
+        }
+      }
+      
+      // Restore time selection
+      if (bookingState.selectedTime) {
+        setSelectedTime(bookingState.selectedTime)
+      }
+    }
+  }, [bookingState, treatments])
 
   // Load available time slots when date changes
   useEffect(() => {
@@ -53,11 +125,59 @@ export default function BookingPage() {
 
   const loadTreatments = async () => {
     try {
+      setTreatmentsLoading(true)
       const response = await fetch('/api/public/treatments')
       const data = await response.json()
-      setTreatments(data.treatments || [])
+      
+      // Mock data for development
+      const mockTreatments: Treatment[] = [
+        {
+          id: '1',
+          name: 'Anti-Wrinkle Treatment',
+          description: 'Smooth fine lines and wrinkles with our premium anti-wrinkle treatment.',
+          duration: 30,
+          price: 25000,
+          depositAmount: 5000,
+          category: 'Injectables',
+          practitioner: { name: 'Dr. Sarah Johnson', title: 'MD' }
+        },
+        {
+          id: '2', 
+          name: 'Dermal Fillers',
+          description: 'Restore volume and enhance facial contours with dermal fillers.',
+          duration: 45,
+          price: 35000,
+          depositAmount: 10000,
+          category: 'Injectables',
+          practitioner: { name: 'Dr. Sarah Johnson', title: 'MD' }
+        },
+        {
+          id: '3',
+          name: 'Luxury Facial',
+          description: 'Rejuvenating facial treatment with premium skincare products.',
+          duration: 60,
+          price: 15000,
+          depositAmount: 3000,
+          category: 'Facial Treatments',
+          practitioner: { name: 'Emma Thompson', title: 'Aesthetician' }
+        },
+        {
+          id: '4',
+          name: 'Chemical Peel',
+          description: 'Professional chemical peel for skin renewal and brightening.',
+          duration: 45,
+          price: 20000,
+          depositAmount: 5000,
+          category: 'Facial Treatments',
+          practitioner: { name: 'Emma Thompson', title: 'Aesthetician' }
+        }
+      ]
+      
+      setTreatments(data.treatments || mockTreatments)
     } catch (error) {
       console.error('Failed to load treatments:', error)
+    } finally {
+      setTreatmentsLoading(false)
     }
   }
 
@@ -66,7 +186,19 @@ export default function BookingPage() {
       setLoading(true)
       const response = await fetch(`/api/public/availability?date=${format(date, 'yyyy-MM-dd')}&treatmentId=${treatmentId}`)
       const data = await response.json()
-      setAvailableSlots(data.slots || [])
+      
+      // Mock available slots
+      const mockSlots: TimeSlot[] = [
+        { time: '09:00', available: true },
+        { time: '10:00', available: true },
+        { time: '11:00', available: false },
+        { time: '14:00', available: true },
+        { time: '15:00', available: true },
+        { time: '16:00', available: true },
+        { time: '17:00', available: false }
+      ]
+      
+      setAvailableSlots(data.slots || mockSlots)
     } catch (error) {
       console.error('Failed to load availability:', error)
       setAvailableSlots([])
@@ -75,22 +207,43 @@ export default function BookingPage() {
     }
   }
 
-  const handleBookingSubmit = async () => {
-    if (!selectedTreatment || !selectedDate || !selectedTime || !clientDetails.name || !clientDetails.email) {
-      alert('Please fill in all required fields')
+  const handleBooking = async () => {
+    if (!selectedTreatment || !selectedDate || !selectedTime) {
+      alert('Please select a service, date, and time')
       return
     }
 
+    // Check if user is authenticated
+    if (!user) {
+      // Save current booking state before showing auth prompt
+      saveBookingState({
+        treatmentId: selectedTreatment.id,
+        treatmentName: selectedTreatment.name,
+        selectedDate: selectedDate.toISOString(),
+        selectedTime: selectedTime,
+        returnUrl: '/book'
+      })
+      setShowAuthPrompt(true)
+      return
+    }
+
+    await proceedWithBooking()
+  }
+
+  const proceedWithBooking = async () => {
     try {
       setLoading(true)
       
       const bookingData = {
-        treatmentId: selectedTreatment.id,
-        dateTime: `${format(selectedDate, 'yyyy-MM-dd')}T${selectedTime}`,
-        clientName: clientDetails.name,
-        clientEmail: clientDetails.email,
-        clientPhone: clientDetails.phone,
-        notes: clientDetails.notes
+        serviceId: selectedTreatment!.id,
+        scheduledAt: `${format(selectedDate!, 'yyyy-MM-dd')}T${selectedTime}:00.000Z`,
+        notes: '',
+        clientInfo: {
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+          email: user?.email,
+          phone: user?.phone
+        }
       }
 
       const response = await fetch('/api/public/bookings', {
@@ -103,7 +256,12 @@ export default function BookingPage() {
 
       if (response.ok) {
         // Redirect to payment page
-        window.location.href = `/payment/${result.booking.id}`
+        if (result.appointment?.id) {
+          window.location.href = `/payment?appointmentId=${result.appointment.id}`
+        } else {
+          // Fallback for different API response structure
+          window.location.href = `/payment/${result.booking?.id || result.id}`
+        }
       } else {
         throw new Error(result.error || 'Failed to create booking')
       }
@@ -115,244 +273,342 @@ export default function BookingPage() {
     }
   }
 
-  const nextWeek = Array.from({ length: 7 }, (_, i) => addDays(startOfToday(), i))
+  const handleAuthSuccess = async () => {
+    setShowAuthPrompt(false)
+    // Wait a moment for user state to update, then proceed with booking
+    setTimeout(async () => {
+      await proceedWithBooking()
+      // Clear booking state after successful booking
+      clearBookingState()
+    }, 500)
+  }
+
+  // Calendar helper functions
+  const monthStart = startOfMonth(currentMonth)
+  const monthEnd = endOfMonth(monthStart)
+  const startDate = startOfWeek(monthStart)
+  const endDate = endOfWeek(monthEnd)
+  
+  const dateRange = eachDayOfInterval({ start: startDate, end: endDate })
+  
+  const nextMonth = () => {
+    setCurrentMonth(addMonths(currentMonth, 1))
+  }
+  
+  const prevMonth = () => {
+    setCurrentMonth(subMonths(currentMonth, 1))
+  }
+  
+  const selectDate = (date: Date) => {
+    if (isBefore(date, startOfToday())) return
+    setSelectedDate(date)
+    setSelectedTime(null) // Reset time when date changes
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <h1 className="text-2xl font-bold text-gray-900">Book Your Treatment</h1>
-          <p className="text-gray-600 mt-2">Professional aesthetic treatments with expert care</p>
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Progress Indicator */}
-        <div className="flex items-center justify-center mb-8">
-          {[1, 2, 3, 4].map((stepNum) => (
-            <div key={stepNum} className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                step >= stepNum 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-200 text-gray-600'
-              }`}>
-                {stepNum}
-              </div>
-              {stepNum < 4 && (
-                <div className={`w-12 h-0.5 mx-2 ${
-                  step > stepNum ? 'bg-blue-600' : 'bg-gray-200'
-                }`} />
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Step Content */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          {step === 1 && (
-            <div>
-              <h2 className="text-xl font-semibold mb-6">Choose Your Treatment</h2>
-              <div className="grid gap-4">
-                {treatments.map((treatment) => (
-                  <div
-                    key={treatment.id}
-                    onClick={() => {
-                      setSelectedTreatment(treatment)
-                      setStep(2)
-                    }}
-                    className="border rounded-lg p-4 cursor-pointer hover:border-blue-500 hover:shadow-md transition-all"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-semibold text-lg">{treatment.name}</h3>
-                        <p className="text-gray-600 mt-1">{treatment.description}</p>
-                        <div className="flex items-center space-x-4 mt-3 text-sm text-gray-500">
-                          <span className="flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
-                            {treatment.duration} minutes
-                          </span>
-                          <span className="flex items-center">
-                            <User className="w-4 h-4 mr-1" />
-                            {treatment.practitioner.title} {treatment.practitioner.name}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xl font-bold text-blue-600">
-                          £{(treatment.price / 100).toFixed(2)}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          Deposit: £{(treatment.depositAmount / 100).toFixed(2)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+    <div className="min-h-screen lea-gradient-bg">
+      <LEAHeader />
+      
+      <main className="lea-container py-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <div className="flex items-center justify-center mb-4">
+            <Crown className="h-8 w-8 text-[#b45309] mr-3" />
+            <h1 className="text-4xl font-bold lea-text-gradient">Book Your Treatment</h1>
+          </div>
+          <p className="text-xl text-[#78716c] max-w-3xl mx-auto">
+            Select your desired service and preferred appointment time. Complete your booking with secure payment.
+          </p>
+          
+          {/* Show booking restoration message if data was preserved */}
+          {hasBookingData() && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-4 inline-flex items-center px-4 py-2 bg-green-50 text-green-800 text-sm rounded-lg border border-green-200"
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Your booking selections have been restored
+            </motion.div>
           )}
+        </motion.div>
 
-          {step === 2 && selectedTreatment && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold">Select Date & Time</h2>
-                <button
-                  onClick={() => setStep(1)}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  Change Treatment
-                </button>
-              </div>
-
-              {/* Selected Treatment Summary */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h3 className="font-medium">{selectedTreatment.name}</h3>
-                <p className="text-sm text-gray-600">
-                  {selectedTreatment.duration} minutes • £{(selectedTreatment.price / 100).toFixed(2)}
-                </p>
-              </div>
-
-              {/* Date Selection */}
-              <div className="mb-6">
-                <h3 className="font-medium mb-3">Choose Date</h3>
-                <div className="grid grid-cols-7 gap-2">
-                  {nextWeek.map((date) => (
-                    <button
-                      key={date.toISOString()}
-                      onClick={() => setSelectedDate(date)}
-                      className={`p-3 rounded-lg border text-center transition-all ${
-                        selectedDate?.toDateString() === date.toDateString()
-                          ? 'border-blue-500 bg-blue-50 text-blue-600'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="text-sm font-medium">{format(date, 'EEE')}</div>
-                      <div className="text-lg">{format(date, 'd')}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Time Selection */}
-              {selectedDate && (
-                <div>
-                  <h3 className="font-medium mb-3">Choose Time</h3>
-                  {loading ? (
-                    <div className="text-center py-4">Loading available times...</div>
-                  ) : availableSlots.length > 0 ? (
-                    <div className="grid grid-cols-4 gap-2">
-                      {availableSlots
-                        .filter(slot => slot.available)
-                        .map((slot) => (
-                          <button
-                            key={slot.time}
-                            onClick={() => {
-                              setSelectedTime(slot.time)
-                              setStep(3)
-                            }}
-                            className="p-2 rounded-lg border border-gray-200 hover:border-blue-500 hover:bg-blue-50 text-center transition-all"
-                          >
-                            {slot.time}
-                          </button>
-                        ))}
+        {/* Main Booking Interface */}
+        <motion.div
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+          className="max-w-7xl mx-auto"
+        >
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Services Selection */}
+            <motion.div variants={fadeInUp}>
+              <LuxuryCard variant="premium">
+                <div className="p-6">
+                  <div className="flex items-center mb-6">
+                    <Sparkles className="h-6 w-6 text-[#b45309] mr-3" />
+                    <h2 className="text-2xl font-bold text-[#1c1917]">Choose Your Service</h2>
+                  </div>
+                  
+                  {treatmentsLoading ? (
+                    <div className="flex justify-center py-12">
+                      <LuxuryLoader size="lg" />
                     </div>
                   ) : (
-                    <div className="text-center py-4 text-gray-500">
-                      No available times for this date. Please select another date.
+                    <div className="space-y-4">
+                      {treatments.map((treatment) => (
+                        <motion.div key={treatment.id}>
+                          <LuxuryCard 
+                            variant={selectedTreatment?.id === treatment.id ? 'premium' : 'default'}
+                            className={`cursor-pointer transition-all duration-300 ${
+                              selectedTreatment?.id === treatment.id 
+                                ? 'ring-2 ring-[#b45309] shadow-lg' 
+                                : 'hover:shadow-md'
+                            }`}
+                            onClick={() => {
+                              setSelectedTreatment(treatment)
+                              setSelectedTime(null) // Reset time when treatment changes
+                            }}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="flex items-center mb-2">
+                                  <h3 className="text-lg font-semibold text-[#1c1917]">{treatment.name}</h3>
+                                  {selectedTreatment?.id === treatment.id && (
+                                    <CheckCircle className="h-5 w-5 text-green-600 ml-2" />
+                                  )}
+                                </div>
+                                <p className="text-sm text-[#78716c] mb-3">{treatment.description}</p>
+                                <div className="flex items-center space-x-4 text-xs text-[#78716c]">
+                                  <span className="flex items-center">
+                                    <Clock className="w-3 h-3 mr-1" />
+                                    {treatment.duration} mins
+                                  </span>
+                                  <span className="flex items-center">
+                                    <User className="w-3 h-3 mr-1" />
+                                    {treatment.practitioner.title} {treatment.practitioner.name}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="text-right ml-4">
+                                <div className="text-xl font-bold lea-text-gradient">
+                                  £{(treatment.price / 100).toFixed(2)}
+                                </div>
+                                <LuxuryBadge variant="gold" size="sm" className="mt-1">
+                                  £{(treatment.depositAmount / 100).toFixed(2)} deposit
+                                </LuxuryBadge>
+                              </div>
+                            </div>
+                          </LuxuryCard>
+                        </motion.div>
+                      ))}
                     </div>
                   )}
                 </div>
-              )}
-            </div>
-          )}
+              </LuxuryCard>
+            </motion.div>
 
-          {step === 3 && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold">Your Details</h2>
-                <button
-                  onClick={() => setStep(2)}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  Change Time
-                </button>
-              </div>
+            {/* Calendar and Time Selection */}
+            <motion.div variants={fadeInUp}>
+              <LuxuryCard variant="premium">
+                <div className="p-6">
+                  <div className="flex items-center mb-6">
+                    <CalendarIcon className="h-6 w-6 text-[#b45309] mr-3" />
+                    <h2 className="text-2xl font-bold text-[#1c1917]">Select Date & Time</h2>
+                  </div>
 
-              {/* Booking Summary */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h3 className="font-medium">{selectedTreatment?.name}</h3>
-                <div className="text-sm text-gray-600 mt-1">
-                  {selectedDate && format(selectedDate, 'EEEE, MMMM do, yyyy')} at {selectedTime}
+                  {/* Calendar */}
+                  <div className="mb-8">
+                    {/* Calendar Header */}
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-[#1c1917]">
+                        {format(currentMonth, 'MMMM yyyy')}
+                      </h3>
+                      <div className="flex space-x-2">
+                        <LuxuryButton 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={prevMonth}
+                          leftIcon={<ChevronLeft className="h-4 w-4" />}
+                        />
+                        <LuxuryButton 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={nextMonth}
+                          rightIcon={<ChevronRight className="h-4 w-4" />}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Days of Week Header */}
+                    <div className="grid grid-cols-7 gap-1 mb-2">
+                      {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+                        <div key={i} className="text-center text-xs font-medium text-[#78716c] p-2">
+                          {day}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Calendar Grid */}
+                    <div className="grid grid-cols-7 gap-1">
+                      {dateRange.map((date, i) => {
+                        const isCurrentMonth = isSameMonth(date, currentMonth)
+                        const isSelected = selectedDate && isSameDay(date, selectedDate)
+                        const isPast = isBefore(date, startOfToday())
+                        const isCurrentDay = isToday(date)
+
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => selectDate(date)}
+                            disabled={isPast || !isCurrentMonth}
+                            className={`
+                              p-2 text-sm transition-all duration-200 rounded-lg
+                              ${
+                                isSelected
+                                  ? 'bg-gradient-to-r from-[#b45309] to-[#d97706] text-white shadow-md'
+                                  : isCurrentDay && isCurrentMonth
+                                  ? 'bg-[#fef3c7] text-[#b45309] font-semibold'
+                                  : isCurrentMonth && !isPast
+                                  ? 'hover:bg-[#fefce8] text-[#1c1917]'
+                                  : 'text-[#d6d3d1] cursor-not-allowed'
+                              }
+                            `}
+                          >
+                            {format(date, 'd')}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Time Slots */}
+                  {selectedDate && selectedTreatment && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-[#1c1917] mb-4">Available Times</h3>
+                      {loading ? (
+                        <div className="flex justify-center py-8">
+                          <LuxuryLoader size="md" />
+                        </div>
+                      ) : availableSlots.length > 0 ? (
+                        <div className="grid grid-cols-3 gap-3">
+                          {availableSlots
+                            .filter(slot => slot.available)
+                            .map((slot) => (
+                              <LuxuryButton
+                                key={slot.time}
+                                variant={selectedTime === slot.time ? 'primary' : 'ghost'}
+                                size="sm"
+                                className="py-3"
+                                onClick={() => setSelectedTime(slot.time)}
+                                leftIcon={<Clock className="h-3 w-3" />}
+                              >
+                                {slot.time}
+                              </LuxuryButton>
+                            ))}
+                        </div>
+                      ) : (
+                        <LuxuryCard variant="glass" className="text-center py-6">
+                          <Clock className="h-8 w-8 text-[#78716c] mx-auto mb-2" />
+                          <p className="text-[#78716c]">No available times for this date.</p>
+                        </LuxuryCard>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Booking Summary & Action */}
+                  {selectedTreatment && selectedDate && selectedTime && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="mt-8 pt-6 border-t border-[#e7e5e4]"
+                    >
+                      <div className="bg-gradient-to-r from-[#fefce8] to-[#fef3c7] rounded-lg p-4 mb-6">
+                        <div className="flex items-center mb-3">
+                          <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
+                          <h4 className="font-semibold text-[#1c1917]">Booking Summary</h4>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          {user && (
+                            <div className="flex justify-between">
+                              <span className="text-[#78716c]">Client:</span>
+                              <span className="font-medium text-[#1c1917]">
+                                {user.firstName} {user.lastName}
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex justify-between">
+                            <span className="text-[#78716c]">Service:</span>
+                            <span className="font-medium text-[#1c1917]">{selectedTreatment.name}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-[#78716c]">Date:</span>
+                            <span className="font-medium text-[#1c1917]">
+                              {format(selectedDate, 'EEEE, MMMM do, yyyy')}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-[#78716c]">Time:</span>
+                            <span className="font-medium text-[#1c1917]">{selectedTime}</span>
+                          </div>
+                          <div className="flex justify-between pt-2 border-t border-[#e7e5e4]">
+                            <span className="font-medium text-[#1c1917]">Total:</span>
+                            <span className="font-bold text-xl lea-text-gradient">
+                              £{(selectedTreatment.price / 100).toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <LuxuryButton
+                        variant="primary"
+                        size="lg"
+                        className="w-full"
+                        isLoading={loading}
+                        onClick={handleBooking}
+                        rightIcon={<ArrowRight className="h-4 w-4" />}
+                      >
+                        {loading ? 'Processing...' : user ? 'Book & Pay' : 'Sign in to Book'}
+                      </LuxuryButton>
+                    </motion.div>
+                  )}
+
+                  {/* Instructions */}
+                  {(!selectedTreatment || !selectedDate) && (
+                    <div className="mt-8 pt-6 border-t border-[#e7e5e4]">
+                      <div className="flex items-center text-[#78716c]">
+                        <Star className="h-4 w-4 mr-2" />
+                        <p className="text-sm">
+                          {!selectedTreatment 
+                            ? "Please select a service to see available appointment times."
+                            : "Please select a date to see available time slots."}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
+              </LuxuryCard>
+            </motion.div>
+          </div>
+        </motion.div>
+      </main>
 
-              {/* Client Details Form */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={clientDetails.name}
-                    onChange={(e) => setClientDetails({...clientDetails, name: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    value={clientDetails.email}
-                    onChange={(e) => setClientDetails({...clientDetails, email: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="your@email.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={clientDetails.phone}
-                    onChange={(e) => setClientDetails({...clientDetails, phone: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="07XXX XXXXXX"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Notes (Optional)
-                  </label>
-                  <textarea
-                    value={clientDetails.notes}
-                    onChange={(e) => setClientDetails({...clientDetails, notes: e.target.value})}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Any specific requests or medical information we should know..."
-                  />
-                </div>
-
-                <button
-                  onClick={handleBookingSubmit}
-                  disabled={!clientDetails.name || !clientDetails.email || loading}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {loading ? 'Creating Booking...' : 'Proceed to Payment'}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      {/* Authentication Prompt */}
+      <AuthPrompt
+        isOpen={showAuthPrompt}
+        onClose={() => setShowAuthPrompt(false)}
+        onSuccess={handleAuthSuccess}
+        mode="signin"
+        title="Sign in to complete your booking"
+        message="Create an account or sign in to book your appointment and access your treatment history."
+      />
     </div>
   )
 }

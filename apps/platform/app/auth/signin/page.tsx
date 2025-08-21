@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/lib/auth/auth-provider'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Route } from 'next'
+import { useBookingPersistence } from '@/hooks/use-booking-persistence'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')
@@ -13,6 +14,7 @@ export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
   const router = useRouter()
+  const { bookingState, getReturnUrl, hasBookingData } = useBookingPersistence()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,7 +24,11 @@ export default function SignInPage() {
     try {
       const result = await login(email, password)
       
-      if (!result.success) {
+      if (result.success) {
+        // Redirect to booking page or return URL if user was in the middle of booking
+        const returnUrl = getReturnUrl('/book')
+        router.push(returnUrl as Route)
+      } else {
         setError(result.error || 'Sign in failed')
       }
     } catch (error) {
@@ -45,7 +51,10 @@ export default function SignInPage() {
             Welcome to LEA Aesthetics
           </h2>
           <p className="mt-2 text-center text-sm text-amber-600">
-            Sign in to your account to continue
+            {hasBookingData() 
+              ? 'Sign in to complete your booking' 
+              : 'Sign in to your account to continue'
+            }
           </p>
         </div>
         

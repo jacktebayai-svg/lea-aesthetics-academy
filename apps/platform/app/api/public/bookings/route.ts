@@ -76,36 +76,41 @@ export async function POST(request: NextRequest) {
     let clientId: string | null = null
     
     // Try to get authenticated user
+    let user = null
     try {
-      const user = await getCurrentUser(supabase)
+      user = await getCurrentUser(supabase)
       if (user) {
         const client = await getClientByUserId(supabase, user.id)
         clientId = client?.id || null
+        
+        // If user exists but no client profile, create one
+        if (!client) {
+          const newClient = await create(supabase, 'clients', {
+            user_id: user.id,
+            tenant_id: 'default', // You may want to determine this based on the booking context
+            total_spent: 0,
+            visit_count: 0,
+            is_vip: false,
+            tags: [],
+            preferences: {},
+            emergency_contact: {}
+          })
+          clientId = newClient.id
+        }
       }
     } catch (authError) {
-      // User not authenticated - proceed as guest if email provided
-      if (!clientInfo?.email) {
-        return NextResponse.json(
-          { error: 'Authentication required or client email must be provided' },
-          { status: 401 }
-        )
-      }
+      console.error('Authentication error:', authError)
     }
 
-    // If no authenticated client and email provided, handle guest booking
-    if (!clientId && clientInfo?.email) {
-      // For now, require authentication for bookings
-      // Later we can implement guest bookings with email verification
+    // If no authenticated user, require authentication
+    if (!user || !clientId) {
       return NextResponse.json(
-        { error: 'Please sign in to book an appointment' },
+        { 
+          error: 'Please sign in to book an appointment',
+          code: 'AUTH_REQUIRED',
+          message: 'Authentication is required to complete your booking and access your appointment history.'
+        },
         { status: 401 }
-      )
-    }
-
-    if (!clientId) {
-      return NextResponse.json(
-        { error: 'Client information required for booking' },
-        { status: 400 }
       )
     }
 

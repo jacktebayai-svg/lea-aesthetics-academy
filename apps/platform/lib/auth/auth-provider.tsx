@@ -170,10 +170,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (transformedUser) {
           setUser(transformedUser)
           
-          // Redirect based on role
-          const redirectPath = getRedirectPath(transformedUser.roles)
-          router.push(redirectPath as any)
-          
+          // Don't auto-redirect here - let the calling component handle it
+          // This allows for better UX when booking is in progress
           return { success: true }
         }
       }

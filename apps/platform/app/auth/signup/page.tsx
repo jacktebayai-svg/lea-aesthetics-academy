@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth, type UserRole } from '@/lib/auth/auth-provider'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useBookingPersistence } from '@/hooks/use-booking-persistence'
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -18,6 +20,8 @@ export default function SignUpPage() {
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { register } = useAuth()
+  const router = useRouter()
+  const { bookingState, getReturnUrl, hasBookingData } = useBookingPersistence()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -81,10 +85,16 @@ export default function SignUpPage() {
               Please check your email to verify your account before signing in.
             </p>
             <Link
-              href="/auth/signin"
+              href={hasBookingData() ? '/auth/signin' : '/auth/signin'}
               className="inline-block bg-amber-600 text-white px-6 py-3 rounded-lg hover:bg-amber-700 transition-colors"
+              onClick={() => {
+                if (hasBookingData()) {
+                  // If there's booking data, preserve it when going to signin
+                  router.push('/auth/signin')
+                }
+              }}
             >
-              Go to Sign In
+              {hasBookingData() ? 'Sign In to Complete Booking' : 'Go to Sign In'}
             </Link>
           </div>
         </div>
@@ -105,7 +115,10 @@ export default function SignUpPage() {
             Join LEA Aesthetics Academy
           </h2>
           <p className="mt-2 text-center text-sm text-amber-600">
-            Create your account to get started
+            {hasBookingData() 
+              ? 'Create your account to complete your booking' 
+              : 'Create your account to get started'
+            }
           </p>
         </div>
         
