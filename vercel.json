@@ -2,8 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "buildCommand": "turbo build --filter=lea-platform",
-  "outputDirectory": ".next",
+  "outputDirectory": "apps/platform/.next",
   "installCommand": "pnpm install",
+  "rootDirectory": "apps/platform",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD -- apps/platform package.json vercel.json",
   "headers": [
     {

@@ -2,3 +2,21 @@
 # Only deploy the platform app automatically
 apps/api/
 apps/lea-academy/
+
+# Ignore package directories - these are not deployable apps
+packages/db/
+packages/shared/
+packages/ui/
+packages/tsconfig/
+packages/documents/
+
+# Ignore build artifacts and development files
+dist/
+node_modules/
+.turbo/
+.env*
+!.env.example
+
+# Ignore legacy files
+docker-compose.yml
+.docker/
