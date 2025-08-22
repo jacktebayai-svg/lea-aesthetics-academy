@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import type { Service } from "@master-aesthetics-suite/shared";
-import { Card, Button, Icon } from "@master-aesthetics-suite/ui";
+import type { Service } from "@/lib/shared/types";
+import { Card } from "@/lib/ui/components/Card";
+import { Button } from "@/lib/ui/components/Button";
+import { Icon } from "@/lib/ui/components/Icon";
 
 const servicesData: Service[] = [
   {

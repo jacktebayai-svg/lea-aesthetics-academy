@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { NavigationProvider } from '@master-aesthetics-suite/shared';
-import { UniversalNavbar } from '@master-aesthetics-suite/ui';
+import { NavigationProvider } from '@/lib/shared/NavigationContext';
+import { UniversalNavbar } from '@/lib/ui/components/navigation/UniversalNavbar';
 
 interface ClientLayoutProps {
   children: React.ReactNode;

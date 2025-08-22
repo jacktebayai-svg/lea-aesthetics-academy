@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useRef, useEffect, FormEvent } from "react";
-import type { ChatMessage } from "@master-aesthetics-suite/shared";
-import { Card, Button, Icon } from "@master-aesthetics-suite/ui";
+import type { ChatMessage } from "@/lib/shared/types";
+import { Card } from "@/lib/ui/components/Card";
+import { Button } from "@/lib/ui/components/Button";
+import { Icon } from "@/lib/ui/components/Icon";
 
 export default function StudentAssistant() {
   const [messages, setMessages] = useState<ChatMessage[]>([
