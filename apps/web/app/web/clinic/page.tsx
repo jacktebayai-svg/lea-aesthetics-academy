@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import type { Service } from "@/lib/shared/types";
 import { Card } from "@/lib/ui/components/Card";
 import { Button } from "@/lib/ui/components/Button";
-import { Icon } from "@/lib/ui/Icon";
+import Icon from "@/lib/ui/Icon";
 
 const servicesData: Service[] = [
   {
