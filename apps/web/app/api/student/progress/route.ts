@@ -155,7 +155,7 @@ export async function GET(request: NextRequest) {
 
       // Merge progress data with enrollments
       const enrichedEnrollments = enrollments.map(enrollment => {
-        const courseModules = enrollment.courses?.course_modules || []
+        const courseModules = (enrollment.courses as any)?.course_modules || []
         
         const modulesWithProgress = courseModules.map(module => {
           const modProgress = moduleProgress?.find(mp => mp.module_id === module.id)
@@ -265,7 +265,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Lesson not found' }, { status: 404 })
     }
 
-    const courseId = lessonCourse.course_modules?.course_id
+    const courseId = (lessonCourse.course_modules as any)?.course_id
     
     // Verify enrollment
     const { data: enrollment } = await supabase
