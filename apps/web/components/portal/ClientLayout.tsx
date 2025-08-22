@@ -1,8 +1,12 @@
 'use client';
 
 import React from 'react';
-import { NavigationProvider } from '@/lib/shared/NavigationContext';
-import { UniversalNavbar } from '@/lib/ui/components/navigation/UniversalNavbar';
+import UniversalNavbar from '@/lib/ui/components/navigation/UniversalNavbar';
+
+// Simple NavigationProvider mock for demo purposes
+const NavigationProvider = ({ children }: { children: React.ReactNode }) => {
+  return <>{children}</>;
+};
 
 interface ClientLayoutProps {
   children: React.ReactNode;
