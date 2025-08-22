@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: [
+    '@master-aesthetics-suite/ui',
+    '@master-aesthetics-suite/shared'
+  ],
   experimental: {
     typedRoutes: true,
   },
