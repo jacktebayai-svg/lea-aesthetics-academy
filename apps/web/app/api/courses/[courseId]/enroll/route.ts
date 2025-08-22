@@ -267,11 +267,12 @@ export async function POST(
 // GET /api/courses/[courseId]/enroll - Check enrollment status
 export async function GET(
   request: NextRequest,
-  { params }: { params: { courseId: string } }
+  context: { params: Promise<{ courseId: string }> }
 ) {
   try {
+    const { params } = context;
+    const { courseId } = await params;
     const supabase = await createClient()
-    const { courseId } = params
 
     // Check if user is authenticated
     const { data: { user }, error: authError } = await supabase.auth.getUser()
