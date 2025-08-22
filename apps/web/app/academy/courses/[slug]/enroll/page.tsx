@@ -69,13 +69,16 @@ function EnrollmentForm({ course }: { course: Course }) {
   const handleInputChange = (field: string, value: string) => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...(prev[parent as keyof typeof prev] as Record<string, any>),
-          [child]: value
-        }
-      }));
+      setFormData(prev => {
+        const parentValue = prev[parent as keyof typeof prev];
+        return {
+          ...prev,
+          [parent]: {
+            ...(typeof parentValue === 'object' && parentValue !== null ? parentValue as Record<string, any> : {}),
+            [child]: value
+          }
+        };
+      });
     } else {
       setFormData(prev => ({
         ...prev,
