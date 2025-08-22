@@ -30,7 +30,6 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Route } from 'next'
 
 export default function DashboardPage() {
   const { user, isLoading, logout } = useAuth()
@@ -167,7 +166,7 @@ export default function DashboardPage() {
                     <h3 className="font-semibold text-[#1c1917]">Payments</h3>
                     <p className="text-sm text-[#78716c]">Invoices and receipts</p>
                   </div>
-                  <Link href="/portal/client/bookings" as Route>
+                  <Link href="/portal/client/bookings">
                     <LuxuryButton variant="ghost" className="w-full" rightIcon={<ArrowRight className="h-4 w-4" />}>
                       View Payments
                     </LuxuryButton>
