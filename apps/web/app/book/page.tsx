@@ -44,7 +44,7 @@ import {
   fadeInUp,
   staggerContainer
 } from '@/components/ui/luxury-components'
-import { LEAHeader } from '@/components/layout/header'
+import { LEAHeader } from '@/components/layout/Header'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '@/lib/auth/auth-provider'
 import { AuthPrompt } from '@/components/auth/auth-prompt'

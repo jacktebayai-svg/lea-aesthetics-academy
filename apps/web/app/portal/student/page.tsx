@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import StudentLayout from '../../components/layouts/StudentLayout';
+import StudentLayout from '../../../components/portal/StudentLayout';
 
 const activeCourses = [
   {

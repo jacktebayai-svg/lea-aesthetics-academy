@@ -13,7 +13,7 @@ import {
   fadeInUp,
   staggerContainer
 } from '@/components/ui/luxury-components'
-import { LEAHeader } from '@/components/layout/header'
+import { LEAHeader } from '@/components/layout/Header'
 import { motion } from 'framer-motion'
 import { 
   User, 

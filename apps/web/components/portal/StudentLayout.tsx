@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { NavigationProvider } from '@lea-aesthetics/shared';
-import { UniversalNavbar } from '@lea-aesthetics/ui/components/navigation';
+import { NavigationProvider } from '@master-aesthetics-suite/shared';
+import { UniversalNavbar } from '@master-aesthetics-suite/ui';
 
 interface StudentLayoutProps {
   children: React.ReactNode;

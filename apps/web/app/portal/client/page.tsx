@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import ClientLayout from '../../components/layouts/ClientLayout';
+import ClientLayout from '../../../components/portal/ClientLayout';
 
 const upcomingAppointments = [
   {

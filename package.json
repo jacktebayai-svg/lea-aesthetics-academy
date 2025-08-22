@@ -1,6 +1,6 @@
 {
-  "name": "master-aesthetics-suite",
-  "description": "Master Aesthetics Suite - Multitenant SaaS for aesthetics clinics, solo practitioners, and dual-role aesthetic tutors",
+  "name": "lea-aesthetics-academy",
+  "description": "LEA Aesthetics Academy - Single-tenant business management platform with integrated practice management and LMS",
   "version": "1.0.0",
   "private": true,
   "scripts": {
