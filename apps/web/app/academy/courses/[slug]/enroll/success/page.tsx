@@ -23,6 +23,25 @@ interface Enrollment {
   }[];
 }
 
+// Interface matching Supabase query result
+interface EnrollmentQueryResult {
+  id: string;
+  status: string;
+  created_at: string;
+  progress: any;
+  courses: {
+    id: string;
+    title: string;
+    description: string;
+    duration_hours: number;
+  }[];
+  payments?: {
+    amount: number;
+    status: string;
+    paid_at: string;
+  }[];
+}
+
 export default function EnrollmentSuccessPage() {
   const router = useRouter();
   const params = useParams();
@@ -95,7 +114,14 @@ export default function EnrollmentSuccessPage() {
         throw new Error('Enrollment not found');
       }
 
-      setEnrollment(enrollmentData as Enrollment);
+      // Transform the query result to match our interface
+      const queryResult = enrollmentData as EnrollmentQueryResult;
+      const transformedEnrollment: Enrollment = {
+        ...queryResult,
+        courses: Array.isArray(queryResult.courses) ? queryResult.courses[0] : queryResult.courses
+      };
+
+      setEnrollment(transformedEnrollment);
     } catch (err) {
       console.error('Error fetching enrollment:', err);
       setError('Failed to load enrollment details');
@@ -106,7 +132,7 @@ export default function EnrollmentSuccessPage() {
 
   const handleStartLearning = () => {
     if (enrollment) {
-      router.push(`/portal/student/courses/${enrollment.courses.id}`);
+      router.push(`/portal/student/courses/${enrollment.courses.id}` as any);
     }
   };
 

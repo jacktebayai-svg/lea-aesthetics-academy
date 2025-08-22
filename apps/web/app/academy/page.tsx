@@ -193,7 +193,7 @@ export default function AcademyCourseCatalog() {
       return (
         <div className="space-y-2">
           <button
-            onClick={() => router.push(`/portal/student/courses/${course.id}`)}
+            onClick={() => router.push(`/portal/student/courses/${course.id}` as any)}
             className="w-full bg-green-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-green-700 transition-colors duration-200"
           >
             Continue Learning
@@ -392,7 +392,7 @@ export default function AcademyCourseCatalog() {
                     {getEnrollmentButton(course)}
                     
                     <button
-                      onClick={() => router.push(`/academy/courses/${course.slug}`)}
+                      onClick={() => router.push(`/academy/courses/${course.slug}` as any)}
                       className="w-full border border-purple-600 text-purple-600 px-6 py-2 rounded-xl font-medium hover:bg-purple-50 transition-colors duration-200"
                     >
                       View Details

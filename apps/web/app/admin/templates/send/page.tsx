@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/lib/ui/components/Ca
 import { Button } from '@/lib/ui/components/Button';
 import { Input } from '@/lib/ui/components/Input';
 import { Badge } from '@/lib/ui/components/Badge';
-import { Select } from '@/lib/ui/components/Select';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/lib/ui/components/Select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/ui/components/Tabs';
 import { Checkbox } from '@/lib/ui/components/Checkbox';
 import { 
@@ -306,11 +306,12 @@ function SendTemplatesContent() {
                 <label className="text-sm font-medium text-noir-700 mb-2 block">
                   Message to Recipients
                 </label>
-                <Textarea
+                <textarea
                   placeholder="Add a personalized message..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
                 />
               </div>
 

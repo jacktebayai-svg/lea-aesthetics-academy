@@ -478,7 +478,7 @@ export default function AdminRevenuePage() {
     setFilteredTransactions(filtered);
   };
 
-  const exportReport = async (format: 'csv' | 'pdf') => {
+  const exportReport = async (exportFormat: 'csv' | 'pdf') => {
     try {
       setExporting(true);
 
@@ -490,7 +490,7 @@ export default function AdminRevenuePage() {
         dateRange: `${format(getDateRange(dateRange).startDate, 'MMM d, yyyy')} - ${format(getDateRange(dateRange).endDate, 'MMM d, yyyy')}`
       };
 
-      if (format === 'csv') {
+      if (exportFormat === 'csv') {
         downloadCSV(reportData);
       } else {
         // In a real implementation, you would call an API to generate PDF
