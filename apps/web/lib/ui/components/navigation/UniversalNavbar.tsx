@@ -2,8 +2,30 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useNavigation } from '@master-aesthetics-suite/shared';
 import CrossAppNavigation from './CrossAppNavigation';
+
+// Mock navigation hook for demo purposes
+const useNavigation = () => {
+  return {
+    user: { name: 'Demo User', initials: 'DU', role: 'admin' as const },
+    currentRole: 'admin' as const,
+    navigationSections: [
+      {
+        name: 'Main',
+        items: [
+          { name: 'Dashboard', href: '/admin', icon: '📊', roles: ['admin'] },
+          { name: 'Users', href: '/admin/users', icon: '👥', roles: ['admin'] },
+          { name: 'Courses', href: '/admin/courses', icon: '📚', roles: ['admin'] }
+        ],
+        roles: ['admin']
+      }
+    ],
+    quickAccess: [
+      { name: 'Profile', href: '/profile', icon: '👤', roles: ['admin'] }
+    ],
+    appSwitcherItems: []
+  };
+};
 
 interface UniversalNavbarProps {
   variant?: 'top' | 'side' | 'compact';

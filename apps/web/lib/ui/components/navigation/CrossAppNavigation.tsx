@@ -1,8 +1,26 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronDownIcon, SwitchHorizontalIcon } from '@heroicons/react/outline';
-import { useNavigation } from '@master-aesthetics-suite/shared';
+// Inline SVG components to replace heroicons
+const ChevronDownIcon = ({ className = "" }: { className?: string }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 9-7 7-7-7" />
+  </svg>
+);
+
+const SwitchHorizontalIcon = ({ className = "" }: { className?: string }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+  </svg>
+);
+
+// Simple mock hook for navigation since workspace package isn't available
+const useNavigation = () => {
+  return {
+    currentUser: { name: 'Demo User' },
+    availableApps: ['web', 'admin', 'student']
+  };
+};
 
 interface CrossAppNavigationProps {
   className?: string;

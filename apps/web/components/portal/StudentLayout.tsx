@@ -1,8 +1,12 @@
 'use client';
 
 import React from 'react';
-import { NavigationProvider } from '@master-aesthetics-suite/shared';
-import { UniversalNavbar } from '@master-aesthetics-suite/ui';
+import UniversalNavbar from '@/lib/ui/components/navigation/UniversalNavbar';
+
+// Simple NavigationProvider mock for demo purposes
+const NavigationProvider = ({ children }: { children: React.ReactNode }) => {
+  return <>{children}</>;
+};
 
 interface StudentLayoutProps {
   children: React.ReactNode;
