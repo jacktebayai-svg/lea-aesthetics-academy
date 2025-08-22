@@ -2,7 +2,12 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle, Button, Input } from '@master-aesthetics-suite/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@/lib/ui/components/Card';
+import { Button } from '@/lib/ui/components/Button';
+import { Input } from '@/lib/ui/components/Input';
+import { Badge } from '@/lib/ui/components/Badge';
+import { Select } from '@/lib/ui/components/Select';
+import { Checkbox } from '@/lib/ui/components/Checkbox';
 import { 
   Send, 
   GraduationCap, 
