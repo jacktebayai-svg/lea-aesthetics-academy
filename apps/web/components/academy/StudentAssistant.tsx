@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, FormEvent } from "react";
 import type { ChatMessage } from "@/lib/shared/types";
 import { Card } from "@/lib/ui/components/Card";
 import { Button } from "@/lib/ui/components/Button";
-import { Icon } from "@/lib/ui/components/Icon";
+import { Icon } from "@/lib/ui/Icon";
 
 export default function StudentAssistant() {
   const [messages, setMessages] = useState<ChatMessage[]>([
