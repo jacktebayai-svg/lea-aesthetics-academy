@@ -3,17 +3,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import PDFDocument from 'pdfkit'
 import { format } from 'date-fns'
 
-interface RouteParams {
-  params: {
-    certificateId: string
-  }
-}
-
 // GET /api/student/certificates/[certificateId]/download - Download certificate PDF
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest, 
+  context: { params: Promise<{ certificateId: string }> }
+) {
   try {
+    const { params } = context;
+    const { certificateId } = await params;
     const supabase = await createClient()
-    const { certificateId } = params
     
     // Check if user is authenticated
     const { data: { user }, error: authError } = await supabase.auth.getUser()

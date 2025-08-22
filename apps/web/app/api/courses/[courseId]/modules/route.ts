@@ -12,17 +12,15 @@ const moduleSchema = z.object({
   prerequisites: z.record(z.any()).optional()
 })
 
-type RouteParams = {
-  params: {
-    courseId: string
-  }
-}
-
 // GET /api/courses/[courseId]/modules - List all modules for a course
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest, 
+  context: { params: Promise<{ courseId: string }> }
+) {
   try {
+    const { params } = context;
+    const { courseId } = await params;
     const supabase = await createClient()
-    const { courseId } = params
     const { searchParams } = new URL(request.url)
     
     // Check if user is authenticated
@@ -141,10 +139,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 // POST /api/courses/[courseId]/modules - Create new module (owner only)
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(
+  request: NextRequest, 
+  context: { params: Promise<{ courseId: string }> }
+) {
   try {
+    const { params } = context;
+    const { courseId } = await params;
     const supabase = await createClient()
-    const { courseId } = params
 
     // Check if user is authenticated and is owner
     const { data: { user }, error: authError } = await supabase.auth.getUser()
