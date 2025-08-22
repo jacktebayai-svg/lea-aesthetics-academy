@@ -51,22 +51,20 @@ export async function GET(request: NextRequest) {
           id,
           title,
           description,
-          duration_hours,
-          ${includeDetails ? `
-            course_modules (
+          duration_hours${includeDetails ? `,
+          course_modules (
+            id,
+            title,
+            order_index,
+            duration_minutes,
+            course_lessons (
               id,
               title,
-              order_index,
+              type,
               duration_minutes,
-              course_lessons (
-                id,
-                title,
-                type,
-                duration_minutes,
-                order_index
-              )
+              order_index
             )
-          ` : ''}
+          )` : ''}
         )
       `)
       .eq('student_id', student.id)
