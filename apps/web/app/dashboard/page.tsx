@@ -201,7 +201,7 @@ export default function DashboardPage() {
                     <h3 className="font-semibold text-[#1c1917]">Progress</h3>
                     <p className="text-sm text-[#78716c]">Track your achievements</p>
                   </div>
-                  <Link href="/student/progress">
+                  <Link href="/portal/student">
                     <LuxuryButton variant="secondary" className="w-full" rightIcon={<ArrowRight className="h-4 w-4" />}>
                       View Progress
                     </LuxuryButton>
@@ -216,7 +216,7 @@ export default function DashboardPage() {
                     <h3 className="font-semibold text-[#1c1917]">Certificates</h3>
                     <p className="text-sm text-[#78716c]">Your achievements</p>
                   </div>
-                  <Link href="/student/certificates">
+                  <Link href="/portal/student">
                     <LuxuryButton variant="ghost" className="w-full" rightIcon={<ArrowRight className="h-4 w-4" />}>
                       View Certificates
                     </LuxuryButton>
@@ -236,7 +236,7 @@ export default function DashboardPage() {
                     <h3 className="font-semibold text-[#1c1917]">Business Management</h3>
                     <p className="text-sm text-[#78716c]">Manage your practice</p>
                   </div>
-                  <Link href="/admin/dashboard">
+                  <Link href="/admin">
                     <LuxuryButton variant="primary" className="w-full" rightIcon={<ArrowRight className="h-4 w-4" />}>
                       Admin Panel
                     </LuxuryButton>
@@ -251,7 +251,7 @@ export default function DashboardPage() {
                     <h3 className="font-semibold text-[#1c1917]">Clients</h3>
                     <p className="text-sm text-[#78716c]">Manage client relationships</p>
                   </div>
-                  <Link href="/admin/clients">
+                  <Link href="/admin/users">
                     <LuxuryButton variant="secondary" className="w-full" rightIcon={<ArrowRight className="h-4 w-4" />}>
                       View Clients
                     </LuxuryButton>
@@ -305,7 +305,7 @@ export default function DashboardPage() {
                         Book Appointment
                       </LuxuryButton>
                     </Link>
-                    <Link href="/client/history">
+                    <Link href="/portal/client/bookings">
                       <LuxuryButton variant="ghost" className="w-full justify-start" size="sm">
                         <Clock className="h-4 w-4 mr-2" />
                         Treatment History
@@ -325,7 +325,7 @@ export default function DashboardPage() {
                         Browse Courses
                       </LuxuryButton>
                     </Link>
-                    <Link href="/student/progress">
+                    <Link href="/portal/student">
                       <LuxuryButton variant="ghost" className="w-full justify-start" size="sm">
                         <TrendingUp className="h-4 w-4 mr-2" />
                         My Progress
@@ -344,7 +344,7 @@ export default function DashboardPage() {
                       Profile Settings
                     </LuxuryButton>
                   </Link>
-                  <Link href="/support">
+                  <Link href="/portal/client">
                     <LuxuryButton variant="ghost" className="w-full justify-start" size="sm">
                       <Heart className="h-4 w-4 mr-2" />
                       Support
