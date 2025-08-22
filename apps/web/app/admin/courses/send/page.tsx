@@ -2,7 +2,47 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle, Button, Input } from '@master-aesthetics-suite/ui';
+// import { Card, CardContent, CardHeader, CardTitle, Button, Input } from '@master-aesthetics-suite/ui';
+
+// Simple replacements for UI components
+const Card = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
+  <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}>{children}</div>
+);
+const CardHeader = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
+  <div className={`px-6 py-4 border-b border-gray-200 ${className}`}>{children}</div>
+);
+const CardTitle = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
+  <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>{children}</h3>
+);
+const CardContent = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
+  <div className={`px-6 py-4 ${className}`}>{children}</div>
+);
+const Button = ({ children, onClick, disabled = false, variant = 'default', size = 'default', className = '' }: {
+  children: React.ReactNode, onClick?: () => void, disabled?: boolean, variant?: string, size?: string, className?: string
+}) => (
+  <button
+    onClick={onClick}
+    disabled={disabled}
+    className={`px-4 py-2 rounded-md font-medium transition-colors ${
+      variant === 'ghost' ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' :
+      variant === 'outline' ? 'border border-gray-300 text-gray-700 hover:bg-gray-50' :
+      'bg-purple-600 text-white hover:bg-purple-700'
+    } ${size === 'sm' ? 'px-3 py-1 text-sm' : ''} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+  >
+    {children}
+  </button>
+);
+const Input = ({ placeholder, value, onChange, type = 'text', className = '' }: {
+  placeholder?: string, value?: string, onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void, type?: string, className?: string
+}) => (
+  <input
+    type={type}
+    placeholder={placeholder}
+    value={value}
+    onChange={onChange}
+    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${className}`}
+  />
+);
 import { 
   Send, 
   GraduationCap, 
