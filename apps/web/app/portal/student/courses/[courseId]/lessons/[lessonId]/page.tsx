@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { format } from 'date-fns';
-import StudentLayout from '../../../../../../components/portal/StudentLayout';
+import StudentLayout from '../../../../../../../components/portal/StudentLayout';
 
 interface Lesson {
   id: string;

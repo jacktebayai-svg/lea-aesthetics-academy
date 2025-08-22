@@ -23,7 +23,7 @@ const enrollmentSchema = z.object({
   }).optional()
 })
 
-interface RouteParams {
+type RouteParams = {
   params: {
     courseId: string
   }
