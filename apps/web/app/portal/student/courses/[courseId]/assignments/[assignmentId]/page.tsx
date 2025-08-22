@@ -113,7 +113,7 @@ export default function AssignmentViewer() {
         .single();
 
       if (!enrollment || !['enrolled', 'in_progress'].includes(enrollment.status)) {
-        router.push(`/academy/courses/${courseId}`);
+        router.push('/courses');
         return;
       }
 
