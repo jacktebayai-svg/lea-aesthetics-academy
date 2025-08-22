@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import type { Service } from "@master-aesthetics-suite/shared";
+// Local Service type definition
+interface Service {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  duration: number;
+}
 import { Card } from '@/lib/ui/components/Card';
 import { Button } from '@/lib/ui/components/Button';
 import Icon from '@/lib/ui/Icon';

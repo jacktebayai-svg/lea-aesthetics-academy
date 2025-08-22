@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-// import { Card, CardContent, CardHeader, CardTitle, Button, Input } from '@master-aesthetics-suite/ui';
+// Using local UI component implementations
 
 // Simple replacements for UI components
 const Card = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (

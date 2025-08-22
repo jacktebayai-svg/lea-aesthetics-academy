@@ -1,6 +1,14 @@
 import React from "react";
-import type { Course } from "@master-aesthetics-suite/shared";
-import { Card } from "@master-aesthetics-suite/ui";
+import { Card } from "@/lib/ui/components/Card";
+
+// Local Course type definition
+interface Course {
+  id: string;
+  title: string;
+  description: string;
+  modules: number;
+  progress: number;
+}
 import StudentAssistant from "@/components/academy/StudentAssistant";
 
 const coursesData: Course[] = [

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-// import { LEALoginForm } from '@master-aesthetics-suite/ui';
+// LEALoginForm component removed - using local form implementation
 import { useRouter } from 'next/navigation';
 
 export default function StudentLoginPage() {

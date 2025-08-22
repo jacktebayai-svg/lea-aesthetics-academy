@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { Card, Button, Icon } from "@master-aesthetics-suite/ui";
+import { Card } from "@/lib/ui/components/Card";
+import { Button } from "@/lib/ui/components/Button";
+import Icon from "@/lib/ui/Icon";
 
 export default function HomePage() {
   return (
