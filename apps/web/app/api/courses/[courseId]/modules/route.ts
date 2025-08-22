@@ -12,7 +12,7 @@ const moduleSchema = z.object({
   prerequisites: z.record(z.any()).optional()
 })
 
-interface RouteParams {
+type RouteParams = {
   params: {
     courseId: string
   }

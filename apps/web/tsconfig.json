@@ -19,7 +19,9 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@master-aesthetics-suite/ui": ["../../packages/ui/src"],
+      "@master-aesthetics-suite/shared": ["../../packages/shared/src"]
     },
     "plugins": [
       {

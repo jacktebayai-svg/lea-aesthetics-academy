@@ -23,14 +23,11 @@ const enrollmentSchema = z.object({
   }).optional()
 })
 
-type RouteParams = {
-  params: {
-    courseId: string
-  }
-}
-
 // POST /api/courses/[courseId]/enroll - Enroll in course with payment
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { courseId: string } }
+) {
   try {
     const supabase = await createClient()
     const { courseId } = params
@@ -268,7 +265,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 }
 
 // GET /api/courses/[courseId]/enroll - Check enrollment status
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { courseId: string } }
+) {
   try {
     const supabase = await createClient()
     const { courseId } = params
