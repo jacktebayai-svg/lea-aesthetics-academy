@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@master-aesthetics-suite/ui';
-import { Button } from '@master-aesthetics-suite/ui';
-import { Input } from '@master-aesthetics-suite/ui';
-import { Badge } from '@master-aesthetics-suite/ui';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@master-aesthetics-suite/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@/lib/ui/components/Card';
+import { Button } from '@/lib/ui/components/Button';
+import { Input } from '@/lib/ui/components/Input';
+import { Badge } from '@/lib/ui/components/Badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/ui/components/Tabs';
 import { 
   Send, 
   FileText, 
