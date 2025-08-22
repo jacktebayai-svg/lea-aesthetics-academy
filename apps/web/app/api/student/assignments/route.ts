@@ -285,7 +285,7 @@ export async function POST(request: NextRequest) {
 
 // DELETE method for deleting assignment files
 export async function DELETE(request: NextRequest) {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   try {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
