@@ -29,6 +29,12 @@ pnpm dev
 # The platform uses Supabase as the primary database
 # Database operations are handled via Supabase dashboard
 # Connection configured via SUPABASE_URL and SUPABASE_ANON_KEY
+
+# Verify Supabase setup
+node apps/platform/scripts/verify-supabase-setup.js
+
+# Test database connection
+node apps/platform/scripts/test-supabase-after-fix.js
 ```
 
 ### Legacy Database Operations (Prisma - Reference only)
