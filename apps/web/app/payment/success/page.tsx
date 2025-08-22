@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { CheckCircle, Calendar, BookOpen, ArrowRight, Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { Route } from 'next'
 
 interface PaymentDetails {
   type: 'booking' | 'course'
@@ -222,7 +221,7 @@ function PaymentSuccessContent() {
                 asChild 
                 className="flex-1"
               >
-                <Link href={"/bookings" as Route}>
+                <Link href="/portal/client/bookings">
                   View My Bookings
                 </Link>
               </Button>
@@ -232,7 +231,7 @@ function PaymentSuccessContent() {
                 asChild 
                 className="flex-1"
               >
-                <Link href={"/courses/my-courses" as Route}>
+                <Link href="/courses">
                   Access Course
                 </Link>
               </Button>
