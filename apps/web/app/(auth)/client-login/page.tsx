@@ -27,7 +27,7 @@ export default function ClientLoginPage() {
         localStorage.setItem('user_role', 'client');
         
         // Redirect to client portal
-        router.push('/client/dashboard');
+        router.push('/portal/client');
       } else {
         const errorData = await response.json();
         alert(errorData.message || 'Authentication failed. Please check your credentials.');
@@ -41,7 +41,8 @@ export default function ClientLoginPage() {
   };
 
   const handleForgotPassword = () => {
-    router.push('/client/forgot-password');
+    // For now, direct to main auth signin until forgot password is implemented
+    router.push('/auth/signin');
   };
 
   const handleSignUp = () => {

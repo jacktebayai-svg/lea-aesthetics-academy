@@ -9,6 +9,10 @@ export * from './components/Navigation';
 export * from './components/ServiceCard';
 export * from './components/CourseCard';
 export * from './components/Calendar';
+export * from './components/Badge';
+export * from './components/Select';
+export * from './components/Checkbox';
+export * from './components/Tabs';
 
 // Navigation Components
 export * from './components/navigation';

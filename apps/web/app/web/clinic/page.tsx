@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import type { Service } from "@leas-academy/shared";
+import type { Service } from "@master-aesthetics-suite/shared";
 import { Card, Button, Icon } from "@master-aesthetics-suite/ui";
 
 const servicesData: Service[] = [

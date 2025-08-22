@@ -389,7 +389,6 @@ function SendTemplatesContent() {
                         <div className="flex items-center gap-3">
                           <Checkbox
                             checked={selectedRecipients.includes(recipient.id)}
-                            readOnly
                           />
                           <div>
                             <h4 className="font-medium text-sm">{recipient.name}</h4>

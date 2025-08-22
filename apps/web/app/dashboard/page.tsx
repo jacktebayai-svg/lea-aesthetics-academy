@@ -151,7 +151,7 @@ export default function DashboardPage() {
                     <h3 className="font-semibold text-[#1c1917]">Appointments</h3>
                     <p className="text-sm text-[#78716c]">View your booking history</p>
                   </div>
-                  <Link href="/client/appointments">
+                  <Link href="/portal/client/bookings">
                     <LuxuryButton variant="secondary" className="w-full" rightIcon={<ArrowRight className="h-4 w-4" />}>
                       View History
                     </LuxuryButton>

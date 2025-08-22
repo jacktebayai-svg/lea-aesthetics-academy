@@ -67,6 +67,7 @@ export default function TemplatesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('templates');
 
   // Fetch data from API
   useEffect(() => {
@@ -183,7 +184,7 @@ export default function TemplatesPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="templates" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="templates" className="flex items-center gap-2">
             <FileText className="w-4 h-4" />
@@ -218,7 +219,7 @@ export default function TemplatesPage() {
                     return (
                       <Button
                         key={category.id}
-                        variant={selectedCategory === category.id ? "default" : "outline"}
+                        variant={selectedCategory === category.id ? "primary" : "outline"}
                         size="sm"
                         onClick={() => setSelectedCategory(category.id)}
                         className="whitespace-nowrap"

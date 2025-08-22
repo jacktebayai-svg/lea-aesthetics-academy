@@ -1,5 +1,5 @@
 import React from "react";
-import type { Course } from "@leas-academy/shared";
+import type { Course } from "@master-aesthetics-suite/shared";
 import { Card } from "@master-aesthetics-suite/ui";
 import StudentAssistant from "@/components/academy/StudentAssistant";
 

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/stripe'
 import Stripe from 'stripe'
 import { Resend } from 'resend'
-
-const prisma = new PrismaClient()
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
@@ -57,113 +55,113 @@ export async function POST(request: NextRequest) {
 
 async function handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent) {
   try {
+    const supabase = await createClient()
+    
     // Update payment status in database
-    const payment = await prisma.payment.update({
-      where: { stripePaymentIntentId: paymentIntent.id },
-      data: { 
-        status: 'SUCCEEDED',
-      },
-      include: {
-        user: true,
-      }
-    })
+    const { data: payment } = await supabase
+      .from('payments')
+      .update({ status: 'succeeded' })
+      .eq('stripe_payment_intent_id', paymentIntent.id)
+      .select('*')
+      .single()
+
+    if (!payment) {
+      console.error('Payment not found for intent:', paymentIntent.id)
+      return
+    }
 
     const metadata = paymentIntent.metadata
     const type = metadata.type
     const itemId = metadata.itemId
     const userId = metadata.userId
 
-    if (type === 'booking') {
-      // Create the booking record
-      const treatment = await prisma.treatment.findUnique({
-        where: { id: itemId },
-        include: { practitioner: true }
-      })
+    // Get user info for email
+    const { data: userProfile } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', userId)
+      .single()
 
-      if (treatment) {
-        const booking = await prisma.booking.create({
-          data: {
-            clientId: userId,
-            treatmentId: itemId,
-            practitionerId: treatment.practitionerId,
-            status: 'CONFIRMED',
-            dateTime: metadata.scheduledAt ? new Date(metadata.scheduledAt) : new Date(),
-            duration: treatment.duration,
-            clientName: `${payment.user.firstName} ${payment.user.lastName}`,
-            clientEmail: payment.user.email,
-            clientPhone: payment.user.phone || '',
-            depositAmount: payment.amount,
-            totalAmount: treatment.price,
-            depositPaid: true,
-            notes: metadata.notes || '',
-          }
+    if (type === 'booking' && payment.appointment_id) {
+      // Update appointment status
+      await supabase
+        .from('appointments')
+        .update({ status: 'confirmed' })
+        .eq('id', payment.appointment_id)
+
+      // Get appointment details for email
+      const { data: appointment } = await supabase
+        .from('appointments')
+        .select(`
+          *,
+          services (name, duration, base_price)
+        `)
+        .eq('id', payment.appointment_id)
+        .single()
+
+      // Send booking confirmation email
+      if (process.env.RESEND_API_KEY && appointment && userProfile) {
+        await resend.emails.send({
+          from: 'LEA Aesthetics <bookings@leaaesthetics.com>',
+          to: userProfile.email,
+          subject: 'Booking Confirmed - LEA Aesthetics',
+          html: `
+            <h2>Your booking has been confirmed!</h2>
+            <p>Dear ${userProfile.profile?.firstName || 'Client'},</p>
+            <p>Your booking for <strong>${appointment.services.name}</strong> has been confirmed.</p>
+            <p><strong>Booking Details:</strong></p>
+            <ul>
+              <li>Treatment: ${appointment.services.name}</li>
+              <li>Duration: ${appointment.services.duration} minutes</li>
+              <li>Deposit Paid: £${(payment.amount / 100).toFixed(2)}</li>
+              <li>Booking ID: ${appointment.id}</li>
+            </ul>
+            <p>You will receive further details about scheduling soon.</p>
+            <p>Best regards,<br>LEA Aesthetics Team</p>
+          `
         })
-
-        // Send booking confirmation email
-        if (process.env.RESEND_API_KEY) {
-          await resend.emails.send({
-            from: 'LEA Aesthetics <bookings@leaaesthetics.com>',
-            to: payment.user.email,
-            subject: 'Booking Confirmed - LEA Aesthetics',
-            html: `
-              <h2>Your booking has been confirmed!</h2>
-              <p>Dear ${payment.user.firstName},</p>
-              <p>Your booking for <strong>${treatment.name}</strong> has been confirmed.</p>
-              <p><strong>Booking Details:</strong></p>
-              <ul>
-                <li>Treatment: ${treatment.name}</li>
-                <li>Duration: ${treatment.duration} minutes</li>
-                <li>Deposit Paid: £${payment.amount}</li>
-                <li>Booking ID: ${booking.id}</li>
-              </ul>
-              <p>You will receive further details about scheduling soon.</p>
-              <p>Best regards,<br>LEA Aesthetics Team</p>
-            `
-          })
-        }
       }
-    } else if (type === 'course') {
-      // Create the course enrollment
-      const course = await prisma.course.findUnique({
-        where: { id: itemId },
-        include: { educator: true }
-      })
-
-      if (course) {
-        const enrollment = await prisma.enrollment.create({
-          data: {
-            studentId: userId,
-            courseId: itemId,
-            status: 'ENROLLED',
-            progress: 0,
-            amountPaid: payment.amount,
-            paymentComplete: true,
-          }
+    } else if (type === 'course' && payment.course_enrollment_id) {
+      // Update enrollment status
+      await supabase
+        .from('course_enrollments')
+        .update({ 
+          status: 'enrolled',
+          enrolled_at: new Date().toISOString()
         })
+        .eq('id', payment.course_enrollment_id)
 
-        // Send enrollment confirmation email
-        if (process.env.RESEND_API_KEY) {
-          await resend.emails.send({
-            from: 'LEA Aesthetics <courses@leaaesthetics.com>',
-            to: payment.user.email,
-            subject: 'Course Enrollment Confirmed - LEA Aesthetics',
-            html: `
-              <h2>Welcome to your course!</h2>
-              <p>Dear ${payment.user.firstName},</p>
-              <p>Your enrollment in <strong>${course.title}</strong> has been confirmed.</p>
-              <p><strong>Course Details:</strong></p>
-              <ul>
-                <li>Course: ${course.title}</li>
-                <li>Duration: ${course.duration} hours</li>
-                <li>Level: ${course.level}</li>
-                <li>Payment: £${payment.amount}</li>
-                <li>Enrollment ID: ${enrollment.id}</li>
-              </ul>
-              <p>You can access your course materials in your student dashboard.</p>
-              <p>Best regards,<br>LEA Aesthetics Academy</p>
-            `
-          })
-        }
+      // Get course details for email
+      const { data: enrollment } = await supabase
+        .from('course_enrollments')
+        .select(`
+          *,
+          courses (title, duration_hours, price)
+        `)
+        .eq('id', payment.course_enrollment_id)
+        .single()
+
+      // Send enrollment confirmation email
+      if (process.env.RESEND_API_KEY && enrollment && userProfile) {
+        await resend.emails.send({
+          from: 'LEA Aesthetics <courses@leaaesthetics.com>',
+          to: userProfile.email,
+          subject: 'Course Enrollment Confirmed - LEA Aesthetics',
+          html: `
+            <h2>Welcome to your course!</h2>
+            <p>Dear ${userProfile.profile?.firstName || 'Student'},</p>
+            <p>Your enrollment in <strong>${enrollment.courses.title}</strong> has been confirmed.</p>
+            <p><strong>Course Details:</strong></p>
+            <ul>
+              <li>Course: ${enrollment.courses.title}</li>
+              <li>Duration: ${enrollment.courses.duration_hours} hours</li>
+              <li>Payment: £${(payment.amount / 100).toFixed(2)}</li>
+              <li>Enrollment ID: ${enrollment.id}</li>
+            </ul>
+            <p>You can access your course materials in your student dashboard.</p>
+            <p>Best regards,<br>LEA Aesthetics Academy</p>
+          `
+        })
       }
     }
 
@@ -176,13 +174,13 @@ async function handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent) {
 
 async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
   try {
+    const supabase = await createClient()
+    
     // Update payment status in database
-    await prisma.payment.update({
-      where: { stripePaymentIntentId: paymentIntent.id },
-      data: { 
-        status: 'FAILED',
-      }
-    })
+    await supabase
+      .from('payments')
+      .update({ status: 'failed' })
+      .eq('stripe_payment_intent_id', paymentIntent.id)
 
     console.log(`Payment failed for intent: ${paymentIntent.id}`)
   } catch (error) {
@@ -193,13 +191,13 @@ async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
 
 async function handlePaymentCanceled(paymentIntent: Stripe.PaymentIntent) {
   try {
+    const supabase = await createClient()
+    
     // Update payment status in database
-    await prisma.payment.update({
-      where: { stripePaymentIntentId: paymentIntent.id },
-      data: { 
-        status: 'CANCELLED',
-      }
-    })
+    await supabase
+      .from('payments')
+      .update({ status: 'cancelled' })
+      .eq('stripe_payment_intent_id', paymentIntent.id)
 
     console.log(`Payment canceled for intent: ${paymentIntent.id}`)
   } catch (error) {

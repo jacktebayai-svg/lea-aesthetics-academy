@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import jwt from 'jsonwebtoken'
+import { createClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 import { stripe, formatAmountForStripe, createPaymentMetadata } from '@/lib/stripe/stripe'
-
-const prisma = new PrismaClient()
 
 interface JWTPayload {
   userId: string
@@ -22,16 +19,17 @@ const createPaymentIntentSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    // Authenticate user
-    const token = request.cookies.get('auth-token')?.value
-    if (!token) {
+    const supabase = await createClient()
+    
+    // Check if user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    
+    if (authError || !user) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
       )
     }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload
     
     // Parse request body
     const body = await request.json()
@@ -42,25 +40,27 @@ export async function POST(request: NextRequest) {
     let description: string
 
     if (type === 'booking') {
-      const treatment = await prisma.treatment.findUnique({
-        where: { id: itemId },
-        include: { practitioner: true }
-      })
+      const { data: service } = await supabase
+        .from('services')
+        .select('*')
+        .eq('id', itemId)
+        .single()
       
-      if (!treatment) {
+      if (!service) {
         return NextResponse.json(
-          { error: 'Treatment not found' },
+          { error: 'Service not found' },
           { status: 404 }
         )
       }
       
-      itemDetails = treatment
-      description = `Booking deposit for ${treatment.name}`
+      itemDetails = service
+      description = `Booking deposit for ${service.name}`
     } else if (type === 'course') {
-      const course = await prisma.course.findUnique({
-        where: { id: itemId },
-        include: { educator: true }
-      })
+      const { data: course } = await supabase
+        .from('courses')
+        .select('*')
+        .eq('id', itemId)
+        .single()
       
       if (!course) {
         return NextResponse.json(
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     const paymentMetadata = createPaymentMetadata(
       type,
       itemId,
-      decoded.userId,
+      user.id,
       additionalMetadata
     )
 
@@ -100,21 +100,17 @@ export async function POST(request: NextRequest) {
     })
 
     // Store payment intent in database for tracking
-    await prisma.payment.create({
-      data: {
-        id: paymentIntent.id,
-        userId: decoded.userId,
+    await supabase
+      .from('payments')
+      .insert({
+        stripe_payment_intent_id: paymentIntent.id,
         amount: amount,
         currency: currency.toUpperCase(),
-        status: 'PENDING',
-        type: type === 'booking' ? 'BOOKING_DEPOSIT' : 'COURSE_PAYMENT',
-        bookingId: type === 'booking' ? itemId : null,
-        enrollmentId: type === 'course' ? itemId : null,
-        description: description,
-        stripePaymentIntentId: paymentIntent.id,
+        status: 'pending',
+        appointment_id: type === 'booking' ? itemId : null,
+        course_enrollment_id: type === 'course' ? itemId : null,
         metadata: paymentMetadata,
-      }
-    })
+      })
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
@@ -125,13 +121,6 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Create payment intent error:', error)
     
-    if (error instanceof jwt.JsonWebTokenError) {
-      return NextResponse.json(
-        { error: 'Invalid authentication token' },
-        { status: 401 }
-      )
-    }
-
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid input', details: error.errors },

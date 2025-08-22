@@ -26,8 +26,8 @@ export default function StudentLoginPage() {
         localStorage.setItem('student_token', data.token);
         localStorage.setItem('user_role', 'student');
         
-        // Redirect to student dashboard
-        router.push('/student/dashboard');
+        // Redirect to student portal
+        router.push('/portal/student');
       } else {
         const errorData = await response.json();
         alert(errorData.message || 'Authentication failed. Please check your credentials.');
@@ -41,12 +41,13 @@ export default function StudentLoginPage() {
   };
 
   const handleForgotPassword = () => {
-    router.push('/student/forgot-password');
+    // For now, direct to main auth signin until forgot password is implemented
+    router.push('/auth/signin');
   };
 
   const handleSignUp = () => {
-    // Students apply through a different process
-    router.push('/courses/apply');
+    // Students apply through the courses page
+    router.push('/courses');
   };
 
   return (

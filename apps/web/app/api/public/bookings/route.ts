@@ -87,13 +87,10 @@ export async function POST(request: NextRequest) {
         if (!client) {
           const newClient = await create(supabase, 'clients', {
             user_id: user.id,
-            tenant_id: 'default', // You may want to determine this based on the booking context
-            total_spent: 0,
-            visit_count: 0,
-            is_vip: false,
-            tags: [],
+            personal_info: {},
             preferences: {},
-            emergency_contact: {}
+            tags: [],
+            total_spent: 0
           })
           clientId = newClient.id
         }

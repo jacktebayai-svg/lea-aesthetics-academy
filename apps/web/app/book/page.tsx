@@ -436,13 +436,17 @@ export default function BookingPage() {
                           size="sm" 
                           onClick={prevMonth}
                           leftIcon={<ChevronLeft className="h-4 w-4" />}
-                        />
+                        >
+                          Previous
+                        </LuxuryButton>
                         <LuxuryButton 
                           variant="ghost" 
                           size="sm" 
                           onClick={nextMonth}
                           rightIcon={<ChevronRight className="h-4 w-4" />}
-                        />
+                        >
+                          Next
+                        </LuxuryButton>
                       </div>
                     </div>
 

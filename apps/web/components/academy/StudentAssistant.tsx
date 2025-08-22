@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, FormEvent } from "react";
-import type { ChatMessage } from "@leas-academy/shared";
+import type { ChatMessage } from "@master-aesthetics-suite/shared";
 import { Card, Button, Icon } from "@master-aesthetics-suite/ui";
 
 export default function StudentAssistant() {
