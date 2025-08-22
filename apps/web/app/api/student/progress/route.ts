@@ -161,8 +161,8 @@ export async function GET(request: NextRequest) {
           const modProgress = moduleProgress?.find(mp => mp.module_id === module.id)
           const lessonsWithProgress = module.course_lessons?.map(lesson => {
             const lessonProg = lessonProgress?.find(lp => lp.lesson_id === lesson.id)
-            const lessonQuizzes = quizAttempts?.filter(qa => qa.course_quizzes?.lesson_id === lesson.id) || []
-            const lessonAssignments = assignments?.filter(a => a.course_assignments?.lesson_id === lesson.id) || []
+            const lessonQuizzes = quizAttempts?.filter(qa => (qa.course_quizzes as any)?.lesson_id === lesson.id) || []
+            const lessonAssignments = assignments?.filter(a => (a.course_assignments as any)?.lesson_id === lesson.id) || []
             
             return {
               ...lesson,
@@ -178,12 +178,12 @@ export async function GET(request: NextRequest) {
                 max_score: quiz.max_score,
                 percentage: quiz.percentage,
                 completed_at: quiz.completed_at,
-                passed: quiz.percentage >= (quiz.course_quizzes?.passing_score || 70)
+                passed: quiz.percentage >= ((quiz.course_quizzes as any)?.passing_score || 70)
               })),
               assignments: lessonAssignments.map(assignment => ({
                 status: assignment.status,
                 score: assignment.score,
-                max_points: assignment.course_assignments?.max_points,
+                max_points: (assignment.course_assignments as any)?.max_points,
                 submitted_at: assignment.submitted_at,
                 graded_at: assignment.graded_at,
                 has_feedback: !!assignment.feedback
