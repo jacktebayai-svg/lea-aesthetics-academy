@@ -1,6 +1,6 @@
 'use client';
 
-// Force deployment trigger - TypeScript fix applied
+// Force deployment trigger - TypeScript fix applied - v2
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
