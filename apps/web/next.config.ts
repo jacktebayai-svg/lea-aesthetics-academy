@@ -1,9 +1,28 @@
+const path = require('path')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: [
     '@master-aesthetics-suite/ui',
     '@master-aesthetics-suite/shared'
   ],
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
+    // Add aliases for workspace packages
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@master-aesthetics-suite/ui': path.resolve(__dirname, '../../packages/ui/src/index.ts'),
+      '@master-aesthetics-suite/shared': path.resolve(__dirname, '../../packages/shared/src/index.ts'),
+    }
+    
+    // Ensure these packages are resolved as modules
+    config.resolve.modules = [
+      path.resolve(__dirname, '../../packages/ui/src'),
+      path.resolve(__dirname, '../../packages/shared/src'),
+      ...config.resolve.modules
+    ]
+    
+    return config
+  },
   experimental: {
     typedRoutes: true,
   },
