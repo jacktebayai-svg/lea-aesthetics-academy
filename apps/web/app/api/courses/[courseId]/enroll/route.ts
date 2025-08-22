@@ -26,11 +26,12 @@ const enrollmentSchema = z.object({
 // POST /api/courses/[courseId]/enroll - Enroll in course with payment
 export async function POST(
   request: NextRequest,
-  { params }: { params: { courseId: string } }
+  context: { params: Promise<{ courseId: string }> }
 ) {
   try {
+    const { params } = context;
+    const { courseId } = await params;
     const supabase = await createClient()
-    const { courseId } = params
 
     // Check if user is authenticated
     const { data: { user }, error: authError } = await supabase.auth.getUser()
